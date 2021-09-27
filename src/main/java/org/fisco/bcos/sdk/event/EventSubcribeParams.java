@@ -13,11 +13,11 @@
  *
  */
 
-package org.fisco.bcos.sdk.subscribe;
+package org.fisco.bcos.sdk.event;
 
 import java.util.List;
 
-public class EventLogParams {
+public class EventSubcribeParams {
   private long fromBlock;
   private long toBlock;
   private List<String> addresses;
@@ -54,6 +54,9 @@ public class EventLogParams {
   public void setTopics(List<Object> topics) {
     this.topics = topics;
   }
+
+  public void addAddress(String addr) { addresses.add(addr); }
+  // public void addTopic(int index, String topic) { }
 
   @Override
   public String toString() {

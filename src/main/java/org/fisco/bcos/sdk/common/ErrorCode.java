@@ -1,15 +1,14 @@
 package org.fisco.bcos.sdk.common;
 
-public class Error {
-
-  private Integer errorCode;
+public class ErrorCode {
+  private int errorCode;
   private String errorMessage;
 
-  public Integer getErrorCode() {
+  public int getErrorCode() {
     return errorCode;
   }
 
-  public void setErrorCode(Integer errorCode) {
+  public void setErrorCode(int errorCode) {
     this.errorCode = errorCode;
   }
 

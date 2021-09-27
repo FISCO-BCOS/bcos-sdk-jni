@@ -10,10 +10,10 @@ extern "C" {
 /*
  * Class:     org_fisco_bcos_sdk_rpc_Rpc
  * Method:    build
- * Signature: (Ljava/lang/String;)Lorg/fisco/bcos/sdk/rpc/Rpc;
+ * Signature: (Ljava/lang/String;Lorg/fisco/bcos/sdk/common/ConfigOption;)Lorg/fisco/bcos/sdk/rpc/Rpc;
  */
 JNIEXPORT jobject JNICALL Java_org_fisco_bcos_sdk_rpc_Rpc_build
-  (JNIEnv *, jclass, jstring);
+  (JNIEnv *, jclass, jstring, jobject);
 
 /*
  * Class:     org_fisco_bcos_sdk_rpc_Rpc

@@ -13,17 +13,29 @@
  *
  */
 
-package org.fisco.bcos.sdk.subscribe;
+package org.fisco.bcos.sdk.event;
 
-/** Event callback */
-public interface EventCallback {
+import org.fisco.bcos.sdk.common.ConfigOption;
+
+public class EventSubscribe {
+
+  static {
+    System.loadLibrary("fisco-cpp-sdk");
+  }
 
   /**
-   * onReceiveLog called when sdk receive any response of the target subscription. logs will be
-   * parsed by the user through the ABI module.
+   * construct EventSubscribe instance
    *
-   * @param error the status that peer response to sdk.
-   * @param logs logs from the message.
+   * @param group
+   * @return
    */
-  void onReceiveLog(Error error, String id, String logs);
+  public static native EventSubscribe build(String group, ConfigOption config);
+
+  public native void start();
+
+  public native void stop();
+
+  public native void subscribeEvent(EventSubcribeParams params, EventSubscribeCallback callback);
+
+  public native void unsubscribeEvent(String registerID, EventSubscribeCallback callback);
 }

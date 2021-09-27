@@ -10,7 +10,7 @@ extern "C" {
 /*
  * Class:     org_fisco_bcos_sdk_amop_Amop
  * Method:    build
- * Signature: (Lorg/fisco/bcos/sdk/config/ConfigOption;)Lorg/fisco/bcos/sdk/amop/Amop;
+ * Signature: (Lorg/fisco/bcos/sdk/common/ConfigOption;)Lorg/fisco/bcos/sdk/amop/Amop;
  */
 JNIEXPORT jobject JNICALL Java_org_fisco_bcos_sdk_amop_Amop_build
   (JNIEnv *, jclass, jobject);

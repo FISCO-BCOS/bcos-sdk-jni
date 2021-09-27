@@ -15,6 +15,8 @@
 
 package org.fisco.bcos.sdk.rpc;
 
+import org.fisco.bcos.sdk.common.ConfigOption;
+
 public class Rpc {
 
   static {
@@ -27,7 +29,7 @@ public class Rpc {
    * @param group
    * @return
    */
-  public static native Rpc build(String group);
+  public static native Rpc build(String group, ConfigOption config);
 
   public native void start();
 

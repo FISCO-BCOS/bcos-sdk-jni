@@ -17,12 +17,42 @@
 #------------------------------------------------------------------------------
 
 cmake_minimum_required(VERSION 3.18)
+set(CMAKE_OSX_DEPLOYMENT_TARGET "11.3" CACHE STRING "Minimum OS X deployment version")
 
+# URL_BASE download domain name
+include(FetchContent)
+if (NOT DEFINED URL_BASE)
+    # set(URL_BASE "github.com")
+    set(URL_BASE "github.com.cnpmjs.org")
+endif()
+
+# download bcos-cmake-scripts
+set(BCOS_CMAKE_SCRIPTS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/bcos-cmake-scripts)
+FetchContent_Declare(bcos-cmake-scripts
+    GIT_REPOSITORY https://${URL_BASE}/FISCO-BCOS/bcos-cmake-scripts.git
+    GIT_TAG dev
+    SOURCE_DIR ${BCOS_CMAKE_SCRIPTS_DIR}
+)
+FetchContent_MakeAvailable(bcos-cmake-scripts)
+
+set(JAVA_SDK_JNI_CMAKE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/cmake" CACHE PATH "The cmake path for the library")
+list(APPEND CMAKE_MODULE_PATH ${BCOS_CMAKE_SCRIPTS_DIR})
+list(APPEND CMAKE_MODULE_PATH ${JAVA_SDK_JNI_CMAKE_DIR})
+
+# include hunter
+include(HunterGate)
+HunterGate(
+    URL "https://${URL_BASE}/FISCO-BCOS/hunter/archive/2602eee11f811c631d9f3cb5835675cb12a72d2b.tar.gz"
+    SHA1 "79b0c2a45338ccc05fb89301e05d067ad69d51ba"
+    FILEPATH "${CMAKE_SOURCE_DIR}/cmake/config.cmake"
+)
+
+# project name
 project(java-sdk-jni VERSION "3.0.0")
 
-# set(CMAKE_BUILD_TYPE Release)
+# Debug, Release, RelWithDebInfo, MinSizeRel
+set(CMAKE_BUILD_TYPE Release)
 
-set(FISCO_BCOS_JNI_TARGET "fisco-bcos-jni")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 include_directories(${CMAKE_INSTALL_INCLUDEDIR})
@@ -37,7 +67,45 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 find_package(JNI REQUIRED)
 include_directories(${JNI_INCLUDE_DIRS})
 
-set(SOURCE_FILES Utilities.cpp)
+# find bcos-boostssl
+hunter_add_package(bcos-boostssl)
+find_package(bcos-boostssl CONFIG REQUIRED)
+
+# find bcos-cpp-sdk
+hunter_add_package(bcos-cpp-sdk)
+find_package(bcos-cpp-sdk REQUIRED)
+
+# find OpenSSL
+hunter_add_package(OpenSSL)
+find_package(OpenSSL REQUIRED)
+
+# basic settings
+include(Options)
+configure_project()
+include(CompilerSettings)
+include(InstallConfig)
+# install the include files for hash
+include(InstallInclude)
+
+# install bcos-framework
+include(InstallBcosFrameworkDependencies)
+
+
+
+# build dynamic target
 file(GLOB_RECURSE SOURCES "include/*.h" "src/*.cpp" "src/*.c")
 
+set(FISCO_BCOS_JNI_TARGET "fisco-bcos-jni")
 add_library(${FISCO_BCOS_JNI_TARGET} SHARED ${SOURCES})
+target_link_libraries(${FISCO_BCOS_JNI_TARGET} PUBLIC bcos-cpp-sdk::bcos-sdk-static)
+
+install(
+    TARGETS ${FISCO_BCOS_JNI_TARGET}
+    EXPORT "${TARGETS_EXPORT_NAME}"
+    LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+    ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+    RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
+    INCLUDES DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
+)
+
+

@@ -2,11 +2,40 @@
 dirpath="$(cd "$(dirname "$0")" && pwd)"
 cd $dirpath
 
-javah -d src/main/c/include -cp src/main/java/ org.fisco.bcos.sdk.jni.rpc.Rpc
-echo "transfer org.fisco.bcos.sdk.jni.rpc.Rpc to jni"
+# TODO: check if javah command available
 
-javah -d src/main/c/include -cp src/main/java/ org.fisco.bcos.sdk.jni.amop.Amop
-echo "transfer org.fisco.bcos.sdk.jni.rpc.Amop to jni"
+JNI_INCLUDE_PATH="src/main/c/include"
+JAVA_SOURCE_PATH="src/main/java/"
 
-javah -d src/main/c/include -cp src/main/java/ org.fisco.bcos.sdk.jni.event.EventSubscribe
-echo "transfer org.fisco.bcos.sdk.jni.rpc.EventSubscribe to jni"
+BASIC_PKG_PREFIX="org.fisco.bcos.sdk.jni"
+
+function convert_java_to_jni() {
+    local dir=$1
+    echo " ===>>> dir = $dir"
+    for file in $(ls "$dir")
+    do
+        if [ -f $1"/"$file ];then
+            echo $1"/"$file
+        elif [ -d $1"/"$file ];then
+            convert_java_to_jni $1"/"$file
+        fi
+    done
+}
+
+# echo "=== Convert Java To JNI === "
+# [ ! -d ${JAVA_SOURCE_PATH} ] && {
+#     echo "${JAVA_SOURCE_PATH} not exist."
+#     exit 0
+# }
+# convert_java_to_jni ${JAVA_SOURCE_PATH}
+
+classes="rpc.Rpc amop.Amop event.EventSubscribe sample.HelloWorldJNI"
+
+for class in ${classes}
+do
+    javah -d ${JNI_INCLUDE_PATH} -cp ${JAVA_SOURCE_PATH} "${BASIC_PKG_PREFIX}.${class}"
+    echo " ===> class: ${BASIC_PKG_PREFIX}.${class}"
+done
+
+echo "=== Convert Java To JNI Ending === "
+

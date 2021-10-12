@@ -17,6 +17,8 @@ package org.fisco.bcos.sdk.jni.event;
 
 import org.fisco.bcos.sdk.jni.common.ConfigOption;
 
+import java.util.Set;
+
 public class EventSubscribe {
 
   public static native EventSubscribe build(String group, ConfigOption config);
@@ -28,4 +30,6 @@ public class EventSubscribe {
   public native void subscribeEvent(EventSubcribeParams params, EventSubscribeCallback callback);
 
   public native void unsubscribeEvent(String registerID, EventSubscribeCallback callback);
+
+  public native Set<String> getAllSubscribedEvents();
 }

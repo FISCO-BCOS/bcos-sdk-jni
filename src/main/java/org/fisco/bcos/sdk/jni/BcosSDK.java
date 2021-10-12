@@ -15,11 +15,8 @@ package org.fisco.bcos.sdk.jni;
 
 import org.fisco.bcos.sdk.jni.common.ConfigOption;
 import org.fisco.bcos.sdk.jni.rpc.Rpc;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class BcosSDK {
-  private static Logger logger = LoggerFactory.getLogger(BcosSDK.class);
 
   private ConfigOption config = null;
 

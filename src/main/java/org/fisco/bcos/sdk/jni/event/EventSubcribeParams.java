@@ -13,15 +13,21 @@
  *
  */
 
-package org.fisco.bcos.sdk.event;
+package org.fisco.bcos.sdk.jni.event;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class EventSubcribeParams {
+  // TODO:
+  public static final int MAX_EVENT_LOG_COUNT = 4;
+
   private long fromBlock;
   private long toBlock;
-  private List<String> addresses;
-  private List<Object> topics;
+  private List<String> addresses = new ArrayList<>();
+  private List<Set<String>> topics = new ArrayList<>();
 
   public long getFromBlock() {
     return fromBlock;
@@ -47,16 +53,30 @@ public class EventSubcribeParams {
     this.addresses = addresses;
   }
 
-  public List<Object> getTopics() {
+  public List<Set<String>> getTopics() {
     return topics;
   }
 
-  public void setTopics(List<Object> topics) {
+  public void setTopics(List<Set<String>> topics) {
     this.topics = topics;
   }
 
-  public void addAddress(String addr) { addresses.add(addr); }
-  // public void addTopic(int index, String topic) { }
+  public boolean addAddress(String address) {
+    return addresses.add(address);
+  }
+
+  public boolean addTopic(int index, String topic) {
+    Set<String> topicSet = topics.get(index);
+    if (topicSet == null) {
+      topicSet = new HashSet<String>();
+      topicSet.add(topic);
+      topics.set(index, topicSet);
+    } else {
+      topicSet.add(topic);
+    }
+
+    return true;
+  }
 
   @Override
   public String toString() {

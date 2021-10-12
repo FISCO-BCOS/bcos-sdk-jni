@@ -13,32 +13,19 @@
  *
  */
 
-package org.fisco.bcos.sdk.amop;
+package org.fisco.bcos.sdk.jni.event;
 
-import java.util.Set;
-import org.fisco.bcos.sdk.common.ConfigOption;
+import org.fisco.bcos.sdk.jni.common.ConfigOption;
 
-public class Amop {
+public class EventSubscribe {
 
-  static {
-    System.loadLibrary("fisco-cpp-sdk");
-  }
-
-  public static native Amop build(ConfigOption config);
-
-  public native void subscribeTopic(String topicName, AmopCallback callback);
-
-  public native void unsubscribeTopic(String topicName);
-
-  public native void setCallback(AmopCallback cb);
-
-  public native void sendAmopMsg(byte[] content, AmopResponseCallback callback);
-
-  public native void broadcastAmopMsg(byte[] content);
-
-  public native Set<String> getSubTopics();
+  public static native EventSubscribe build(String group, ConfigOption config);
 
   public native void start();
 
   public native void stop();
+
+  public native void subscribeEvent(EventSubcribeParams params, EventSubscribeCallback callback);
+
+  public native void unsubscribeEvent(String registerID, EventSubscribeCallback callback);
 }

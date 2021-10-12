@@ -13,22 +13,12 @@
  *
  */
 
-package org.fisco.bcos.sdk.rpc;
+package org.fisco.bcos.sdk.jni.rpc;
 
-import org.fisco.bcos.sdk.common.ConfigOption;
+import org.fisco.bcos.sdk.jni.common.ConfigOption;
 
 public class Rpc {
 
-  static {
-    System.loadLibrary("fisco-cpp-sdk");
-  }
-
-  /**
-   * construct Rpc instance
-   *
-   * @param group
-   * @return
-   */
   public static native Rpc build(String group, ConfigOption config);
 
   public native void start();

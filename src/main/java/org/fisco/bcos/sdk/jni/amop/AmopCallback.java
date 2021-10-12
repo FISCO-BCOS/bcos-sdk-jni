@@ -13,17 +13,8 @@
  *
  */
 
-package org.fisco.bcos.sdk.event;
+package org.fisco.bcos.sdk.jni.amop;
 
-/** Event callback */
-public interface EventSubscribeCallback {
-
-  /**
-   * onReceiveLog called when sdk receive any response of the target subscription. logs will be
-   * parsed by the user through the ABI module.
-   *
-   * @param error the status that peer response to sdk.
-   * @param logs logs from the message.
-   */
-  void onReceiveLog(Error error, String id, String logs);
+public abstract class AmopCallback {
+  public abstract byte[] receiveAmopMsg(String endpoint, String seq, byte[] msg);
 }

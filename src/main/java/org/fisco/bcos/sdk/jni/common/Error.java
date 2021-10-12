@@ -1,6 +1,6 @@
-package org.fisco.bcos.sdk.common;
+package org.fisco.bcos.sdk.jni.common;
 
-public class ErrorCode {
+public class Error {
   private int errorCode;
   private String errorMessage;
 

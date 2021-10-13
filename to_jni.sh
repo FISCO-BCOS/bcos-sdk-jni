@@ -29,7 +29,8 @@ function convert_java_to_jni() {
 # }
 # convert_java_to_jni ${JAVA_SOURCE_PATH}
 
-classes="rpc.Rpc amop.Amop event.EventSubscribe sample.HelloWorldJNI"
+# classes="rpc.Rpc amop.Amop event.EventSubscribe"
+classes="sample.WsToolJNI"
 
 for class in ${classes}
 do

@@ -15,9 +15,8 @@
 
 package org.fisco.bcos.sdk.jni.event;
 
-import org.fisco.bcos.sdk.jni.common.ConfigOption;
-
 import java.util.Set;
+import org.fisco.bcos.sdk.jni.common.ConfigOption;
 
 public class EventSubscribe {
 

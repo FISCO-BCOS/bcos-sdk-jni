@@ -1,6 +1,6 @@
 #!/bin/bash
 dirpath="$(cd "$(dirname "$0")" && pwd)"
-cd $dirpath
+cd $dirpath/../
 
 # TODO: check if javah command available
 

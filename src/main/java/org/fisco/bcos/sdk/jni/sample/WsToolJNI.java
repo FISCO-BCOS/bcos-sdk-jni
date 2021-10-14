@@ -1,9 +1,15 @@
 package org.fisco.bcos.sdk.jni.sample;
 
+import org.fisco.bcos.sdk.jni.common.JniLibLoader;
+
 public class WsToolJNI {
 
   static {
-    System.loadLibrary("fisco-bcos-jni");
+    try {
+      JniLibLoader.loadJniLibrary();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   public WsToolJNI() {

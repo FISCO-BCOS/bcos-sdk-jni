@@ -90,8 +90,6 @@ include(InstallInclude)
 # install bcos-framework
 include(InstallBcosFrameworkDependencies)
 
-
-
 # build dynamic target
 file(GLOB_RECURSE SOURCES "include/*.h" "src/*.cpp" "src/*.c")
 
@@ -99,6 +97,7 @@ set(FISCO_BCOS_JNI_TARGET "fisco-bcos-jni")
 add_library(${FISCO_BCOS_JNI_TARGET} SHARED ${SOURCES})
 target_link_libraries(${FISCO_BCOS_JNI_TARGET} PUBLIC bcos-cpp-sdk::bcos-sdk-static)
 
+# SET(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 install(
     TARGETS ${FISCO_BCOS_JNI_TARGET}
     EXPORT "${TARGETS_EXPORT_NAME}"

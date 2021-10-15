@@ -1,4 +1,4 @@
-#include "org_fisco_bcos_sdk_jni_sample_WsToolJNI.h"
+#include "jni/org_fisco_bcos_sdk_jni_sample_WsToolJNI.h"
 #include <bcos-boostssl/websocket/WsTools.h>
 #include <cstdio>
 

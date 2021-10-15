@@ -1,0 +1,239 @@
+#include "bcos_c_sdk.h"
+#include <bcos-cpp-sdk/SdkFactory.h>
+
+// c-style sdk obj
+struct Sdk {
+  void *service;
+  void *rpc;
+  void *amop;
+  void *event;
+};
+
+// construct WsConfig obj by struct Config
+static std::shared_ptr<bcos::boostssl::ws::WsConfig>
+initWsConfig(struct Config *config) {
+  // init WsConfig by Config
+  auto wsConfig = std::make_shared<bcos::boostssl::ws::WsConfig>();
+  wsConfig->setModel(bcos::boostssl::ws::WsModel::Client);
+
+  auto peers = std::make_shared<bcos::boostssl::ws::EndPoints>();
+  for (size_t i = 0; i < config->peers_count; i++) {
+    bcos::boostssl::ws::EndPoint ep;
+    ep.host = config->peers[i].host;
+    ep.port = config->peers[i].port;
+    peers->push_back(ep);
+  }
+
+  wsConfig->setConnectedPeers(peers);
+  wsConfig->setThreadPoolSize(config->thread_pool_size);
+  wsConfig->setReconnectPeriod(config->reconnect_period_ms);
+  wsConfig->setHeartbeatPeriod(config->heartbeat_period_ms);
+
+  return wsConfig;
+}
+
+// create bcos sdk object by config object
+void *create_bcos_sdk(struct Config *config) {
+  // construct sdk object
+  auto factory = std::make_shared<bcos::cppsdk::SdkFactory>();
+  factory->setConfig(initWsConfig(config));
+
+  auto wsService = factory->buildWsService();
+  auto rpc = factory->buildJsonRpc(wsService);
+  auto amop = factory->buildAMOP(wsService);
+  auto event = factory->buildEventSub(wsService);
+
+  auto rpcPointer = rpc.get();
+  rpc.reset();
+  auto amopPointer = amop.get();
+  amop.reset();
+  auto eventPointer = event.get();
+  event.reset();
+
+  auto sdk = new Sdk();
+  sdk->rpc = rpcPointer;
+  sdk->amop = amopPointer;
+  sdk->event = eventPointer;
+
+  return sdk;
+}
+
+// destroy the bcos sdk object
+void destroy_bcos_sdk(void *sdk) {
+  if (sdk) {
+    destroy_bcos_sdk_rpc_obj(((Sdk *)sdk)->rpc);
+    destroy_bcos_sdk_amop_obj(((Sdk *)sdk)->amop);
+    destroy_bcos_sdk_event_sub_obj(((Sdk *)sdk)->event);
+
+    // delete Sdk object
+    delete (Sdk *)sdk;
+  }
+}
+
+// start bcos sdk
+void start_bcos_sdk(void *sdk) {
+  if (sdk) {
+    start_bcos_sdk_rpc_obj(((Sdk *)sdk)->rpc);
+    start_bcos_sdk_amop_obj(((Sdk *)sdk)->amop);
+    start_bcos_sdk_event_sub_obj(((Sdk *)sdk)->event);
+  }
+}
+
+// stop bcos sdk
+void stop_bcos_sdk(void *sdk) {
+  if (sdk) {
+    stop_bcos_sdk_rpc_obj(((Sdk *)sdk)->rpc);
+    stop_bcos_sdk_amop_obj(((Sdk *)sdk)->amop);
+    stop_bcos_sdk_event_sub_obj(((Sdk *)sdk)->event);
+  }
+}
+
+// get rpc module from sdk object
+void *get_rpc_obj(void *sdk, const char *group) {
+  // TODO: init with group
+  (void)group;
+
+  return sdk ? ((Sdk *)sdk)->rpc : NULL;
+}
+
+// get event sub module from sdk object
+void *get_event_sub_obj(void *sdk, const char *group) {
+  // TODO: init with group
+  (void)group;
+
+  return sdk ? ((Sdk *)sdk)->event : NULL;
+}
+
+// get amop module from sdk object
+void *get_amop_obj(void *sdk) { return sdk ? ((Sdk *)sdk)->amop : NULL; }
+
+void *create_bcos_sdk_rpc_obj(struct Config *config) {
+  auto wsConfig = initWsConfig(config);
+
+  // construct sdk object
+  auto factory = std::make_shared<bcos::cppsdk::SdkFactory>();
+  factory->setConfig(wsConfig);
+
+  auto wsService = factory->buildWsService();
+  auto rpc = factory->buildJsonRpc(wsService);
+
+  auto rpcPointer = rpc.get();
+  rpc.reset();
+
+  return rpcPointer;
+}
+
+// destroy the bcos sdk rpc sdk object
+void destroy_bcos_sdk_rpc_obj(void *rpc) {
+  // stop rpc service and delete rpc object
+  if (rpc) {
+    auto rpcPointer = (bcos::cppsdk::jsonrpc::JsonRpcInterface *)rpc;
+    rpcPointer->stop();
+    delete rpcPointer;
+    rpc = NULL;
+  }
+}
+
+// start the rpc service
+void start_bcos_sdk_rpc_obj(void *rpc) {
+  if (rpc) {
+    auto rpcPointer = (bcos::cppsdk::jsonrpc::JsonRpcInterface *)rpc;
+    rpcPointer->start();
+  }
+}
+
+// stop the rpc service
+void stop_bcos_sdk_rpc_obj(void *rpc) {
+  if (rpc) {
+    auto rpcPointer = (bcos::cppsdk::jsonrpc::JsonRpcInterface *)rpc;
+    rpcPointer->stop();
+  }
+}
+
+// create bcos sdk amop object by config object
+void *create_bcos_sdk_amop_obj(struct Config *config) {
+  auto wsConfig = initWsConfig(config);
+
+  // construct sdk object
+  auto factory = std::make_shared<bcos::cppsdk::SdkFactory>();
+  factory->setConfig(wsConfig);
+
+  auto wsService = factory->buildWsService();
+  auto amop = factory->buildAMOP(wsService);
+
+  auto amopPointer = amop.get();
+  amop.reset();
+
+  return amopPointer;
+}
+
+// destroy the bcos sdk amop object
+void destroy_bcos_sdk_amop_obj(void *amop) {
+  // stop amop service and delete amop object
+  if (amop) {
+    auto amopPointer = (bcos::cppsdk::amop::AMOPInterface *)amop;
+    amopPointer->stop();
+    delete amopPointer;
+    amop = NULL;
+  }
+}
+
+// start the amop service
+void start_bcos_sdk_amop_obj(void *amop) {
+  if (amop) {
+    auto amopPointer = (bcos::cppsdk::amop::AMOPInterface *)amop;
+    amopPointer->start();
+  }
+}
+
+// stop the amop service
+void stop_bcos_sdk_amop_obj(void *amop) {
+  if (amop) {
+    auto amopPointer = (bcos::cppsdk::amop::AMOPInterface *)amop;
+    amopPointer->stop();
+  }
+}
+
+// create bcos sdk event sub object by config object
+void *create_bcos_sdk_event_sub_obj(struct Config *config) {
+  auto wsConfig = initWsConfig(config);
+
+  // construct sdk object
+  auto factory = std::make_shared<bcos::cppsdk::SdkFactory>();
+  factory->setConfig(wsConfig);
+
+  auto wsService = factory->buildWsService();
+  auto event = factory->buildEventSub(wsService);
+
+  auto eventPointer = event.get();
+  event.reset();
+
+  return eventPointer;
+}
+
+// destroy the bcos sdk event sub object
+void destroy_bcos_sdk_event_sub_obj(void *event) {
+  // stop event sub service and delete event sub object
+  if (event) {
+    auto eventPointer = (bcos::cppsdk::event::EventSubInterface *)event;
+    eventPointer->stop();
+    delete eventPointer;
+    event = NULL;
+  }
+}
+
+// start the event sub service
+void start_bcos_sdk_event_sub_obj(void *event) {
+  if (event) {
+    auto eventPointer = (bcos::cppsdk::event::EventSubInterface *)event;
+    eventPointer->start();
+  }
+}
+
+// stop the event sub service
+void stop_bcos_sdk_event_sub_obj(void *event) {
+  if (event) {
+    auto eventPointer = (bcos::cppsdk::event::EventSubInterface *)event;
+    eventPointer->stop();
+  }
+}

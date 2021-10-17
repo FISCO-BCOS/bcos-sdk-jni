@@ -32,31 +32,31 @@ void bcos_rpc_call(void *rpc, const char *group, const char *to,
 
 // sendTransaction
 void bcos_rpc_send_transaction(void *rpc, const char *group, const char *data,
-                               bool proof, bcos_sdk_struct_response_cb callback,
+                               int proof, bcos_sdk_struct_response_cb callback,
                                void *context);
 
 // getTransaction
 void bcos_rpc_get_transaction(void *rpc, const char *group, const char *tx_hash,
-                              bool proof, bcos_sdk_struct_response_cb callback,
+                              int proof, bcos_sdk_struct_response_cb callback,
                               void *context);
 
 // getTransactionReceipt
 void bcos_rpc_get_transaction_receipt(void *rpc, const char *group,
-                                      const char *tx_hash, bool proof,
+                                      const char *tx_hash, int proof,
                                       bcos_sdk_struct_response_cb callback,
                                       void *context);
 
 // getBlockByHash
 void bcos_rpc_get_block_by_hash(void *rpc, const char *group,
-                                const char *block_hash, bool only_header,
-                                bool only_tx_hash,
+                                const char *block_hash, int only_header,
+                                int only_tx_hash,
                                 bcos_sdk_struct_response_cb callback,
                                 void *context);
 
 // getBlockByNumber
 void bcos_rpc_get_block_by_number(void *rpc, const char *group,
-                                  int64_t block_number, bool only_header,
-                                  bool only_tx_hash,
+                                  int64_t block_number, int only_header,
+                                  int only_tx_hash,
                                   bcos_sdk_struct_response_cb callback,
                                   void *context);
 

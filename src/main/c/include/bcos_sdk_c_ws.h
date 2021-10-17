@@ -13,8 +13,6 @@ int32_t bcos_ws_connection_count(void *ws);
 
 // ------------ websocket interface interface end ---------------------------
 
-void *bcos_event_sub_get_ws(void *event);
-
 #ifdef __cplusplus
 }
 #endif

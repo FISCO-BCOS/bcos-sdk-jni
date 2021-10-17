@@ -1,5 +1,5 @@
 #include "bcos_sdk_c_rpc.h"
-#include <bcos-cpp-sdk/rpc/JsonRpcInterface.h>
+#include <bcos-cpp-sdk/rpc/JsonRpcImpl.h>
 
 #include <memory>
 #include <tuple>
@@ -505,3 +505,13 @@ void bcos_rpc_get_node_info(void *rpc, bcos_sdk_struct_response_cb callback,
 }
 
 // ------------------------------rpc interface end -------------------------
+
+void *bcos_rpc_get_ws(void *rpc) {
+  if (rpc) {
+    auto rpcPointer = (bcos::cppsdk::jsonrpc::JsonRpcImpl *)rpc;
+    auto ws = rpcPointer->service();
+    return ws ? ws.get() : NULL;
+  }
+
+  return NULL;
+}

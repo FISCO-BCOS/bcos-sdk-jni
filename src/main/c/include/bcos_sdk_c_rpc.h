@@ -180,6 +180,8 @@ void bcos_rpc_get_node_info(void *rpc, bcos_sdk_struct_response_cb callback,
 
 // ------------------------------rpc interface end -------------------------
 
+void *bcos_rpc_get_ws(void *rpc);
+
 #ifdef __cplusplus
 }
 #endif

@@ -1,7 +1,7 @@
 
 #include "bcos_sdk_c_amop.h"
 #include "bcos_sdk_c_common.h"
-#include <bcos-cpp-sdk/amop/AMOPInterface.h>
+#include <bcos-cpp-sdk/amop/AMOP.h>
 #include <bcos-framework/interfaces/protocol/CommonError.h>
 #include <bcos-framework/libutilities/Common.h>
 #include <set>
@@ -150,6 +150,15 @@ void bcos_amop_send_response(void *amop, const char *peer, const char *seq,
   auto amopPointer = (bcos::cppsdk::amop::AMOPInterface *)amop;
   amopPointer->sendResponse(std::string(peer), std::string(seq),
                             bcos::bytesConstRef((bcos::byte *)data, size));
+}
+
+void *bcos_amop_get_ws(void *amop) {
+  if (amop) {
+    auto amopPointer = (bcos::cppsdk::amop::AMOP *)amop;
+    auto ws = amopPointer->service();
+    return ws ? ws.get() : NULL;
+  }
+  return NULL;
 }
 
 // ------------------------------amop interface end -------------------------

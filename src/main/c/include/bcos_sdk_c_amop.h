@@ -45,6 +45,8 @@ void bcos_amop_set_subscribe_topic_cb(void *amop,
 void bcos_amop_send_response(void *amop, const char *endpoint, const char *peer,
                              void *data, size_t size);
 
+void *bcos_amop_get_ws(void *amop);
+
 // ------------------------------amop interface end -------------------------
 #ifdef __cplusplus
 }

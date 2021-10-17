@@ -22,6 +22,9 @@ void bcos_event_sub_unsubscribe_event(void *event, const char *event_sub_id,
                                       void *context);
 
 // ------------------------------event interface end -------------------------
+
+void *bcos_event_sub_get_ws(void *event);
+
 #ifdef __cplusplus
 }
 #endif

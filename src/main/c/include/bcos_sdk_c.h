@@ -33,7 +33,7 @@ void *bcos_sdk_get_event_sub(void *sdk, const char *group);
 // bcos rpc function start
 //--------------------------------------------------------
 // create bcos sdk rpc object by config
-void *bcos_sdk_create_rpc(struct Config *config);
+void *bcos_sdk_create_rpc(struct bcos_sdk_struct_config *config);
 // destroy the bcos sdk rpc sdk object
 void bcos_sdk_destroy_rpc(void *rpc);
 // start the rpc service
@@ -48,7 +48,7 @@ void bcos_sdk_stop_rpc(void *rpc);
 // bcos amop function start
 //--------------------------------------------------------
 // create bcos sdk amop by config
-void *bcos_sdk_create_amop(struct Config *config);
+void *bcos_sdk_create_amop(struct bcos_sdk_struct_config *config);
 // destroy the bcos sdk amop object
 void bcos_sdk_destroy_amop(void *amop);
 // start the amop service
@@ -63,7 +63,7 @@ void bcos_sdk_stop_amop(void *amop);
 // bcos event sub function start
 //--------------------------------------------------------
 // create bcos sdk event sub object by config
-void *bcos_sdk_create_event_sub(struct Config *config);
+void *bcos_sdk_create_event_sub(struct bcos_sdk_struct_config *config);
 // destroy the bcos sdk event sub object
 void bcos_sdk_destroy_event_sub(void *event);
 // start the bcos sdk event sub service

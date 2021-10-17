@@ -12,24 +12,23 @@ extern "C" {
  * Method:    newWsToolJNI
  * Signature: ()J
  */
-JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_sample_WsToolJNI_newWsToolJNI
-  (JNIEnv *, jobject);
+JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_sample_WsToolJNI_newWsToolJNI(JNIEnv*, jobject);
 
 /*
  * Class:     org_fisco_bcos_sdk_jni_sample_WsToolJNI
  * Method:    validIP
  * Signature: (Ljava/lang/String;)Z
  */
-JNIEXPORT jboolean JNICALL Java_org_fisco_bcos_sdk_jni_sample_WsToolJNI_validIP
-  (JNIEnv *, jobject, jstring);
+JNIEXPORT jboolean JNICALL Java_org_fisco_bcos_sdk_jni_sample_WsToolJNI_validIP(
+    JNIEnv*, jobject, jstring);
 
 /*
  * Class:     org_fisco_bcos_sdk_jni_sample_WsToolJNI
  * Method:    validPort
  * Signature: (S)Z
  */
-JNIEXPORT jboolean JNICALL Java_org_fisco_bcos_sdk_jni_sample_WsToolJNI_validPort
-  (JNIEnv *, jobject, jshort);
+JNIEXPORT jboolean JNICALL Java_org_fisco_bcos_sdk_jni_sample_WsToolJNI_validPort(
+    JNIEnv*, jobject, jshort);
 
 #ifdef __cplusplus
 }

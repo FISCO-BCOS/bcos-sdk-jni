@@ -9,18 +9,15 @@ extern "C" {
 
 // ------------------------------event interface begin ----------------------
 
-void bcos_event_sub_subscribe_event(void *event, const char *group,
-                                    const char *params,
-                                    bcos_sdk_struct_response_cb callback,
-                                    void *context);
+void bcos_event_sub_subscribe_event(void* event, const char* group, const char* params,
+    bcos_sdk_struct_response_cb callback, void* context);
 
-void bcos_event_sub_unsubscribe_event(void *event, const char *event_sub_id,
-                                      bcos_sdk_struct_response_cb callback,
-                                      void *context);
+void bcos_event_sub_unsubscribe_event(
+    void* event, const char* event_sub_id, bcos_sdk_struct_response_cb callback, void* context);
 
 // ------------------------------event interface end -------------------------
 
-void *bcos_event_sub_get_ws(void *event);
+void* bcos_event_sub_get_ws(void* event);
 
 #ifdef __cplusplus
 }

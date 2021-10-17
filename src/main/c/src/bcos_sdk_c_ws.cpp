@@ -3,13 +3,15 @@
 
 // ------------ websocket interface interface begin -------------------------
 
-int32_t bcos_ws_connection_count(void *ws) {
-  if (ws) {
-    auto service = (bcos::boostssl::ws::WsService *)ws;
-    return service->sessions().size();
-  }
+int32_t bcos_ws_connection_count(void* ws)
+{
+    if (ws)
+    {
+        auto service = (bcos::boostssl::ws::WsService*)ws;
+        return service->sessions().size();
+    }
 
-  return -1;
+    return -1;
 }
 
 // ------------ websocket interface interface end ---------------------------

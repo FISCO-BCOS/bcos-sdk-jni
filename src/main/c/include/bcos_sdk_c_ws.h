@@ -9,7 +9,7 @@ extern "C" {
 
 // ------------ websocket interface interface begin -------------------------
 
-int32_t bcos_ws_connection_count(void *ws);
+int32_t bcos_ws_connection_count(void* ws);
 
 // ------------ websocket interface interface end ---------------------------
 

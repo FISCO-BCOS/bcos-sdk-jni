@@ -1,5 +1,7 @@
 #include "bcos_sdk_c.h"
 #include <bcos-cpp-sdk/SdkFactory.h>
+#include <cstdio>
+#include <mutex>
 
 // c-style sdk obj
 struct Sdk {
@@ -39,21 +41,20 @@ void *bcos_sdk_create(struct bcos_sdk_struct_config *config) {
   factory->setConfig(initWsConfig(config));
 
   auto wsService = factory->buildWsService();
+
   auto rpc = factory->buildJsonRpc(wsService);
   auto amop = factory->buildAMOP(wsService);
-  auto event = factory->buildEventSub(wsService);
+  // TODO:event sub is not being test
+  // auto event = factory->buildEventSub(wsService);
 
-  auto rpcPointer = rpc.get();
-  rpc.reset();
-  auto amopPointer = amop.get();
-  amop.reset();
-  auto eventPointer = event.get();
-  event.reset();
+  auto rpcPointer = rpc.release();
+  auto amopPointer = amop.release();
 
   auto sdk = new Sdk();
+  sdk->service = wsService.get();
   sdk->rpc = rpcPointer;
   sdk->amop = amopPointer;
-  sdk->event = eventPointer;
+  // sdk->event = eventPointer;
 
   return sdk;
 }
@@ -63,7 +64,8 @@ void bcos_sdk_destroy(void *sdk) {
   if (sdk) {
     bcos_sdk_destroy_rpc(((Sdk *)sdk)->rpc);
     bcos_sdk_destroy_amop(((Sdk *)sdk)->amop);
-    bcos_sdk_destroy_event_sub(((Sdk *)sdk)->event);
+    // TODO:
+    // bcos_sdk_destroy_event_sub(((Sdk *)sdk)->event);
 
     // delete Sdk object
     delete (Sdk *)sdk;
@@ -73,9 +75,13 @@ void bcos_sdk_destroy(void *sdk) {
 // start bcos sdk
 void bcos_sdk_start(void *sdk) {
   if (sdk) {
+    // start websocket service first
+    auto service = (bcos::boostssl::ws::WsService *)((Sdk *)sdk)->service;
+    service->start();
     bcos_sdk_start_rpc(((Sdk *)sdk)->rpc);
     bcos_sdk_start_amop(((Sdk *)sdk)->amop);
-    bcos_sdk_start_event_sub(((Sdk *)sdk)->event);
+    // TODO:
+    // bcos_sdk_start_event_sub(((Sdk *)sdk)->event);
   }
 }
 

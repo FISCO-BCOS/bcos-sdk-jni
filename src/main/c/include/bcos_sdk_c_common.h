@@ -14,7 +14,7 @@ struct EndPoint {
 
 // ssl config
 struct CertConfig {
-  char *ca_cert; // Note: buffer of cert be should der format
+  char *ca_cert; // Note: buffer of cert should be in der format
 
   char *node_key;
   char *node_cert;
@@ -33,6 +33,7 @@ struct SMCertConfig {
 
 // config for bcos-c-sdk
 struct Config {
+
   // common config
   int thread_pool_size;
   int reconnect_period_ms;
@@ -45,8 +46,8 @@ struct Config {
   struct SMCertConfig sm_cert_config;
 
   // connected peers info
-  size_t peers_count;
   struct EndPoint *peers;
+  size_t peers_count;
 };
 //--------------- config items end ----------------
 

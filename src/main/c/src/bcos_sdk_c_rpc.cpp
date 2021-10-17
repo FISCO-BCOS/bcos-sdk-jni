@@ -1,4 +1,4 @@
-#include "bcos_c_sdk_rpc.h"
+#include "bcos_sdk_c_rpc.h"
 #include <bcos-cpp-sdk/rpc/JsonRpcInterface.h>
 
 #include <memory>

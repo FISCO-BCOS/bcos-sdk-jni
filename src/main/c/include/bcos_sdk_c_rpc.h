@@ -1,7 +1,7 @@
 #ifndef __INCLUDE_BCOS_SDK_RPC__
 #define __INCLUDE_BCOS_SDK_RPC__
 
-#include "bcos_c_sdk_common.h"
+#include "bcos_sdk_c_common.h"
 
 #include <stdint.h>
 #include <stdio.h>

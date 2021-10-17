@@ -1,4 +1,4 @@
-#include "bcos_c_sdk_common.h"
+#include "bcos_sdk_c_common.h"
 #include <bcos-framework/interfaces/protocol/CommonError.h>
 #include <bcos-framework/libutilities/Common.h>
 #include <bcos-framework/libutilities/Error.h>

@@ -1,7 +1,7 @@
 #ifndef __INCLUDE_BCOS_SDK__
 #define __INCLUDE_BCOS_SDK__
 
-#include "bcos_c_sdk_common.h"
+#include "bcos_sdk_c_common.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -10,21 +10,21 @@ extern "C" {
 //--------------------------------------------------------
 // bcos sdk function start
 //--------------------------------------------------------
-// create bcos sdk object by config object
-void *create_bcos_sdk(struct Config *config);
+// create bcos sdk object by config
+void *bcos_sdk_create(struct Config *config);
 // destroy the bcos sdk object
-void destroy_bcos_sdk(void *sdk);
+void bcos_sdk_destroy(void *sdk);
 // start bcos sdk
-void start_bcos_sdk(void *sdk);
+void bcos_sdk_start(void *sdk);
 // stop bcos sdk
-void stop_bcos_sdk(void *sdk);
+void bcos_sdk_stop(void *sdk);
 
 // get rpc module from sdk object
-void *get_rpc_obj(void *sdk, const char *group);
-// get event sub module from sdk object
-void *get_event_sub_obj(void *sdk, const char *group);
+void *bcos_sdk_get_rpc(void *sdk, const char *group);
 // get amop module from sdk object
-void *get_amop_obj(void *sdk);
+void *bcos_sdk_get_amop(void *sdk);
+// get event sub module from sdk object
+void *bcos_sdk_get_event_sub(void *sdk, const char *group);
 //--------------------------------------------------------
 // bcos sdk function end
 //--------------------------------------------------------
@@ -32,14 +32,14 @@ void *get_amop_obj(void *sdk);
 //--------------------------------------------------------
 // bcos rpc function start
 //--------------------------------------------------------
-// create bcos sdk rpc object by config object
-void *create_bcos_sdk_rpc_obj(struct Config *config);
+// create bcos sdk rpc object by config
+void *bcos_sdk_create_rpc(struct Config *config);
 // destroy the bcos sdk rpc sdk object
-void destroy_bcos_sdk_rpc_obj(void *rpc);
+void bcos_sdk_destroy_rpc(void *rpc);
 // start the rpc service
-void start_bcos_sdk_rpc_obj(void *rpc);
+void bcos_sdk_start_rpc(void *rpc);
 // stop the rpc service
-void stop_bcos_sdk_rpc_obj(void *rpc);
+void bcos_sdk_stop_rpc(void *rpc);
 //--------------------------------------------------------
 // bcos rpc function end
 //--------------------------------------------------------
@@ -47,14 +47,14 @@ void stop_bcos_sdk_rpc_obj(void *rpc);
 //--------------------------------------------------------
 // bcos amop function start
 //--------------------------------------------------------
-// create bcos sdk amop object by config object
-void *create_bcos_sdk_amop_obj(struct Config *config);
+// create bcos sdk amop by config
+void *bcos_sdk_create_amop(struct Config *config);
 // destroy the bcos sdk amop object
-void destroy_bcos_sdk_amop_obj(void *amop);
+void bcos_sdk_destroy_amop(void *amop);
 // start the amop service
-void start_bcos_sdk_amop_obj(void *amop);
+void bcos_sdk_start_amop(void *amop);
 // stop the amop service
-void stop_bcos_sdk_amop_obj(void *amop);
+void bcos_sdk_stop_amop(void *amop);
 //--------------------------------------------------------
 // bcos amop function end
 //--------------------------------------------------------
@@ -62,14 +62,14 @@ void stop_bcos_sdk_amop_obj(void *amop);
 //--------------------------------------------------------
 // bcos event sub function start
 //--------------------------------------------------------
-// create bcos sdk event sub object by config object
-void *create_bcos_sdk_event_sub_obj(struct Config *config);
+// create bcos sdk event sub object by config
+void *bcos_sdk_create_event_sub_obj(struct Config *config);
 // destroy the bcos sdk event sub object
-void destroy_bcos_sdk_event_sub_obj(void *event);
+void bcos_sdk_destroy_event_sub_obj(void *event);
 // start the bcos sdk event sub service
-void start_bcos_sdk_event_sub_obj(void *event);
+void bcos_sdk_start_event_sub(void *event);
 // stop the bcos sdk event sub service
-void stop_bcos_sdk_event_sub_obj(void *event);
+void bcos_sdk_stop_event_sub(void *event);
 //--------------------------------------------------------
 // bcos event sub function end
 //--------------------------------------------------------

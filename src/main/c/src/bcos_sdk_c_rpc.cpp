@@ -14,7 +14,8 @@ void bcos_rpc_send_msg(void *rpc, const char *data, rpc_callback callback,
       data, [callback, context](bcos::Error::Ptr error,
                                 std::shared_ptr<bcos::bytes> resp) {
         bcos_rpc_handle_response(error ? error.get() : NULL,
-                                 resp ? resp.get() : NULL, callback, context);
+                                 resp ? (void *)resp->data() : NULL,
+                                 resp ? resp->size() : 0, callback, context);
         ;
       });
 }
@@ -29,7 +30,8 @@ void bcos_rpc_send_msg_to_group(void *rpc, const char *group, const char *data,
       [callback, context](bcos::Error::Ptr error,
                           std::shared_ptr<bcos::bytes> resp) {
         bcos_rpc_handle_response(error ? error.get() : NULL,
-                                 resp ? resp.get() : NULL, callback, context);
+                                 resp ? (void *)resp->data() : NULL,
+                                 resp ? resp->size() : 0, callback, context);
       });
 }
 
@@ -44,7 +46,8 @@ void bcos_rpc_send_msg_to_group_node(void *rpc, const char *group,
       [callback, context](bcos::Error::Ptr error,
                           std::shared_ptr<bcos::bytes> resp) {
         bcos_rpc_handle_response(error ? error.get() : NULL,
-                                 resp ? resp.get() : NULL, callback, context);
+                                 resp ? (void *)resp->data() : NULL,
+                                 resp ? resp->size() : 0, callback, context);
         ;
       });
 }
@@ -59,10 +62,10 @@ void bcos_rpc_call(void *rpc, const char *group, const char *to,
   rpcPointer->call(group, to, data,
                    [callback, context](bcos::Error::Ptr error,
                                        std::shared_ptr<bcos::bytes> resp) {
-                     bcos_rpc_handle_response(error ? error.get() : NULL,
-                                              resp ? resp.get() : NULL,
-                                              callback, context);
-                     ;
+                     bcos_rpc_handle_response(
+                         error ? error.get() : NULL,
+                         resp ? (void *)resp->data() : NULL,
+                         resp ? resp->size() : 0, callback, context);
                    });
 }
 
@@ -77,8 +80,8 @@ void bcos_rpc_send_transaction(void *rpc, const char *group, const char *data,
       [callback, context](bcos::Error::Ptr error,
                           std::shared_ptr<bcos::bytes> resp) {
         bcos_rpc_handle_response(error ? error.get() : NULL,
-                                 resp ? resp.get() : NULL, callback, context);
-        ;
+                                 resp ? (void *)resp->data() : NULL,
+                                 resp ? resp->size() : 0, callback, context);
       });
 }
 
@@ -93,8 +96,8 @@ void bcos_rpc_get_transaction(void *rpc, const char *group, const char *tx_hash,
       [callback, context](bcos::Error::Ptr error,
                           std::shared_ptr<bcos::bytes> resp) {
         bcos_rpc_handle_response(error ? error.get() : NULL,
-                                 resp ? resp.get() : NULL, callback, context);
-        ;
+                                 resp ? (void *)resp->data() : NULL,
+                                 resp ? resp->size() : 0, callback, context);
       });
 }
 
@@ -109,8 +112,8 @@ void bcos_rpc_get_transaction_receipt(void *rpc, const char *group,
       [callback, context](bcos::Error::Ptr error,
                           std::shared_ptr<bcos::bytes> resp) {
         bcos_rpc_handle_response(error ? error.get() : NULL,
-                                 resp ? resp.get() : NULL, callback, context);
-        ;
+                                 resp ? (void *)resp->data() : NULL,
+                                 resp ? resp->size() : 0, callback, context);
       });
 }
 
@@ -126,8 +129,8 @@ void bcos_rpc_get_block_by_hash(void *rpc, const char *group,
       [callback, context](bcos::Error::Ptr error,
                           std::shared_ptr<bcos::bytes> resp) {
         bcos_rpc_handle_response(error ? error.get() : NULL,
-                                 resp ? resp.get() : NULL, callback, context);
-        ;
+                                 resp ? (void *)resp->data() : NULL,
+                                 resp ? resp->size() : 0, callback, context);
       });
 }
 
@@ -143,8 +146,8 @@ void bcos_rpc_get_block_by_number(void *rpc, const char *group,
       [callback, context](bcos::Error::Ptr error,
                           std::shared_ptr<bcos::bytes> resp) {
         bcos_rpc_handle_response(error ? error.get() : NULL,
-                                 resp ? resp.get() : NULL, callback, context);
-        ;
+                                 resp ? (void *)resp->data() : NULL,
+                                 resp ? resp->size() : 0, callback, context);
       });
 }
 
@@ -159,8 +162,8 @@ void bcos_rpc_get_block_hash_by_number(void *rpc, const char *group,
       [callback, context](bcos::Error::Ptr error,
                           std::shared_ptr<bcos::bytes> resp) {
         bcos_rpc_handle_response(error ? error.get() : NULL,
-                                 resp ? resp.get() : NULL, callback, context);
-        ;
+                                 resp ? (void *)resp->data() : NULL,
+                                 resp ? resp->size() : 0, callback, context);
       });
 }
 // getBlockNumber
@@ -172,8 +175,8 @@ void bcos_rpc_get_block_number(void *rpc, const char *group,
       group, [callback, context](bcos::Error::Ptr error,
                                  std::shared_ptr<bcos::bytes> resp) {
         bcos_rpc_handle_response(error ? error.get() : NULL,
-                                 resp ? resp.get() : NULL, callback, context);
-        ;
+                                 resp ? (void *)resp->data() : NULL,
+                                 resp ? resp->size() : 0, callback, context);
       });
 }
 
@@ -185,9 +188,10 @@ void bcos_rpc_get_code(void *rpc, const char *group, const char *address,
   rpcPointer->getCode(group, address,
                       [callback, context](bcos::Error::Ptr error,
                                           std::shared_ptr<bcos::bytes> resp) {
-                        bcos_rpc_handle_response(error ? error.get() : NULL,
-                                                 resp ? resp.get() : NULL,
-                                                 callback, context);
+                        bcos_rpc_handle_response(
+                            error ? error.get() : NULL,
+                            resp ? (void *)resp->data() : NULL,
+                            resp ? resp->size() : 0, callback, context);
                       });
 }
 
@@ -200,8 +204,8 @@ void bcos_rpc_get_sealer_list(void *rpc, const char *group,
       group, [callback, context](bcos::Error::Ptr error,
                                  std::shared_ptr<bcos::bytes> resp) {
         bcos_rpc_handle_response(error ? error.get() : NULL,
-                                 resp ? resp.get() : NULL, callback, context);
-        ;
+                                 resp ? (void *)resp->data() : NULL,
+                                 resp ? resp->size() : 0, callback, context);
       });
 }
 
@@ -214,8 +218,8 @@ void bcos_rpc_get_observer_list(void *rpc, const char *group,
       group, [callback, context](bcos::Error::Ptr error,
                                  std::shared_ptr<bcos::bytes> resp) {
         bcos_rpc_handle_response(error ? error.get() : NULL,
-                                 resp ? resp.get() : NULL, callback, context);
-        ;
+                                 resp ? (void *)resp->data() : NULL,
+                                 resp ? resp->size() : 0, callback, context);
       });
 }
 
@@ -228,8 +232,8 @@ void bcos_rpc_get_pbft_view(void *rpc, const char *group, rpc_callback callback,
       group, [callback, context](bcos::Error::Ptr error,
                                  std::shared_ptr<bcos::bytes> resp) {
         bcos_rpc_handle_response(error ? error.get() : NULL,
-                                 resp ? resp.get() : NULL, callback, context);
-        ;
+                                 resp ? (void *)resp->data() : NULL,
+                                 resp ? resp->size() : 0, callback, context);
       });
 }
 
@@ -242,8 +246,8 @@ void bcos_rpc_get_pending_tx_size(void *rpc, const char *group,
       group, [callback, context](bcos::Error::Ptr error,
                                  std::shared_ptr<bcos::bytes> resp) {
         bcos_rpc_handle_response(error ? error.get() : NULL,
-                                 resp ? resp.get() : NULL, callback, context);
-        ;
+                                 resp ? (void *)resp->data() : NULL,
+                                 resp ? resp->size() : 0, callback, context);
       });
 }
 
@@ -256,8 +260,8 @@ void bcos_rpc_get_sync_status(void *rpc, const char *group,
       group, [callback, context](bcos::Error::Ptr error,
                                  std::shared_ptr<bcos::bytes> resp) {
         bcos_rpc_handle_response(error ? error.get() : NULL,
-                                 resp ? resp.get() : NULL, callback, context);
-        ;
+                                 resp ? (void *)resp->data() : NULL,
+                                 resp ? resp->size() : 0, callback, context);
       });
 }
 
@@ -270,8 +274,8 @@ void bcos_rpc_get_consensus_status(void *rpc, const char *group,
       group, [callback, context](bcos::Error::Ptr error,
                                  std::shared_ptr<bcos::bytes> resp) {
         bcos_rpc_handle_response(error ? error.get() : NULL,
-                                 resp ? resp.get() : NULL, callback, context);
-        ;
+                                 resp ? (void *)resp->data() : NULL,
+                                 resp ? resp->size() : 0, callback, context);
       });
 }
 
@@ -286,8 +290,8 @@ void bcos_rpc_get_system_config_by_key(void *rpc, const char *group,
       [callback, context](bcos::Error::Ptr error,
                           std::shared_ptr<bcos::bytes> resp) {
         bcos_rpc_handle_response(error ? error.get() : NULL,
-                                 resp ? resp.get() : NULL, callback, context);
-        ;
+                                 resp ? (void *)resp->data() : NULL,
+                                 resp ? resp->size() : 0, callback, context);
       });
 }
 
@@ -301,8 +305,8 @@ void bcos_rpc_get_total_transaction_count(void *rpc, const char *group,
       group, [callback, context](bcos::Error::Ptr error,
                                  std::shared_ptr<bcos::bytes> resp) {
         bcos_rpc_handle_response(error ? error.get() : NULL,
-                                 resp ? resp.get() : NULL, callback, context);
-        ;
+                                 resp ? (void *)resp->data() : NULL,
+                                 resp ? resp->size() : 0, callback, context);
       });
 }
 
@@ -313,8 +317,8 @@ void bcos_rpc_get_peers(void *rpc, rpc_callback callback, void *context) {
   rpcPointer->getPeers([callback, context](bcos::Error::Ptr error,
                                            std::shared_ptr<bcos::bytes> resp) {
     bcos_rpc_handle_response(error ? error.get() : NULL,
-                             resp ? resp.get() : NULL, callback, context);
-    ;
+                             resp ? (void *)resp->data() : NULL,
+                             resp ? resp->size() : 0, callback, context);
   });
 }
 
@@ -327,8 +331,8 @@ void bcos_rpc_create_group(void *rpc, const char *group_info,
       group_info, [callback, context](bcos::Error::Ptr error,
                                       std::shared_ptr<bcos::bytes> resp) {
         bcos_rpc_handle_response(error ? error.get() : NULL,
-                                 resp ? resp.get() : NULL, callback, context);
-        ;
+                                 resp ? (void *)resp->data() : NULL,
+                                 resp ? resp->size() : 0, callback, context);
       });
 }
 
@@ -343,8 +347,8 @@ void bcos_rpc_expand_group_node(void *rpc, const char *group,
       [callback, context](bcos::Error::Ptr error,
                           std::shared_ptr<bcos::bytes> resp) {
         bcos_rpc_handle_response(error ? error.get() : NULL,
-                                 resp ? resp.get() : NULL, callback, context);
-        ;
+                                 resp ? (void *)resp->data() : NULL,
+                                 resp ? resp->size() : 0, callback, context);
       });
 }
 
@@ -357,8 +361,8 @@ void bcos_rpc_remove_group(void *rpc, const char *group, rpc_callback callback,
       group, [callback, context](bcos::Error::Ptr error,
                                  std::shared_ptr<bcos::bytes> resp) {
         bcos_rpc_handle_response(error ? error.get() : NULL,
-                                 resp ? resp.get() : NULL, callback, context);
-        ;
+                                 resp ? (void *)resp->data() : NULL,
+                                 resp ? resp->size() : 0, callback, context);
       });
 }
 
@@ -372,8 +376,8 @@ void bcos_rpc_recover_group_node(void *rpc, const char *group, const char *node,
       [callback, context](bcos::Error::Ptr error,
                           std::shared_ptr<bcos::bytes> resp) {
         bcos_rpc_handle_response(error ? error.get() : NULL,
-                                 resp ? resp.get() : NULL, callback, context);
-        ;
+                                 resp ? (void *)resp->data() : NULL,
+                                 resp ? resp->size() : 0, callback, context);
       });
 }
 
@@ -385,9 +389,10 @@ void bcos_rpc_start_node(void *rpc, const char *group, const char *node,
   rpcPointer->startNode(group, node,
                         [callback, context](bcos::Error::Ptr error,
                                             std::shared_ptr<bcos::bytes> resp) {
-                          bcos_rpc_handle_response(error ? error.get() : NULL,
-                                                   resp ? resp.get() : NULL,
-                                                   callback, context);
+                          bcos_rpc_handle_response(
+                              error ? error.get() : NULL,
+                              resp ? (void *)resp->data() : NULL,
+                              resp ? resp->size() : 0, callback, context);
                         });
 }
 
@@ -399,9 +404,10 @@ void bcos_rpc_stop_node(void *rpc, const char *group, const char *node,
   rpcPointer->stopNode(group, node,
                        [callback, context](bcos::Error::Ptr error,
                                            std::shared_ptr<bcos::bytes> resp) {
-                         bcos_rpc_handle_response(error ? error.get() : NULL,
-                                                  resp ? resp.get() : NULL,
-                                                  callback, context);
+                         bcos_rpc_handle_response(
+                             error ? error.get() : NULL,
+                             resp ? (void *)resp->data() : NULL,
+                             resp ? resp->size() : 0, callback, context);
                        });
 }
 
@@ -413,8 +419,8 @@ void bcos_rpc_get_group_list(void *rpc, rpc_callback callback, void *context) {
       [callback, context](bcos::Error::Ptr error,
                           std::shared_ptr<bcos::bytes> resp) {
         bcos_rpc_handle_response(error ? error.get() : NULL,
-                                 resp ? resp.get() : NULL, callback, context);
-        ;
+                                 resp ? (void *)resp->data() : NULL,
+                                 resp ? resp->size() : 0, callback, context);
       });
 }
 
@@ -427,8 +433,8 @@ void bcos_rpc_get_group_info_list(void *rpc, rpc_callback callback,
       [callback, context](bcos::Error::Ptr error,
                           std::shared_ptr<bcos::bytes> resp) {
         bcos_rpc_handle_response(error ? error.get() : NULL,
-                                 resp ? resp.get() : NULL, callback, context);
-        ;
+                                 resp ? (void *)resp->data() : NULL,
+                                 resp ? resp->size() : 0, callback, context);
       });
 }
 
@@ -441,8 +447,8 @@ void bcos_rpc_get_group_info(void *rpc, const char *group,
       group, [callback, context](bcos::Error::Ptr error,
                                  std::shared_ptr<bcos::bytes> resp) {
         bcos_rpc_handle_response(error ? error.get() : NULL,
-                                 resp ? resp.get() : NULL, callback, context);
-        ;
+                                 resp ? (void *)resp->data() : NULL,
+                                 resp ? resp->size() : 0, callback, context);
       });
 }
 
@@ -457,8 +463,8 @@ void bcos_rpc_get_group_node_info(void *rpc, const char *group,
       [callback, context](bcos::Error::Ptr error,
                           std::shared_ptr<bcos::bytes> resp) {
         bcos_rpc_handle_response(error ? error.get() : NULL,
-                                 resp ? resp.get() : NULL, callback, context);
-        ;
+                                 resp ? (void *)resp->data() : NULL,
+                                 resp ? resp->size() : 0, callback, context);
       });
 }
 
@@ -470,8 +476,8 @@ void bcos_rpc_get_node_info(void *rpc, rpc_callback callback, void *context) {
       [callback, context](bcos::Error::Ptr error,
                           std::shared_ptr<bcos::bytes> resp) {
         bcos_rpc_handle_response(error ? error.get() : NULL,
-                                 resp ? resp.get() : NULL, callback, context);
-        ;
+                                 resp ? (void *)resp->data() : NULL,
+                                 resp ? resp->size() : 0, callback, context);
       });
 }
 

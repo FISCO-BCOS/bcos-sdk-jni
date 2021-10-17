@@ -16,7 +16,7 @@ void bcos_event_sub_subscribe_event(void *event, const char *group,
                                     const char *params, rpc_callback callback,
                                     void *context);
 
-void bcos_event_sub_unsubscribe_event(void *event, const char *event_id,
+void bcos_event_sub_unsubscribe_event(void *event, const char *event_sub_id,
                                       rpc_callback callback, void *context);
 
 // ------------------------------event interface end -------------------------

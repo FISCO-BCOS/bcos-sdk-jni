@@ -67,8 +67,8 @@ typedef void (*rpc_callback)(struct rpcResponse *);
 //--------------- callback define end------------
 
 // handle callback
-void bcos_rpc_handle_response(void *error, void *resp, rpc_callback callback,
-                              void *context);
+void bcos_rpc_handle_response(void *error, void *resp, size_t resp_size,
+                              rpc_callback callback, void *context);
 // release rpcResponse object
 void bcos_rpc_destroy_response(void *p);
 

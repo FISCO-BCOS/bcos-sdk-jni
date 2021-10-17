@@ -3,22 +3,20 @@
 #include <bcos-framework/libutilities/Common.h>
 #include <bcos-framework/libutilities/Error.h>
 
-void bcos_rpc_handle_response(void *error, void *resp, rpc_callback callback,
-                              void *context) {
+void bcos_rpc_handle_response(void *error, void *resp, size_t resp_size,
+                              rpc_callback callback, void *context) {
   auto rpcRespObj = new rpcResponse();
   rpcRespObj->context = context;
 
   auto errorPtr = (bcos::Error *)error;
-  auto bytesPtr = (bcos::bytes *)resp;
-
   if (errorPtr &&
       errorPtr->errorCode() != bcos::protocol::CommonError::SUCCESS) {
     rpcRespObj->error = errorPtr->errorCode();
     rpcRespObj->error_msg = (char *)errorPtr->errorMessage().data();
   } else {
     rpcRespObj->error = bcos::protocol::CommonError::SUCCESS;
-    rpcRespObj->msg = bytesPtr->data();
-    rpcRespObj->size = bytesPtr->size();
+    rpcRespObj->msg = (bcos::byte *)resp;
+    rpcRespObj->size = resp_size;
   }
 
   callback(rpcRespObj);

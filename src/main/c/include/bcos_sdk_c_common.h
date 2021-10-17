@@ -7,13 +7,13 @@
 //--------------- config items begin ----------------
 
 // connect endpoint
-struct EndPoint {
+struct bcos_sdk_struct_endpoint {
   char *host; // c-style string，end with '\0'
   uint16_t port;
 };
 
 // ssl config
-struct CertConfig {
+struct bcos_sdk_struct_cert_config {
   char *ca_cert; // Note: buffer of cert should be in der format
 
   char *node_key;
@@ -21,7 +21,7 @@ struct CertConfig {
 };
 
 // sm ssl config
-struct SMCertConfig {
+struct bcos_sdk_struct_sm_cert_config {
   char *ca_cert;
 
   char *node_key;
@@ -32,7 +32,7 @@ struct SMCertConfig {
 };
 
 // config for bcos-c-sdk
-struct Config {
+struct bcos_sdk_struct_config {
 
   // common config
   int thread_pool_size;
@@ -42,34 +42,35 @@ struct Config {
 
   // ssl type: ssl or sm
   int ssl_type;
-  struct CertConfig cert_config;
-  struct SMCertConfig sm_cert_config;
+  struct bcos_sdk_struct_cert_config cert_config;
+  struct bcos_sdk_struct_sm_cert_config sm_cert_config;
 
   // connected peers info
-  struct EndPoint *peers;
+  struct bcos_sdk_struct_endpoint *peers;
   size_t peers_count;
 };
 //--------------- config items end ----------------
 
-//--------------- callback define begin------------
+//--------------- callback begin------------
 // response
-struct rpcResponse {
+struct bcos_sdk_struct_response {
   int error;       // error code
   char *error_msg; // error message
 
-  void *msg;
+  void *data;
   size_t size;
 
   void *context; // callback context
 };
 
-typedef void (*rpc_callback)(struct rpcResponse *);
-//--------------- callback define end------------
+typedef void (*bcos_sdk_struct_response_cb)(struct bcos_sdk_struct_response *);
+//--------------- callback end------------
 
 // handle callback
-void bcos_rpc_handle_response(void *error, void *resp, size_t resp_size,
-                              rpc_callback callback, void *context);
-// release rpcResponse object
-void bcos_rpc_destroy_response(void *p);
+void bcos_sdk_c_handle_response(void *error, void *data, size_t size,
+                                bcos_sdk_struct_response_cb callback,
+                                void *context);
+// release bcos_sdk_struct_response object
+void bcos_sdk_c_release_response(void *p);
 
 #endif

@@ -11,7 +11,7 @@ struct Sdk {
 
 // construct WsConfig obj by struct Config
 static std::shared_ptr<bcos::boostssl::ws::WsConfig>
-initWsConfig(struct Config *config) {
+initWsConfig(struct bcos_sdk_struct_config *config) {
   // init WsConfig by Config
   auto wsConfig = std::make_shared<bcos::boostssl::ws::WsConfig>();
   wsConfig->setModel(bcos::boostssl::ws::WsModel::Client);
@@ -33,7 +33,7 @@ initWsConfig(struct Config *config) {
 }
 
 // create bcos sdk object by config
-void *bcos_sdk_create(struct Config *config) {
+void *bcos_sdk_create(struct bcos_sdk_struct_config *config) {
   // construct sdk object
   auto factory = std::make_shared<bcos::cppsdk::SdkFactory>();
   factory->setConfig(initWsConfig(config));
@@ -107,7 +107,7 @@ void *bcos_sdk_get_event_sub(void *sdk, const char *group) {
 // get amop module from sdk object
 void *bcos_sdk_get_amop(void *sdk) { return sdk ? ((Sdk *)sdk)->amop : NULL; }
 
-void *bcos_sdk_create_rpc(struct Config *config) {
+void *bcos_sdk_create_rpc(struct bcos_sdk_struct_config *config) {
   auto wsConfig = initWsConfig(config);
 
   // construct sdk object
@@ -151,7 +151,7 @@ void bcos_sdk_stop_rpc(void *rpc) {
 }
 
 // create bcos sdk amop object by config
-void *bcos_sdk_create_amop(struct Config *config) {
+void *bcos_sdk_create_amop(struct bcos_sdk_struct_config *config) {
   auto wsConfig = initWsConfig(config);
 
   // construct sdk object
@@ -195,7 +195,7 @@ void bcos_sdk_stop_amop(void *amop) {
 }
 
 // create bcos sdk event sub object by config
-void *bcos_sdk_create_event_sub_obj(struct Config *config) {
+void *bcos_sdk_create_event_sub_obj(struct bcos_sdk_struct_config *config) {
   auto wsConfig = initWsConfig(config);
 
   // construct sdk object

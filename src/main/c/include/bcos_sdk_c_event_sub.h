@@ -13,11 +13,13 @@ extern "C" {
 // ------------------------------event interface begin ----------------------
 
 void bcos_event_sub_subscribe_event(void *event, const char *group,
-                                    const char *params, rpc_callback callback,
+                                    const char *params,
+                                    bcos_sdk_struct_response_cb callback,
                                     void *context);
 
 void bcos_event_sub_unsubscribe_event(void *event, const char *event_sub_id,
-                                      rpc_callback callback, void *context);
+                                      bcos_sdk_struct_response_cb callback,
+                                      void *context);
 
 // ------------------------------event interface end -------------------------
 #ifdef __cplusplus

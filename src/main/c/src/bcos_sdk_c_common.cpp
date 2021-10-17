@@ -3,24 +3,32 @@
 #include <bcos-framework/libutilities/Common.h>
 #include <bcos-framework/libutilities/Error.h>
 
-void bcos_rpc_handle_response(void *error, void *resp, size_t resp_size,
-                              rpc_callback callback, void *context) {
-  auto rpcRespObj = new rpcResponse();
-  rpcRespObj->context = context;
+void bcos_sdk_c_handle_response(void *error, void *data, size_t size,
+                                bcos_sdk_struct_response_cb callback,
+                                void *context) {
+
+  // auto resp = new bcos_sdk_struct_response();
+  bcos_sdk_struct_response temp_resp;
+  auto resp = &temp_resp;
+  resp->context = context;
 
   auto errorPtr = (bcos::Error *)error;
   if (errorPtr &&
       errorPtr->errorCode() != bcos::protocol::CommonError::SUCCESS) {
-    rpcRespObj->error = errorPtr->errorCode();
-    rpcRespObj->error_msg = (char *)errorPtr->errorMessage().data();
+    resp->error = errorPtr->errorCode();
+    resp->error_msg = (char *)errorPtr->errorMessage().data();
   } else {
-    rpcRespObj->error = bcos::protocol::CommonError::SUCCESS;
-    rpcRespObj->msg = (bcos::byte *)resp;
-    rpcRespObj->size = resp_size;
+    resp->error = bcos::protocol::CommonError::SUCCESS;
+    resp->data = (bcos::byte *)data;
+    resp->size = size;
   }
 
-  callback(rpcRespObj);
+  callback(resp);
 }
 
-// release rpcResponse object
-void bcos_rpc_destroy_response(void *p) { delete (rpcResponse *)p; }
+// release bcos_sdk_struct_response object
+void bcos_sdk_c_release_response(void *p) {
+  (void)p;
+  return;
+  // delete (bcos_sdk_struct_response *)p;
+}

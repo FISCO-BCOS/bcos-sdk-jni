@@ -11,7 +11,7 @@ extern "C" {
 // bcos sdk function start
 //--------------------------------------------------------
 // create bcos sdk object by config
-void *bcos_sdk_create(struct Config *config);
+void *bcos_sdk_create(struct bcos_sdk_struct_config *config);
 // destroy the bcos sdk object
 void bcos_sdk_destroy(void *sdk);
 // start bcos sdk

@@ -9,26 +9,28 @@
 // ------------------------------event interface begin ----------------------
 
 void bcos_event_sub_subscribe_event(void *event, const char *group,
-                                    const char *params, rpc_callback callback,
+                                    const char *params,
+                                    bcos_sdk_struct_response_cb callback,
                                     void *context) {
   auto eventPointer = (bcos::cppsdk::event::EventSubInterface *)event;
   eventPointer->subscribeEvent(
       group, params,
       [callback, context](bcos::Error::Ptr error, const std::string &resp) {
-        bcos_rpc_handle_response(error ? error.get() : NULL,
-                                 (void *)resp.data(), resp.size(), callback,
-                                 context);
+        bcos_sdk_c_handle_response(error ? error.get() : NULL,
+                                   (void *)resp.data(), resp.size(), callback,
+                                   context);
       });
 }
 
 void bcos_event_sub_unsubscribe_event(void *event, const char *event_sub_id,
-                                      rpc_callback callback, void *context) {
+                                      bcos_sdk_struct_response_cb callback,
+                                      void *context) {
   auto eventPointer = (bcos::cppsdk::event::EventSubInterface *)event;
   eventPointer->unsubscribeEvent(event_sub_id, [callback, context](
                                                    bcos::Error::Ptr error,
                                                    const std::string &resp) {
-    bcos_rpc_handle_response(error ? error.get() : NULL, (void *)resp.data(),
-                             resp.size(), callback, context);
+    bcos_sdk_c_handle_response(error ? error.get() : NULL, (void *)resp.data(),
+                               resp.size(), callback, context);
   });
 }
 

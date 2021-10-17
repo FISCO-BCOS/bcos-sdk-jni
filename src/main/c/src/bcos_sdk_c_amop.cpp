@@ -1,4 +1,3 @@
-
 #include "bcos_sdk_c_amop.h"
 #include "bcos_sdk_c_common.h"
 #include <bcos-cpp-sdk/amop/AMOP.h>

@@ -3,9 +3,6 @@
 
 #include "bcos_sdk_c_common.h"
 
-#include <stdint.h>
-#include <stdio.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif

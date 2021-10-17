@@ -3,8 +3,6 @@
 #include "bcos_sdk_c_common.h"
 #include <bcos-cpp-sdk/event/EventSub.h>
 #include <bcos-cpp-sdk/event/EventSubInterface.h>
-#include <stdint.h>
-#include <stdio.h>
 #include <tuple>
 
 // ------------------------------event interface begin ----------------------

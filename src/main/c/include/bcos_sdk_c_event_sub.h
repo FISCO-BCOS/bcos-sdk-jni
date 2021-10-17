@@ -1,9 +1,6 @@
 #ifndef __INCLUDE_BCOS_SDK_EVENT__
 #define __INCLUDE_BCOS_SDK_EVENT__
 
-#include <stdint.h>
-#include <stdio.h>
-
 #include "bcos_sdk_c_common.h"
 
 #ifdef __cplusplus

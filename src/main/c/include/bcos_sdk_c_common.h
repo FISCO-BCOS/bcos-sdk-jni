@@ -54,8 +54,8 @@ struct bcos_sdk_struct_config {
 //--------------- callback begin------------
 // response
 struct bcos_sdk_struct_response {
-  int error;       // error code
-  char *error_msg; // error message
+  int error;  // status code
+  char *desc; // status describe
 
   void *data;
   size_t size;

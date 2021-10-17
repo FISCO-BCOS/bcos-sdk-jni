@@ -63,9 +63,9 @@ void bcos_sdk_stop_amop(void *amop);
 // bcos event sub function start
 //--------------------------------------------------------
 // create bcos sdk event sub object by config
-void *bcos_sdk_create_event_sub_obj(struct Config *config);
+void *bcos_sdk_create_event_sub(struct Config *config);
 // destroy the bcos sdk event sub object
-void bcos_sdk_destroy_event_sub_obj(void *event);
+void bcos_sdk_destroy_event_sub(void *event);
 // start the bcos sdk event sub service
 void bcos_sdk_start_event_sub(void *event);
 // stop the bcos sdk event sub service

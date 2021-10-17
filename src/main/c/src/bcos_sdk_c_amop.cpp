@@ -45,7 +45,7 @@ void bcos_amop_subscribe_topic_with_cb(void *amop, const char *topic,
         if (error &&
             error->errorCode() != bcos::protocol::CommonError::SUCCESS) {
           resp.error = error->errorCode();
-          resp.error_msg = (char *)error->errorMessage().data();
+          resp.desc = (char *)error->errorMessage().data();
         } else {
           resp.error = bcos::protocol::CommonError::SUCCESS;
           resp.data = (void *)data.data();
@@ -129,7 +129,7 @@ void bcos_amop_set_subscribe_topic_cb(void *amop,
         if (error &&
             error->errorCode() != bcos::protocol::CommonError::SUCCESS) {
           resp.error = error->errorCode();
-          resp.error_msg = (char *)error->errorMessage().data();
+          resp.desc = (char *)error->errorMessage().data();
         } else {
           resp.error = bcos::protocol::CommonError::SUCCESS;
           resp.data = (void *)data.data();

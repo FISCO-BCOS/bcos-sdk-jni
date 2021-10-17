@@ -63,7 +63,7 @@ void bcos_sdk_destroy(void *sdk) {
   if (sdk) {
     bcos_sdk_destroy_rpc(((Sdk *)sdk)->rpc);
     bcos_sdk_destroy_amop(((Sdk *)sdk)->amop);
-    bcos_sdk_destroy_event_sub_obj(((Sdk *)sdk)->event);
+    bcos_sdk_destroy_event_sub(((Sdk *)sdk)->event);
 
     // delete Sdk object
     delete (Sdk *)sdk;
@@ -195,7 +195,7 @@ void bcos_sdk_stop_amop(void *amop) {
 }
 
 // create bcos sdk event sub object by config
-void *bcos_sdk_create_event_sub_obj(struct bcos_sdk_struct_config *config) {
+void *bcos_sdk_create_event_sub(struct bcos_sdk_struct_config *config) {
   auto wsConfig = initWsConfig(config);
 
   // construct sdk object
@@ -212,7 +212,7 @@ void *bcos_sdk_create_event_sub_obj(struct bcos_sdk_struct_config *config) {
 }
 
 // destroy the bcos sdk event sub object
-void bcos_sdk_destroy_event_sub_obj(void *event) {
+void bcos_sdk_destroy_event_sub(void *event) {
   // stop event sub service and delete event sub object
   if (event) {
     auto eventPointer = (bcos::cppsdk::event::EventSubInterface *)event;

@@ -16,7 +16,7 @@ void bcos_sdk_c_handle_response(void *error, void *data, size_t size,
   if (errorPtr &&
       errorPtr->errorCode() != bcos::protocol::CommonError::SUCCESS) {
     resp->error = errorPtr->errorCode();
-    resp->error_msg = (char *)errorPtr->errorMessage().data();
+    resp->desc = (char *)errorPtr->errorMessage().data();
   } else {
     resp->error = bcos::protocol::CommonError::SUCCESS;
     resp->data = (bcos::byte *)data;

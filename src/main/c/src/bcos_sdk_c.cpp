@@ -140,9 +140,7 @@ void* bcos_sdk_create_rpc(struct bcos_sdk_struct_config* config)
     auto wsService = factory->buildWsService();
     auto rpc = factory->buildJsonRpc(wsService);
 
-    auto rpcPointer = rpc.get();
-    rpc.reset();
-
+    auto rpcPointer = rpc.release();
     return rpcPointer;
 }
 
@@ -191,9 +189,7 @@ void* bcos_sdk_create_amop(struct bcos_sdk_struct_config* config)
     auto wsService = factory->buildWsService();
     auto amop = factory->buildAMOP(wsService);
 
-    auto amopPointer = amop.get();
-    amop.reset();
-
+    auto amopPointer = amop.release();
     return amopPointer;
 }
 
@@ -242,9 +238,7 @@ void* bcos_sdk_create_event_sub(struct bcos_sdk_struct_config* config)
     auto wsService = factory->buildWsService();
     auto event = factory->buildEventSub(wsService);
 
-    auto eventPointer = event.get();
-    event.reset();
-
+    auto eventPointer = event.release();
     return eventPointer;
 }
 

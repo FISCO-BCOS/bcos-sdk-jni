@@ -16,19 +16,83 @@
 package org.fisco.bcos.sdk.jni.event;
 
 import java.util.Set;
+import org.fisco.bcos.sdk.jni.amop.Amop;
 import org.fisco.bcos.sdk.jni.common.ConfigOption;
+import org.fisco.bcos.sdk.jni.common.JniLibLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class EventSubscribe {
 
-  public static native EventSubscribe build(String group, ConfigOption config);
+  private static final Logger logger = LoggerFactory.getLogger(Amop.class);
+
+  static {
+    JniLibLoader.loadJniLibrary();
+  }
+
+  /**
+   * call native c api to create amop object
+   *
+   * @param config
+   * @return
+   */
+  public static native long newNativeObj(ConfigOption config);
+
+  /**
+   * @param group
+   * @param configOption
+   * @return
+   */
+  public static EventSubscribe build(String group, ConfigOption configOption) {
+    long nativeObj = newNativeObj(configOption);
+    logger.info(" group: {}, nativeObj: {}", group, nativeObj);
+    EventSubscribe subscribe = new EventSubscribe();
+    subscribe.setNativeObj(nativeObj);
+    subscribe.setGroup(group);
+    return subscribe;
+  }
+
+  private EventSubscribe() {}
+
+  private long nativeObj;
+  private String group;
+  private ConfigOption configOption;
+
+  public String getGroup() {
+    return group;
+  }
+
+  public void setGroup(String group) {
+    this.group = group;
+  }
+
+  public long getNativeObj() {
+    return nativeObj;
+  }
+
+  public void setNativeObj(long nativeObj) {
+    this.nativeObj = nativeObj;
+  }
+
+  public ConfigOption getConfigOption() {
+    return configOption;
+  }
+
+  public void setConfigOption(ConfigOption configOption) {
+    this.configOption = configOption;
+  }
+
+  // ----------------------------- EventSub interface begin --------------------------------------
 
   public native void start();
 
   public native void stop();
 
-  public native void subscribeEvent(EventSubcribeParams params, EventSubscribeCallback callback);
+  public native void subscribeEvent(String params, EventSubscribeCallback callback);
 
-  public native void unsubscribeEvent(String registerID, EventSubscribeCallback callback);
+  public native void unsubscribeEvent(String eventSubID, EventSubscribeCallback callback);
 
   public native Set<String> getAllSubscribedEvents();
+
+  // ----------------------------- EventSub interface begin --------------------------------------
 }

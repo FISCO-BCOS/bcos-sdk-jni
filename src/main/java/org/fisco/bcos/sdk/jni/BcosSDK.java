@@ -13,33 +13,67 @@
  */
 package org.fisco.bcos.sdk.jni;
 
+import org.fisco.bcos.sdk.jni.amop.Amop;
 import org.fisco.bcos.sdk.jni.common.ConfigOption;
+import org.fisco.bcos.sdk.jni.common.JniLibLoader;
+import org.fisco.bcos.sdk.jni.event.EventSubscribe;
 import org.fisco.bcos.sdk.jni.rpc.Rpc;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BcosSDK {
 
-  private ConfigOption config = null;
+  private static final Logger logger = LoggerFactory.getLogger(BcosSDK.class);
 
-  public static BcosSDK build(String configPath) {
+  static {
+    JniLibLoader.loadJniLibrary();
+  }
+
+  /**
+   * call native c api to create rpc object
+   *
+   * @param config
+   * @return
+   */
+  public static native long newNativeObj(ConfigOption config);
+
+  /**
+   * @param configOption
+   * @return
+   */
+  public static BcosSDK build(ConfigOption configOption) {
     return null;
   }
 
-  public BcosSDK(ConfigOption configOption) {}
+  private long nativeObj;
+  private ConfigOption configOption;
 
-  public Rpc getClientByGroupID(String groupId) {
+  public long getNativeObj() {
+    return nativeObj;
+  }
+
+  public void setNativeObj(long nativeObj) {
+    this.nativeObj = nativeObj;
+  }
+
+  public ConfigOption getConfigOption() {
+    return configOption;
+  }
+
+  public void setConfigOption(ConfigOption configOption) {
+    this.configOption = configOption;
+  }
+
+  public Rpc getRpc(String group) {
     return null;
   }
 
-  public Rpc getClientByEndpoint(String endPoint) {
+  public Amop getAmop() {
     return null;
   }
 
-  public ConfigOption getConfig() {
-    return config;
-  }
-
-  public void setConfig(ConfigOption config) {
-    this.config = config;
+  public EventSubscribe getEventSubscribe(String group) {
+    return null;
   }
 
   public void stopAll() {}

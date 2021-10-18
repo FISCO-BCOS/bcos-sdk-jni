@@ -114,7 +114,7 @@ public final class JniLibLoader {
     }
   }
 
-  public static void loadJniLibrary() throws Exception {
+  public static void loadJniLibrary() {
     String libPath = null;
     boolean loadLibFromFsOk = false;
     try {
@@ -134,10 +134,11 @@ public final class JniLibLoader {
     // 2. try to load library from jar
     if (!loadLibFromFsOk) {
       try {
+        logger.info("try to load library from jar");
         loadLibraryFromJar(NATIVE_RESOURCE_LIB_NAME);
       } catch (Exception e1) {
         logger.error("unable to load library from fs, e: ", e1);
-        throw e1;
+        throw new UnsatisfiedLinkError(e1.toString());
       }
     }
   }

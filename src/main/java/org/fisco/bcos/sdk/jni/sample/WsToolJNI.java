@@ -1,20 +1,19 @@
 package org.fisco.bcos.sdk.jni.sample;
 
 import org.fisco.bcos.sdk.jni.common.JniLibLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class WsToolJNI {
+  private static final Logger logger = LoggerFactory.getLogger(WsToolJNI.class);
 
   static {
-    try {
-      JniLibLoader.loadJniLibrary();
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+    JniLibLoader.loadJniLibrary();
   }
 
   public WsToolJNI() {
     this.nativeObjPointer = newWsToolJNI();
-    System.out.println("nativeObjPointer = " + nativeObjPointer);
+    logger.info("nativeObjPointer = " + nativeObjPointer);
   }
 
   private long nativeObjPointer;

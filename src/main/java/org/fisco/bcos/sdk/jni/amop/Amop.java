@@ -15,20 +15,78 @@
 
 package org.fisco.bcos.sdk.jni.amop;
 
+import java.util.HashSet;
 import java.util.Set;
 import org.fisco.bcos.sdk.jni.common.ConfigOption;
+import org.fisco.bcos.sdk.jni.common.JniLibLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Amop {
+  private static final Logger logger = LoggerFactory.getLogger(Amop.class);
 
-  public static native Amop build(ConfigOption config);
+  static {
+    JniLibLoader.loadJniLibrary();
+  }
+
+  /**
+   * call native c api to create amop object
+   *
+   * @param config
+   * @return
+   */
+  public static native long newNativeObj(ConfigOption config);
+
+  /**
+   * @param configOption
+   * @return
+   */
+  public static Amop build(ConfigOption configOption) {
+    long nativeObj = newNativeObj(configOption);
+    logger.info(" nativeObj: {}", nativeObj);
+    Amop amop = new Amop();
+    amop.setNativeObj(nativeObj);
+    return amop;
+  }
+
+  private Amop() {}
+
+  private long nativeObj;
+  private ConfigOption configOption;
+
+  public long getNativeObj() {
+    return nativeObj;
+  }
+
+  public void setNativeObj(long nativeObj) {
+    this.nativeObj = nativeObj;
+  }
+
+  public ConfigOption getConfigOption() {
+    return configOption;
+  }
+
+  public void setConfigOption(ConfigOption configOption) {
+    this.configOption = configOption;
+  }
+
+  // ----------------------------- Amop interface begin --------------------------------------
 
   public native void start();
 
   public native void stop();
 
+  public native void subscribeTopic(Set<String> topicsName);
+
   public native void subscribeTopic(String topicName, AmopCallback callback);
 
-  public native void unsubscribeTopic(String topicName);
+  public void unsubscribeTopic(String topicName) {
+    Set<String> topicsName = new HashSet<>();
+    topicsName.add(topicName);
+    unsubscribeTopic(topicsName);
+  }
+
+  public native void unsubscribeTopic(Set<String> topicsName);
 
   public native void setCallback(AmopCallback cb);
 
@@ -39,4 +97,6 @@ public class Amop {
   public native void broadcastAmopMsg(byte[] content);
 
   public native Set<String> getSubTopics();
+
+  // ----------------------------- Amop interface end --------------------------------------
 }

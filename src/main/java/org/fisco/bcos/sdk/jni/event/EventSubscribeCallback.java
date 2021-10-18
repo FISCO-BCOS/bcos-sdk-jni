@@ -25,7 +25,7 @@ public interface EventSubscribeCallback {
    * parsed by the user through the ABI module.
    *
    * @param error the status that peer response to sdk.
-   * @param logs logs from the message.
+   * @param eventLogs logs from the message.
    */
-  void onReceiveLog(Error error, String id, String logs);
+  void onReceiveLog(Error error, String eventSubID, String eventLogs);
 }

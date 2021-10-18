@@ -34,4 +34,9 @@ public class ConfigOption {
   public void setPeers(Set<EndPoint> peers) {
     this.peers = peers;
   }
+
+  @Override
+  public String toString() {
+    return "ConfigOption{" + "peers=" + peers + '}';
+  }
 }

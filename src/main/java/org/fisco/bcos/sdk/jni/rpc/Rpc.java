@@ -16,53 +16,118 @@
 package org.fisco.bcos.sdk.jni.rpc;
 
 import org.fisco.bcos.sdk.jni.common.ConfigOption;
+import org.fisco.bcos.sdk.jni.common.JniLibLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Rpc {
+  private static final Logger logger = LoggerFactory.getLogger(Rpc.class);
 
-  public static native Rpc build(String group, ConfigOption config);
+  static {
+    JniLibLoader.loadJniLibrary();
+  }
+
+  /**
+   * call native c api to create rpc object
+   *
+   * @param config
+   * @return
+   */
+  public static native long newNativeObj(ConfigOption config);
+
+  /**
+   * @param group
+   * @param configOption
+   * @return
+   */
+  public static Rpc build(String group, ConfigOption configOption) {
+    long nativeObj = newNativeObj(configOption);
+    if (nativeObj == 0L) {
+      // TODO: create native obj failed and how to print error code、error messages and handle to
+      // error handing
+    }
+
+    logger.info(" group: {}, nativeObj: {}", group, nativeObj);
+    Rpc rpc = new Rpc();
+    rpc.setGroup(group);
+    rpc.setNativeObj(nativeObj);
+    return rpc;
+  }
+
+  private Rpc() {}
+
+  private long nativeObj;
+  private ConfigOption configOption;
+  private String group;
+
+  public ConfigOption getConfigOption() {
+    return configOption;
+  }
+
+  public void setConfigOption(ConfigOption configOption) {
+    this.configOption = configOption;
+  }
+
+  public String getGroup() {
+    return group;
+  }
+
+  public void setGroup(String group) {
+    this.group = group;
+  }
+
+  public long getNativeObj() {
+    return nativeObj;
+  }
+
+  public void setNativeObj(long nativeObj) {
+    this.nativeObj = nativeObj;
+  }
+
+  // ----------------------------- RPC interface begin --------------------------------------
 
   public native void start();
 
   public native void stop();
 
-  public native void call(String group, String to, String data, RpcCallback callback);
+  public native void call(String to, String data, RpcCallback callback);
 
-  public native void sendTransaction(
-      String group, String data, boolean requireProof, RpcCallback callback);
+  public native void sendTransaction(String data, boolean requireProof, RpcCallback callback);
 
-  public native void getTransaction(
-      String group, String txHash, boolean requireProof, RpcCallback callback);
+  public native void getTransaction(String txHash, boolean requireProof, RpcCallback callback);
 
   public native void getTransactionReceipt(
-      String group, String txHash, boolean requireProof, RpcCallback callback);
+      String txHash, boolean requireProof, RpcCallback callback);
 
   public native void getBlockByHash(
-      String group, String blockHash, boolean onlyHeader, boolean onlyTxHash, RpcCallback callback);
+      String blockHash, boolean onlyHeader, boolean onlyTxHash, RpcCallback callback);
 
   public native void getBlockByNumber(
-      String group, long blockNumber, boolean onlyHeader, boolean onlyTxHash, RpcCallback callback);
+      long blockNumber, boolean onlyHeader, boolean onlyTxHash, RpcCallback callback);
 
-  public native void getBlockHashByNumber(String group, long blockNumber, RpcCallback callback);
+  public native void getBlockHashByNumber(long blockNumber, RpcCallback callback);
 
-  public native void getBlockNumber(String group, RpcCallback callback);
+  public native void getBlockNumber(RpcCallback callback);
 
-  public native void getCode(String group, String contractAddress, RpcCallback callback);
+  public native void getCode(String contractAddress, RpcCallback callback);
 
-  public native void getSealerList(String group, RpcCallback callback);
+  public native void getSealerList(RpcCallback callback);
 
-  public native void getObserverList(String group, RpcCallback callback);
+  public native void getObserverList(RpcCallback callback);
 
-  public native void getPbftView(String group, RpcCallback callback);
+  public native void getPbftView(RpcCallback callback);
 
-  public native void getPendingTxSize(String group, RpcCallback callback);
+  public native void getPendingTxSize(RpcCallback callback);
 
-  public native void getSyncStatus(String group, RpcCallback callback);
+  public native void getSyncStatus(RpcCallback callback);
 
-  public native void getSystemConfigByKey(String group, String keyValue, RpcCallback callback);
+  public native void getSystemConfigByKey(String keyValue, RpcCallback callback);
 
-  public native void getTotalTransactionCount(String group, RpcCallback callback);
+  public native void getTotalTransactionCount(RpcCallback callback);
 
-  public native void getPeers(String group, RpcCallback callback);
+  public native void getPeers(RpcCallback callback);
 
-  public native void getNodeInfo(String group, RpcCallback callback);
+  public native void getNodeInfo(RpcCallback callback);
+
+  // ----------------------------- RPC interface end --------------------------------------
 }

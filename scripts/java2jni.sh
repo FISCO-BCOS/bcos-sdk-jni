@@ -4,7 +4,7 @@ cd $dirpath/../
 
 # TODO: check if javah command available
 
-JNI_INCLUDE_PATH="src/main/c/include"
+JNI_INCLUDE_PATH="src/main/c/include/jni"
 JAVA_SOURCE_PATH="src/main/java/"
 
 BASIC_PKG_PREFIX="org.fisco.bcos.sdk.jni"
@@ -29,8 +29,8 @@ function convert_java_to_jni() {
 # }
 # convert_java_to_jni ${JAVA_SOURCE_PATH}
 
-# classes="rpc.Rpc amop.Amop event.EventSubscribe"
-classes="sample.WsToolJNI"
+classes="rpc.Rpc amop.Amop event.EventSubscribe BcosSDK"
+# classes="sample.WsToolJNI"
 
 for class in ${classes}
 do

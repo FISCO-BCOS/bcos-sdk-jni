@@ -84,9 +84,6 @@ void bcos_sdk_start(void* sdk)
 {
     if (sdk)
     {
-        // start websocket service first
-        auto service = (bcos::boostssl::ws::WsService*)((Sdk*)sdk)->service;
-        service->start();
         bcos_sdk_start_rpc(((Sdk*)sdk)->rpc);
         bcos_sdk_start_amop(((Sdk*)sdk)->amop);
         // TODO:

@@ -2,7 +2,7 @@ package org.fisco.bcos.sdk.jni.common;
 
 import java.util.List;
 
-public class ConfigOption {
+public class JniConfig {
 
   private int threadPoolSize = 4;
   private int reconnectPeriodMs = 10000;

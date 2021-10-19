@@ -17,7 +17,7 @@ package org.fisco.bcos.sdk.jni.event;
 
 import java.util.Set;
 import org.fisco.bcos.sdk.jni.amop.Amop;
-import org.fisco.bcos.sdk.jni.common.ConfigOption;
+import org.fisco.bcos.sdk.jni.common.JniConfig;
 import org.fisco.bcos.sdk.jni.common.JniLibLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,19 +36,20 @@ public class EventSubscribe {
    * @param config
    * @return
    */
-  public static native long newNativeObj(ConfigOption config);
+  public static native long newNativeObj(JniConfig config);
 
   /**
    * @param group
-   * @param configOption
+   * @param jniConfig
    * @return
    */
-  public static EventSubscribe build(String group, ConfigOption configOption) {
-    long nativeObj = newNativeObj(configOption);
+  public static EventSubscribe build(String group, JniConfig jniConfig) {
+    long nativeObj = newNativeObj(jniConfig);
     logger.info(" group: {}, nativeObj: {}", group, nativeObj);
     EventSubscribe subscribe = new EventSubscribe();
     subscribe.setNativeObj(nativeObj);
     subscribe.setGroup(group);
+    subscribe.setJniConfig(jniConfig);
     return subscribe;
   }
 
@@ -56,7 +57,7 @@ public class EventSubscribe {
 
   private long nativeObj;
   private String group;
-  private ConfigOption configOption;
+  private JniConfig jniConfig;
 
   public String getGroup() {
     return group;
@@ -74,12 +75,12 @@ public class EventSubscribe {
     this.nativeObj = nativeObj;
   }
 
-  public ConfigOption getConfigOption() {
-    return configOption;
+  public JniConfig getJniConfig() {
+    return jniConfig;
   }
 
-  private void setConfigOption(ConfigOption configOption) {
-    this.configOption = configOption;
+  private void setJniConfig(JniConfig jniConfig) {
+    this.jniConfig = jniConfig;
   }
 
   // ----------------------------- EventSub interface begin --------------------------------------

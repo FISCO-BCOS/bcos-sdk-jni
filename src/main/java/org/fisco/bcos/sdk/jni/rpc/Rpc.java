@@ -15,7 +15,7 @@
 
 package org.fisco.bcos.sdk.jni.rpc;
 
-import org.fisco.bcos.sdk.jni.common.ConfigOption;
+import org.fisco.bcos.sdk.jni.common.JniConfig;
 import org.fisco.bcos.sdk.jni.common.JniLibLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,15 +33,15 @@ public class Rpc {
    * @param config
    * @return
    */
-  public static native long newNativeObj(ConfigOption config);
+  public static native long newNativeObj(JniConfig config);
 
   /**
    * @param group
-   * @param configOption
+   * @param jniConfig
    * @return
    */
-  public static Rpc build(String group, ConfigOption configOption) {
-    long nativeObj = newNativeObj(configOption);
+  public static Rpc build(String group, JniConfig jniConfig) {
+    long nativeObj = newNativeObj(jniConfig);
     if (nativeObj == 0L) {
       // TODO: create native obj failed and how to print error code、error messages and handle to
       // error handing
@@ -57,15 +57,15 @@ public class Rpc {
   private Rpc() {}
 
   private long nativeObj;
-  private ConfigOption configOption;
+  private JniConfig jniConfig;
   private String group;
 
-  public ConfigOption getConfigOption() {
-    return configOption;
+  public JniConfig getJniConfig() {
+    return jniConfig;
   }
 
-  private void setConfigOption(ConfigOption configOption) {
-    this.configOption = configOption;
+  private void setJniConfig(JniConfig jniConfig) {
+    this.jniConfig = jniConfig;
   }
 
   public String getGroup() {

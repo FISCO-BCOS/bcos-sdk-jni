@@ -14,7 +14,7 @@
 package org.fisco.bcos.sdk.jni;
 
 import org.fisco.bcos.sdk.jni.amop.Amop;
-import org.fisco.bcos.sdk.jni.common.ConfigOption;
+import org.fisco.bcos.sdk.jni.common.JniConfig;
 import org.fisco.bcos.sdk.jni.common.JniLibLoader;
 import org.fisco.bcos.sdk.jni.event.EventSubscribe;
 import org.fisco.bcos.sdk.jni.rpc.Rpc;
@@ -35,18 +35,18 @@ public class BcosSDK {
    * @param config
    * @return
    */
-  public static native long newNativeObj(ConfigOption config);
+  public static native long newNativeObj(JniConfig config);
 
   /**
-   * @param configOption
+   * @param jniConfig
    * @return
    */
-  public static BcosSDK build(ConfigOption configOption) {
+  public static BcosSDK build(JniConfig jniConfig) {
     return null;
   }
 
   private long nativeObj;
-  private ConfigOption configOption;
+  private JniConfig jniConfig;
 
   public long getNativeObj() {
     return nativeObj;
@@ -56,12 +56,12 @@ public class BcosSDK {
     this.nativeObj = nativeObj;
   }
 
-  public ConfigOption getConfigOption() {
-    return configOption;
+  public JniConfig getJniConfig() {
+    return jniConfig;
   }
 
-  private void setConfigOption(ConfigOption configOption) {
-    this.configOption = configOption;
+  private void setJniConfig(JniConfig jniConfig) {
+    this.jniConfig = jniConfig;
   }
 
   public Rpc getRpc(String group) {

@@ -5,7 +5,7 @@
 /*
  * Class:     org_fisco_bcos_sdk_jni_event_EventSubscribe
  * Method:    newNativeObj
- * Signature: (Lorg/fisco/bcos/sdk/jni/common/ConfigOption;)J
+ * Signature: (Lorg/fisco/bcos/sdk/jni/common/JniConfig;)J
  */
 JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_event_EventSubscribe_newNativeObj(
     JNIEnv* env, jclass, jobject)

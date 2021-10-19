@@ -24,7 +24,7 @@ struct bcos_sdk_c_config* init_bcos_sdk_c_config(JNIEnv* env, jobject jconfig)
     jobject jpeersOjbect = env->GetObjectField(jconfig, peersFieldID);
     if (jpeersOjbect == NULL)
     {
-        env->FatalError("Can't GetObjectField for peers of ConfigOption");
+        env->FatalError("Can't GetObjectField for peers of JniConfig");
     }
 
     // Find "java/util/List" Class (Standard JAVA Class).

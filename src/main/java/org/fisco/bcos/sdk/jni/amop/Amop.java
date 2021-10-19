@@ -17,7 +17,7 @@ package org.fisco.bcos.sdk.jni.amop;
 
 import java.util.HashSet;
 import java.util.Set;
-import org.fisco.bcos.sdk.jni.common.ConfigOption;
+import org.fisco.bcos.sdk.jni.common.JniConfig;
 import org.fisco.bcos.sdk.jni.common.JniLibLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,14 +35,14 @@ public class Amop {
    * @param config
    * @return
    */
-  public static native long newNativeObj(ConfigOption config);
+  public static native long newNativeObj(JniConfig config);
 
   /**
-   * @param configOption
+   * @param jniConfig
    * @return
    */
-  public static Amop build(ConfigOption configOption) {
-    long nativeObj = newNativeObj(configOption);
+  public static Amop build(JniConfig jniConfig) {
+    long nativeObj = newNativeObj(jniConfig);
     logger.info(" nativeObj: {}", nativeObj);
     Amop amop = new Amop();
     amop.setNativeObj(nativeObj);
@@ -52,7 +52,7 @@ public class Amop {
   private Amop() {}
 
   private long nativeObj;
-  private ConfigOption configOption;
+  private JniConfig jniConfig;
 
   public long getNativeObj() {
     return nativeObj;
@@ -62,12 +62,12 @@ public class Amop {
     this.nativeObj = nativeObj;
   }
 
-  public ConfigOption getConfigOption() {
-    return configOption;
+  public JniConfig getJniConfig() {
+    return jniConfig;
   }
 
-  private void setConfigOption(ConfigOption configOption) {
-    this.configOption = configOption;
+  private void setJniConfig(JniConfig jniConfig) {
+    this.jniConfig = jniConfig;
   }
 
   // ----------------------------- Amop interface begin --------------------------------------

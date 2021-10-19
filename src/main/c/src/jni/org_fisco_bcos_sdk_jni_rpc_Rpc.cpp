@@ -33,8 +33,6 @@ static void* obtain_rpc_obj(JNIEnv* env, jobject self)
         env->FatalError("Can't GetFieldID,  obtain_rpc_obj failed");
     }
 
-    printf(" ## ==> rpc native obj: %ld\n", reinterpret_cast<long>(nativeObj));
-
     return rpc;
 }
 
@@ -61,9 +59,6 @@ static std::string obtain_group_params(JNIEnv* env, jobject self)
     }
 
     std::string ret(group);
-
-    printf(" ## ==> group: %s\n", ret.c_str());
-
     env->ReleaseStringUTFChars(groupString, group);
     return ret;
 }
@@ -76,38 +71,51 @@ static std::string obtain_group_params(JNIEnv* env, jobject self)
 
 static void handle_rpc_cb(struct bcos_sdk_struct_response* resp)
 {
-    int error = resp->error;
-    // std::string msg = resp->msg ? std::string(resp->msg) : std::string();
-    // auto data = std::make_shared<bcos::bytes>((bcos::byte*)resp->data, resp->size);
-
     cb_context* context = (cb_context*)resp->context;
-    JavaVM* jvm = context->jvm;
+
     jobject jcallback = context->jcallback;
-
-    printf(" ## ==> rpc callback, context: %ld, error : %d, data : %s\n",
-        reinterpret_cast<long>(context), error, resp->data ? (char*)resp->data : "");
-
-    // delete cb_context
+    JavaVM* jvm = context->jvm;
+    // Note: delete cb_context
     delete context;
 
     JNIEnv* env;
     jvm->AttachCurrentThread((void**)&env, NULL);
 
     jclass cbClass = env->GetObjectClass(jcallback);
-    // get onResponse methodID
+    // void onResponse(Error error, byte[] msg)
     jmethodID onRespMethodID =
         env->GetMethodID(cbClass, "onResponse", "(Lorg/fisco/bcos/sdk/jni/common/Error;[B)V");
-    if (onRespMethodID == NULL)
+
+    int error = resp->error;
+    char* desc = resp->desc ? resp->desc : (char*)"";
+    char* data = resp->data ? (char*)resp->data : (char*)"";
+
+    printf(" ## ==> rpc callback, error : %d, msg: %s, data : %s\n", error, desc, data);
+
+    // byte[] msg
+    jbyteArray byteArrayObj = env->NewByteArray(resp->size);
+    if (resp->size > 0)
     {
-        env->DeleteGlobalRef(jcallback);
-        printf(" ## ==> Cannot found onResponse");
-        return;
+        jbyte* data = (jbyte*)resp->data;
+        env->SetByteArrayRegion(byteArrayObj, 0, resp->size, data);
     }
 
-    env->DeleteGlobalRef(jcallback);
-    printf(" ## ==> Found onResponse ");
+    // Error error
+    jclass errorClass = env->FindClass("org/fisco/bcos/sdk/jni/common/Error");
+    jmethodID mid = env->GetMethodID(errorClass, "<init>", "()V");
+    jobject errorObj = env->NewObject(errorClass, mid);
 
-    // jstring result = (jstring)env->CallObjectMethod(userData, methodId);
+    jfieldID errorCodeFieldID = env->GetFieldID(errorClass, "errorCode", "I");
+    jfieldID errorMsgFieldID = env->GetFieldID(errorClass, "errorMessage", "Ljava/lang/String;");
+
+    jstring errorString = env->NewStringUTF(desc);
+
+    env->SetLongField(errorObj, errorCodeFieldID, jint(error));
+    env->SetObjectField(errorObj, errorMsgFieldID, errorString);
+
+    env->CallObjectMethod(cbClass, onRespMethodID, errorObj, byteArrayObj);
+    // release callback global reference
+    env->DeleteGlobalRef(jcallback);
 }
 
 /*
@@ -340,8 +348,6 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getBlockHashByNumber(
 JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getBlockNumber(
     JNIEnv* env, jobject self, jobject callback)
 {
-    std::ignore = callback;
-
     // rpc obj handler
     void* rpc = obtain_rpc_obj(env, self);
     // group

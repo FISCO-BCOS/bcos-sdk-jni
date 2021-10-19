@@ -63,12 +63,6 @@ static std::string obtain_group_params(JNIEnv* env, jobject self)
     return ret;
 }
 
-// static void obtain_callback_obj(JNIEnv* env, jobject self)
-// {
-//     (void)env;
-//     (void)self;
-// }
-
 static void handle_rpc_cb(struct bcos_sdk_struct_response* resp)
 {
     cb_context* context = (cb_context*)resp->context;
@@ -171,8 +165,6 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_stop(JNIEnv* env, job
 JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_call(
     JNIEnv* env, jobject self, jstring jto, jstring jdata, jobject callback)
 {
-    std::ignore = callback;
-
     // rpc obj handler
     void* rpc = obtain_rpc_obj(env, self);
     // group
@@ -182,8 +174,18 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_call(
     const char* to = env->GetStringUTFChars(jto, NULL);
     // data
     const char* data = env->GetStringUTFChars(jdata, NULL);
-    // TODO:
-    bcos_rpc_call(rpc, group, to, data, NULL, NULL);
+
+    // Note: The JNIEnv pointer, passed as the first argument to every native method, can only be
+    // used in the thread with which it is associated. It is wrong to cache the JNIEnv interface
+    // pointer obtained from one thread, and use that pointer in another thread.
+    JavaVM* jvm;
+    env->GetJavaVM(&jvm);
+
+    cb_context* context = new cb_context();
+    context->jcallback = env->NewGlobalRef(callback);
+    context->jvm = jvm;
+
+    bcos_rpc_call(rpc, group, to, data, handle_rpc_cb, context);
 
     env->ReleaseStringUTFChars(jto, to);
     env->ReleaseStringUTFChars(jdata, data);
@@ -197,8 +199,6 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_call(
 JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_sendTransaction(
     JNIEnv* env, jobject self, jstring jdata, jboolean jproof, jobject callback)
 {
-    std::ignore = callback;
-
     // rpc obj handler
     void* rpc = obtain_rpc_obj(env, self);
     // group
@@ -208,8 +208,18 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_sendTransaction(
     const char* data = env->GetStringUTFChars(jdata, NULL);
     // proof
     int proof = (jproof == JNI_TRUE ? 1 : 0);
-    // TODO:
-    bcos_rpc_send_transaction(rpc, group, data, proof, NULL, NULL);
+
+    // Note: The JNIEnv pointer, passed as the first argument to every native method, can only be
+    // used in the thread with which it is associated. It is wrong to cache the JNIEnv interface
+    // pointer obtained from one thread, and use that pointer in another thread.
+    JavaVM* jvm;
+    env->GetJavaVM(&jvm);
+
+    cb_context* context = new cb_context();
+    context->jcallback = env->NewGlobalRef(callback);
+    context->jvm = jvm;
+
+    bcos_rpc_send_transaction(rpc, group, data, proof, handle_rpc_cb, context);
 
     env->ReleaseStringUTFChars(jdata, data);
 }
@@ -223,8 +233,6 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_sendTransaction(
 JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getTransaction(
     JNIEnv* env, jobject self, jstring jtx_hash, jboolean jproof, jobject callback)
 {
-    std::ignore = callback;
-
     // rpc obj handler
     void* rpc = obtain_rpc_obj(env, self);
     // group
@@ -234,8 +242,18 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getTransaction(
     const char* tx_hash = env->GetStringUTFChars(jtx_hash, NULL);
     // proof
     int proof = (jproof == JNI_TRUE ? 1 : 0);
-    // TODO:
-    bcos_rpc_get_transaction(rpc, group, tx_hash, proof, NULL, NULL);
+
+    // Note: The JNIEnv pointer, passed as the first argument to every native method, can only be
+    // used in the thread with which it is associated. It is wrong to cache the JNIEnv interface
+    // pointer obtained from one thread, and use that pointer in another thread.
+    JavaVM* jvm;
+    env->GetJavaVM(&jvm);
+
+    cb_context* context = new cb_context();
+    context->jcallback = env->NewGlobalRef(callback);
+    context->jvm = jvm;
+
+    bcos_rpc_get_transaction(rpc, group, tx_hash, proof, handle_rpc_cb, context);
 
     env->ReleaseStringUTFChars(jtx_hash, tx_hash);
 }
@@ -248,8 +266,6 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getTransaction(
 JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getTransactionReceipt(
     JNIEnv* env, jobject self, jstring jtx_hash, jboolean jproof, jobject callback)
 {
-    std::ignore = callback;
-
     // rpc obj handler
     void* rpc = obtain_rpc_obj(env, self);
     // group
@@ -259,8 +275,18 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getTransactionReceipt
     const char* tx_hash = env->GetStringUTFChars(jtx_hash, NULL);
     // proof
     int proof = (jproof == JNI_TRUE ? 1 : 0);
-    // TODO:
-    bcos_rpc_get_transaction_receipt(rpc, group, tx_hash, proof, NULL, NULL);
+
+    // Note: The JNIEnv pointer, passed as the first argument to every native method, can only be
+    // used in the thread with which it is associated. It is wrong to cache the JNIEnv interface
+    // pointer obtained from one thread, and use that pointer in another thread.
+    JavaVM* jvm;
+    env->GetJavaVM(&jvm);
+
+    cb_context* context = new cb_context();
+    context->jcallback = env->NewGlobalRef(callback);
+    context->jvm = jvm;
+
+    bcos_rpc_get_transaction_receipt(rpc, group, tx_hash, proof, handle_rpc_cb, context);
 
     env->ReleaseStringUTFChars(jtx_hash, tx_hash);
 }
@@ -273,8 +299,6 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getTransactionReceipt
 JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getBlockByHash(JNIEnv* env, jobject self,
     jstring jblock_hash, jboolean jonly_header, jboolean jonly_txhash, jobject callback)
 {
-    std::ignore = callback;
-
     // rpc obj handler
     void* rpc = obtain_rpc_obj(env, self);
     // group
@@ -286,8 +310,19 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getBlockByHash(JNIEnv
     int only_header = (jonly_header == JNI_TRUE ? 1 : 0);
     // only_txhash
     int only_txhash = (jonly_txhash == JNI_TRUE ? 1 : 0);
-    // TODO:
-    bcos_rpc_get_block_by_hash(rpc, group, block_hash, only_header, only_txhash, NULL, NULL);
+
+    // Note: The JNIEnv pointer, passed as the first argument to every native method, can only be
+    // used in the thread with which it is associated. It is wrong to cache the JNIEnv interface
+    // pointer obtained from one thread, and use that pointer in another thread.
+    JavaVM* jvm;
+    env->GetJavaVM(&jvm);
+
+    cb_context* context = new cb_context();
+    context->jcallback = env->NewGlobalRef(callback);
+    context->jvm = jvm;
+
+    bcos_rpc_get_block_by_hash(
+        rpc, group, block_hash, only_header, only_txhash, handle_rpc_cb, context);
 
     env->ReleaseStringUTFChars(jblock_hash, block_hash);
 }
@@ -300,8 +335,6 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getBlockByHash(JNIEnv
 JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getBlockByNumber(JNIEnv* env,
     jobject self, jlong jnumber, jboolean jonly_header, jboolean jonly_txhash, jobject callback)
 {
-    std::ignore = callback;
-
     // rpc obj handler
     void* rpc = obtain_rpc_obj(env, self);
     // group
@@ -313,9 +346,19 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getBlockByNumber(JNIE
     int only_header = (jonly_header == JNI_TRUE ? 1 : 0);
     // only_txhash
     int only_txhash = (jonly_txhash == JNI_TRUE ? 1 : 0);
-    // TODO:
+
+    // Note: The JNIEnv pointer, passed as the first argument to every native method, can only be
+    // used in the thread with which it is associated. It is wrong to cache the JNIEnv interface
+    // pointer obtained from one thread, and use that pointer in another thread.
+    JavaVM* jvm;
+    env->GetJavaVM(&jvm);
+
+    cb_context* context = new cb_context();
+    context->jcallback = env->NewGlobalRef(callback);
+    context->jvm = jvm;
+
     bcos_rpc_get_block_by_number(
-        rpc, group, block_number, only_header, only_txhash, handle_rpc_cb, rpc);
+        rpc, group, block_number, only_header, only_txhash, handle_rpc_cb, context);
 }
 
 /*
@@ -326,17 +369,26 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getBlockByNumber(JNIE
 JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getBlockHashByNumber(
     JNIEnv* env, jobject self, jlong jnumber, jobject callback)
 {
-    std::ignore = callback;
-
     // rpc obj handler
     void* rpc = obtain_rpc_obj(env, self);
     // group
     std::string tempGroup = obtain_group_params(env, self);
     const char* group = tempGroup.c_str();
+
+    // Note: The JNIEnv pointer, passed as the first argument to every native method, can only be
+    // used in the thread with which it is associated. It is wrong to cache the JNIEnv interface
+    // pointer obtained from one thread, and use that pointer in another thread.
+    JavaVM* jvm;
+    env->GetJavaVM(&jvm);
+
+    cb_context* context = new cb_context();
+    context->jcallback = env->NewGlobalRef(callback);
+    context->jvm = jvm;
+
     // block number
     long block_number = reinterpret_cast<long>(jnumber);
     // TODO:
-    bcos_rpc_get_block_hash_by_number(rpc, group, block_number, NULL, NULL);
+    bcos_rpc_get_block_hash_by_number(rpc, group, block_number, handle_rpc_cb, context);
 }
 
 
@@ -375,8 +427,6 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getBlockNumber(
 JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getCode(
     JNIEnv* env, jobject self, jstring jaddress, jobject callback)
 {
-    std::ignore = callback;
-
     // rpc obj handler
     void* rpc = obtain_rpc_obj(env, self);
     // group
@@ -384,9 +434,18 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getCode(
     const char* group = tempGroup.c_str();
     // data
     const char* address = env->GetStringUTFChars(jaddress, NULL);
-    // TODO:
-    bcos_rpc_get_code(rpc, group, address, NULL, NULL);
 
+    // Note: The JNIEnv pointer, passed as the first argument to every native method, can only be
+    // used in the thread with which it is associated. It is wrong to cache the JNIEnv interface
+    // pointer obtained from one thread, and use that pointer in another thread.
+    JavaVM* jvm;
+    env->GetJavaVM(&jvm);
+
+    cb_context* context = new cb_context();
+    context->jcallback = env->NewGlobalRef(callback);
+    context->jvm = jvm;
+
+    bcos_rpc_get_code(rpc, group, address, handle_rpc_cb, context);
     env->ReleaseStringUTFChars(jaddress, address);
 }
 
@@ -398,15 +457,23 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getCode(
 JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getSealerList(
     JNIEnv* env, jobject self, jobject callback)
 {
-    std::ignore = callback;
-
     // rpc obj handler
     void* rpc = obtain_rpc_obj(env, self);
     // group
     std::string tempGroup = obtain_group_params(env, self);
     const char* group = tempGroup.c_str();
 
-    bcos_rpc_get_sealer_list(rpc, group, NULL, NULL);
+    // Note: The JNIEnv pointer, passed as the first argument to every native method, can only be
+    // used in the thread with which it is associated. It is wrong to cache the JNIEnv interface
+    // pointer obtained from one thread, and use that pointer in another thread.
+    JavaVM* jvm;
+    env->GetJavaVM(&jvm);
+
+    cb_context* context = new cb_context();
+    context->jcallback = env->NewGlobalRef(callback);
+    context->jvm = jvm;
+
+    bcos_rpc_get_sealer_list(rpc, group, handle_rpc_cb, context);
 }
 
 /*
@@ -417,15 +484,23 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getSealerList(
 JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getObserverList(
     JNIEnv* env, jobject self, jobject callback)
 {
-    std::ignore = callback;
-
     // rpc obj handler
     void* rpc = obtain_rpc_obj(env, self);
     // group
     std::string tempGroup = obtain_group_params(env, self);
     const char* group = tempGroup.c_str();
 
-    bcos_rpc_get_observer_list(rpc, group, NULL, NULL);
+    // Note: The JNIEnv pointer, passed as the first argument to every native method, can only be
+    // used in the thread with which it is associated. It is wrong to cache the JNIEnv interface
+    // pointer obtained from one thread, and use that pointer in another thread.
+    JavaVM* jvm;
+    env->GetJavaVM(&jvm);
+
+    cb_context* context = new cb_context();
+    context->jcallback = env->NewGlobalRef(callback);
+    context->jvm = jvm;
+
+    bcos_rpc_get_observer_list(rpc, group, handle_rpc_cb, context);
 }
 /*
  * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
@@ -435,15 +510,23 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getObserverList(
 JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getPbftView(
     JNIEnv* env, jobject self, jobject callback)
 {
-    std::ignore = callback;
-
     // rpc obj handler
     void* rpc = obtain_rpc_obj(env, self);
     // group
     std::string tempGroup = obtain_group_params(env, self);
     const char* group = tempGroup.c_str();
 
-    bcos_rpc_get_pbft_view(rpc, group, NULL, NULL);
+    // Note: The JNIEnv pointer, passed as the first argument to every native method, can only be
+    // used in the thread with which it is associated. It is wrong to cache the JNIEnv interface
+    // pointer obtained from one thread, and use that pointer in another thread.
+    JavaVM* jvm;
+    env->GetJavaVM(&jvm);
+
+    cb_context* context = new cb_context();
+    context->jcallback = env->NewGlobalRef(callback);
+    context->jvm = jvm;
+
+    bcos_rpc_get_pbft_view(rpc, group, handle_rpc_cb, context);
 }
 
 /*
@@ -454,15 +537,23 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getPbftView(
 JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getPendingTxSize(
     JNIEnv* env, jobject self, jobject callback)
 {
-    std::ignore = callback;
-
     // rpc obj handler
     void* rpc = obtain_rpc_obj(env, self);
     // group
     std::string tempGroup = obtain_group_params(env, self);
     const char* group = tempGroup.c_str();
 
-    bcos_rpc_get_pending_tx_size(rpc, group, NULL, NULL);
+    // Note: The JNIEnv pointer, passed as the first argument to every native method, can only be
+    // used in the thread with which it is associated. It is wrong to cache the JNIEnv interface
+    // pointer obtained from one thread, and use that pointer in another thread.
+    JavaVM* jvm;
+    env->GetJavaVM(&jvm);
+
+    cb_context* context = new cb_context();
+    context->jcallback = env->NewGlobalRef(callback);
+    context->jvm = jvm;
+
+    bcos_rpc_get_pending_tx_size(rpc, group, handle_rpc_cb, context);
 }
 
 /*
@@ -473,15 +564,23 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getPendingTxSize(
 JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getSyncStatus(
     JNIEnv* env, jobject self, jobject callback)
 {
-    std::ignore = callback;
-
     // rpc obj handler
     void* rpc = obtain_rpc_obj(env, self);
     // group
     std::string tempGroup = obtain_group_params(env, self);
     const char* group = tempGroup.c_str();
 
-    bcos_rpc_get_sync_status(rpc, group, NULL, NULL);
+    // Note: The JNIEnv pointer, passed as the first argument to every native method, can only be
+    // used in the thread with which it is associated. It is wrong to cache the JNIEnv interface
+    // pointer obtained from one thread, and use that pointer in another thread.
+    JavaVM* jvm;
+    env->GetJavaVM(&jvm);
+
+    cb_context* context = new cb_context();
+    context->jcallback = env->NewGlobalRef(callback);
+    context->jvm = jvm;
+
+    bcos_rpc_get_sync_status(rpc, group, handle_rpc_cb, context);
 }
 
 /*
@@ -492,8 +591,6 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getSyncStatus(
 JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getSystemConfigByKey(
     JNIEnv* env, jobject self, jstring jkey, jobject callback)
 {
-    std::ignore = callback;
-
     // rpc obj handler
     void* rpc = obtain_rpc_obj(env, self);
     // group
@@ -501,8 +598,18 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getSystemConfigByKey(
     const char* group = tempGroup.c_str();
     // data
     const char* key = env->GetStringUTFChars(jkey, NULL);
-    // TODO:
-    bcos_rpc_get_system_config_by_key(rpc, group, key, NULL, NULL);
+
+    // Note: The JNIEnv pointer, passed as the first argument to every native method, can only be
+    // used in the thread with which it is associated. It is wrong to cache the JNIEnv interface
+    // pointer obtained from one thread, and use that pointer in another thread.
+    JavaVM* jvm;
+    env->GetJavaVM(&jvm);
+
+    cb_context* context = new cb_context();
+    context->jcallback = env->NewGlobalRef(callback);
+    context->jvm = jvm;
+
+    bcos_rpc_get_system_config_by_key(rpc, group, key, handle_rpc_cb, context);
 
     env->ReleaseStringUTFChars(jkey, key);
 }
@@ -515,15 +622,23 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getSystemConfigByKey(
 JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getTotalTransactionCount(
     JNIEnv* env, jobject self, jobject callback)
 {
-    std::ignore = callback;
-
     // rpc obj handler
     void* rpc = obtain_rpc_obj(env, self);
     // group
     std::string tempGroup = obtain_group_params(env, self);
     const char* group = tempGroup.c_str();
 
-    bcos_rpc_get_total_transaction_count(rpc, group, NULL, NULL);
+    // Note: The JNIEnv pointer, passed as the first argument to every native method, can only be
+    // used in the thread with which it is associated. It is wrong to cache the JNIEnv interface
+    // pointer obtained from one thread, and use that pointer in another thread.
+    JavaVM* jvm;
+    env->GetJavaVM(&jvm);
+
+    cb_context* context = new cb_context();
+    context->jcallback = env->NewGlobalRef(callback);
+    context->jvm = jvm;
+
+    bcos_rpc_get_total_transaction_count(rpc, group, handle_rpc_cb, context);
 }
 
 
@@ -535,12 +650,20 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getTotalTransactionCo
 JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getPeers(
     JNIEnv* env, jobject self, jobject callback)
 {
-    std::ignore = callback;
-
     // rpc obj handler
     void* rpc = obtain_rpc_obj(env, self);
 
-    bcos_rpc_get_peers(rpc, NULL, NULL);
+    // Note: The JNIEnv pointer, passed as the first argument to every native method, can only be
+    // used in the thread with which it is associated. It is wrong to cache the JNIEnv interface
+    // pointer obtained from one thread, and use that pointer in another thread.
+    JavaVM* jvm;
+    env->GetJavaVM(&jvm);
+
+    cb_context* context = new cb_context();
+    context->jcallback = env->NewGlobalRef(callback);
+    context->jvm = jvm;
+
+    bcos_rpc_get_peers(rpc, handle_rpc_cb, context);
 }
 
 /*
@@ -551,10 +674,18 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getPeers(
 JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getNodeInfo(
     JNIEnv* env, jobject self, jobject callback)
 {
-    std::ignore = callback;
-
     // rpc obj handler
     void* rpc = obtain_rpc_obj(env, self);
 
-    bcos_rpc_get_node_info(rpc, NULL, NULL);
+    // Note: The JNIEnv pointer, passed as the first argument to every native method, can only be
+    // used in the thread with which it is associated. It is wrong to cache the JNIEnv interface
+    // pointer obtained from one thread, and use that pointer in another thread.
+    JavaVM* jvm;
+    env->GetJavaVM(&jvm);
+
+    cb_context* context = new cb_context();
+    context->jcallback = env->NewGlobalRef(callback);
+    context->jvm = jvm;
+
+    bcos_rpc_get_node_info(rpc, handle_rpc_cb, context);
 }

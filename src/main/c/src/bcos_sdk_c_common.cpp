@@ -83,12 +83,15 @@ void bcos_sdk_c_handle_response(
     if (errorPtr && errorPtr->errorCode() != bcos::protocol::CommonError::SUCCESS)
     {
         resp->error = errorPtr->errorCode();
-        resp->desc = (char*)errorPtr->errorMessage().data();
+        resp->desc = (char*)errorPtr->errorMessage().c_str();
+        resp->data = NULL;
+        resp->size = 0;
     }
     else
     {
         resp->error = bcos::protocol::CommonError::SUCCESS;
-        resp->data = (bcos::byte*)data;
+        resp->desc = NULL;
+        resp->data = data ? (bcos::byte*)data : NULL;
         resp->size = size;
     }
 

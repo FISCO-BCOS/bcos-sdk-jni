@@ -53,12 +53,17 @@ public class JniConfig {
 
   @Override
   public String toString() {
-    return "JniConfig{" +
-            "threadPoolSize=" + threadPoolSize +
-            ", reconnectPeriodMs=" + reconnectPeriodMs +
-            ", heartbeatPeriodMs=" + heartbeatPeriodMs +
-            ", messageTimeoutMs=" + messageTimeoutMs +
-            ", peers=" + peers +
-            '}';
+    return "JniConfig{"
+        + "threadPoolSize="
+        + threadPoolSize
+        + ", reconnectPeriodMs="
+        + reconnectPeriodMs
+        + ", heartbeatPeriodMs="
+        + heartbeatPeriodMs
+        + ", messageTimeoutMs="
+        + messageTimeoutMs
+        + ", peers="
+        + peers
+        + '}';
   }
 }

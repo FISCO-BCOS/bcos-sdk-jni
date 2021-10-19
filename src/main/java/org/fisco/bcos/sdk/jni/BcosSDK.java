@@ -41,7 +41,7 @@ public class BcosSDK {
    * @param jniConfig
    * @return
    */
-  public native static BcosSDK build(JniConfig jniConfig);
+  public static native BcosSDK build(JniConfig jniConfig);
 
   private long nativeObj;
   private JniConfig jniConfig;

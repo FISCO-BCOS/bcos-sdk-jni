@@ -16,6 +16,8 @@ struct cb_context
 };
 
 
+void* obtain_native_object(JNIEnv* env, jobject self);
+
 struct bcos_sdk_c_config* init_bcos_sdk_c_config(JNIEnv* env, jobject jconfig);
 
 #ifdef __cplusplus

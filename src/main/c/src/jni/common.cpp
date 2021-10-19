@@ -4,6 +4,30 @@
 #include <stdlib.h>
 #include <vector>
 
+void* obtain_native_object(JNIEnv* env, jobject self)
+{
+    jclass cls = env->GetObjectClass(self);
+    if (!cls)
+    {
+        env->FatalError("Can't GetObjectClass, obtain_native_object");
+    }
+
+    jfieldID nativeFieldID = env->GetFieldID(cls, "nativeObj", "J");
+    if (!nativeFieldID)
+    {
+        env->FatalError("Can't GetFieldID, obtain_native_object");
+    }
+
+    jlong nativeObj = env->GetLongField(self, nativeFieldID);
+    void* rpc = reinterpret_cast<void*>(nativeObj);
+    if (rpc == NULL)
+    {
+        env->FatalError("Can't GetFieldID, obtain_native_object");
+    }
+
+    return rpc;
+}
+
 struct bcos_sdk_c_config* init_bcos_sdk_c_config(JNIEnv* env, jobject jconfig)
 {
     jclass configClass = env->GetObjectClass(jconfig);
@@ -54,8 +78,6 @@ struct bcos_sdk_c_config* init_bcos_sdk_c_config(JNIEnv* env, jobject jconfig)
     // Note: ep should be free after bcos_sdk_c_config out of use
     struct bcos_sdk_c_endpoint* ep =
         (struct bcos_sdk_c_endpoint*)malloc(listSize * sizeof(struct bcos_sdk_c_endpoint));
-
-    printf("peers has %i items\n", listSize);
 
     for (int i = 0; i < listSize; ++i)
     {

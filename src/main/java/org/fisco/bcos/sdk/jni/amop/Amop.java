@@ -90,11 +90,9 @@ public class Amop {
 
   public native void setCallback(AmopCallback cb);
 
-  public native AmopCallback getCallback(AmopCallback cb);
+  public native void sendAmopMsg(String topic, byte[] content, AmopResponseCallback callback);
 
-  public native void sendAmopMsg(byte[] content, AmopResponseCallback callback);
-
-  public native void broadcastAmopMsg(byte[] content);
+  public native void broadcastAmopMsg(String topic, byte[] content);
 
   public native Set<String> getSubTopics();
 

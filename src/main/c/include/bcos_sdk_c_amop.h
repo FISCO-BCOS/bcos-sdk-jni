@@ -15,12 +15,12 @@ typedef void (*bcos_sdk_c_amop_publish_cb)(struct bcos_sdk_struct_response*);
 
 // -------------------------amop interface begin --------------------------
 
-void bcos_amop_subscribe_topic(void* amop, const char* topics[], size_t topic_count);
+void bcos_amop_subscribe_topic(void* amop, char** topics, size_t topic_count);
 
 void bcos_amop_subscribe_topic_with_cb(
     void* amop, const char* topic, bcos_sdk_c_amop_subscribe_cb cb, void* context);
 
-void bcos_amop_unsubscribe_topic(void* amop, const char* topics[], size_t topic_count);
+void bcos_amop_unsubscribe_topic(void* amop, char** topics, size_t topic_count);
 
 void bcos_amop_publish(void* amop, const char* topic, void* data, size_t size, uint32_t timeout,
     bcos_sdk_c_amop_publish_cb cb, void* context);

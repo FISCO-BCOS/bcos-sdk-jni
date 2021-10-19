@@ -8,7 +8,7 @@
 
 // ------------------------------amop interface begin ----------------------
 
-void bcos_amop_subscribe_topic(void* amop, const char* topics[], size_t topic_count)
+void bcos_amop_subscribe_topic(void* amop, char** topics, size_t topic_count)
 {
     if (!topics || !topic_count)
     {
@@ -59,7 +59,7 @@ void bcos_amop_subscribe_topic_with_cb(
         });
 }
 
-void bcos_amop_unsubscribe_topic(void* amop, const char* topics[], size_t topic_count)
+void bcos_amop_unsubscribe_topic(void* amop, char** topics, size_t topic_count)
 {
     if (!topics || !topic_count)
     {

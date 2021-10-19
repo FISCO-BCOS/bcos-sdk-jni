@@ -1,38 +1,54 @@
 package org.fisco.bcos.sdk.jni.common;
 
-import java.util.Set;
+import java.util.List;
 
 public class ConfigOption {
 
-  public class EndPoint {
-    private String host;
-    private short port;
+  private int threadPoolSize = 4;
+  private int reconnectPeriodMs = 10000;
+  private int heartbeatPeriodMs = 10000;
+  private int messageTimeoutMs = 10000;
 
-    public String getHost() {
-      return host;
-    }
+  private List<String> peers;
 
-    public void setHost(String host) {
-      this.host = host;
-    }
-
-    public short getPort() {
-      return port;
-    }
-
-    public void setPort(short port) {
-      this.port = port;
-    }
-  }
-
-  private Set<EndPoint> peers;
-
-  public Set<EndPoint> getPeers() {
+  public List<String> getPeers() {
     return peers;
   }
 
-  public void setPeers(Set<EndPoint> peers) {
+  public void setPeers(List<String> peers) {
     this.peers = peers;
+  }
+
+  public int getThreadPoolSize() {
+    return threadPoolSize;
+  }
+
+  public void setThreadPoolSize(int threadPoolSize) {
+    this.threadPoolSize = threadPoolSize;
+  }
+
+  public int getReconnectPeriodMs() {
+    return reconnectPeriodMs;
+  }
+
+  public void setReconnectPeriodMs(int reconnectPeriodMs) {
+    this.reconnectPeriodMs = reconnectPeriodMs;
+  }
+
+  public int getHeartbeatPeriodMs() {
+    return heartbeatPeriodMs;
+  }
+
+  public void setHeartbeatPeriodMs(int heartbeatPeriodMs) {
+    this.heartbeatPeriodMs = heartbeatPeriodMs;
+  }
+
+  public int getMessageTimeoutMs() {
+    return messageTimeoutMs;
+  }
+
+  public void setMessageTimeoutMs(int messageTimeoutMs) {
+    this.messageTimeoutMs = messageTimeoutMs;
   }
 
   @Override

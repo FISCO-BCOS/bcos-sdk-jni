@@ -64,7 +64,7 @@ public class Rpc {
     return configOption;
   }
 
-  public void setConfigOption(ConfigOption configOption) {
+  private void setConfigOption(ConfigOption configOption) {
     this.configOption = configOption;
   }
 
@@ -80,7 +80,7 @@ public class Rpc {
     return nativeObj;
   }
 
-  public void setNativeObj(long nativeObj) {
+  private void setNativeObj(long nativeObj) {
     this.nativeObj = nativeObj;
   }
 

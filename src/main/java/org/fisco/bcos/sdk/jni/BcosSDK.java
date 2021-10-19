@@ -60,7 +60,7 @@ public class BcosSDK {
     return configOption;
   }
 
-  public void setConfigOption(ConfigOption configOption) {
+  private void setConfigOption(ConfigOption configOption) {
     this.configOption = configOption;
   }
 

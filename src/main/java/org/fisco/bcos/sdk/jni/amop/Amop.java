@@ -58,7 +58,7 @@ public class Amop {
     return nativeObj;
   }
 
-  public void setNativeObj(long nativeObj) {
+  private void setNativeObj(long nativeObj) {
     this.nativeObj = nativeObj;
   }
 
@@ -66,7 +66,7 @@ public class Amop {
     return configOption;
   }
 
-  public void setConfigOption(ConfigOption configOption) {
+  private void setConfigOption(ConfigOption configOption) {
     this.configOption = configOption;
   }
 

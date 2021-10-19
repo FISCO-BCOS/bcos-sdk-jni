@@ -1,34 +1,37 @@
 #include "jni/org_fisco_bcos_sdk_jni_rpc_Rpc.h"
 #include "bcos_sdk_c.h"
 #include "bcos_sdk_c_rpc.h"
+#include <bcos-boostssl/websocket/WsTools.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <cstddef>
 #include <cstdio>
 #include <string>
 #include <tuple>
+#include <vector>
 
 static void* obtain_rpc_obj(JNIEnv* env, jobject self)
 {
     jclass cls = env->GetObjectClass(self);
     if (!cls)
     {
-        env->FatalError("GetObjectClass failed");
+        env->FatalError("Can't GetObjectClass, obtain_rpc_obj failed");
     }
 
     jfieldID nativeFieldID = env->GetFieldID(cls, "nativeObj", "J");
     if (!nativeFieldID)
     {
-        env->FatalError("GetFieldID failed");
+        env->FatalError("Can't GetFieldID,  obtain_rpc_obj failed");
     }
 
     jlong nativeObj = env->GetLongField(self, nativeFieldID);
     void* rpc = reinterpret_cast<void*>(nativeObj);
     if (rpc == NULL)
     {
-        env->FatalError("getNativeObj failed");
+        env->FatalError("Can't GetFieldID,  obtain_rpc_obj failed");
     }
 
-    printf(" ## ==> native obj: %ld\n", reinterpret_cast<long>(nativeObj));
+    printf(" ## ==> rpc native obj: %ld\n", reinterpret_cast<long>(nativeObj));
 
     return rpc;
 }
@@ -44,7 +47,7 @@ static std::string obtain_group_params(JNIEnv* env, jobject self)
     jfieldID groupFieldID = env->GetFieldID(cls, "group", "Ljava/lang/String;");
     if (!groupFieldID)
     {
-        env->FatalError("GetFieldID failed");
+        env->FatalError("Can't GetFieldID, obtain_group_params failed");
     }
 
     jstring groupString = (jstring)env->GetObjectField(self, groupFieldID);
@@ -52,7 +55,7 @@ static std::string obtain_group_params(JNIEnv* env, jobject self)
     const char* group = env->GetStringUTFChars(groupString, NULL);
     if (group == NULL)
     {
-        env->FatalError("GetStringField failed");
+        env->FatalError("Can't GetStringField, obtain_group_params failed");
     }
 
     std::string ret(group);
@@ -63,6 +66,12 @@ static std::string obtain_group_params(JNIEnv* env, jobject self)
     return ret;
 }
 
+static void handle_rpc_resp_cb(struct bcos_sdk_struct_response* struct_resp)
+{
+    printf(" ## ==> rpc callback, error : %d, data : %s\n", struct_resp->error,
+        (char*)struct_resp->data);
+}
+
 /*
  * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
  * Method:    newNativeObj
@@ -71,31 +80,109 @@ static std::string obtain_group_params(JNIEnv* env, jobject self)
 JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_newNativeObj(
     JNIEnv* env, jclass, jobject jconfig)
 {
-    std::ignore = jconfig;
+    jclass configClass = env->GetObjectClass(jconfig);
 
-    // TODO: init config, for test
+    jfieldID threadPoolSizeFieldID = env->GetFieldID(configClass, "threadPoolSize", "I");
+    int threadPoolSize = (int)env->GetIntField(jconfig, threadPoolSizeFieldID);
+
+    jfieldID reconnectPeriodMsFieldID = env->GetFieldID(configClass, "reconnectPeriodMs", "I");
+    int reconnectPeriodMs = (int)env->GetIntField(jconfig, reconnectPeriodMsFieldID);
+
+    jfieldID heartbeatPeriodMsFieldID = env->GetFieldID(configClass, "heartbeatPeriodMs", "I");
+    int heartbeatPeriodMs = (int)env->GetIntField(jconfig, heartbeatPeriodMsFieldID);
+
+    jfieldID messageTimeoutMsFieldID = env->GetFieldID(configClass, "messageTimeoutMs", "I");
+    int messageTimeoutMs = (int)env->GetIntField(jconfig, messageTimeoutMsFieldID);
+
+    jfieldID peersFieldID = env->GetFieldID(configClass, "peers", "Ljava/util/List;");
+    jobject jpeersOjbect = env->GetObjectField(jconfig, peersFieldID);
+    if (jpeersOjbect == NULL)
+    {
+        env->FatalError("Can't GetObjectField for peers of ConfigOption");
+    }
+
+    // Find "java/util/List" Class (Standard JAVA Class).
+    jclass listClass = env->FindClass("java/util/List");
+    if (listClass == NULL)
+    {
+        env->FatalError("Can't Find Class: java/util/List");
+    }
+
+    // Get "java.util.List.get(int location)" MethodID
+    jmethodID listGetMethodID = env->GetMethodID(listClass, "get", "(I)Ljava/lang/Object;");
+    if (listGetMethodID == NULL)
+    {
+        env->FatalError("Can't GetMethodID for java.util.List.get(String)");
+    }
+
+    // Get "int java.util.List.size()" MethodID
+    jmethodID listSizeMethodID = env->GetMethodID(listClass, "size", "()I");
+    if (listSizeMethodID == NULL)
+    {
+        env->FatalError("Can't GetMethodID for String java.util.List.size()");
+    }
+
+    // String java.util.List.size()
+    int listSize = (int)env->CallIntMethod(jpeersOjbect, listSizeMethodID);
+
+    struct bcos_sdk_struct_endpoint* ep = (struct bcos_sdk_struct_endpoint*)malloc(
+        listSize * sizeof(struct bcos_sdk_struct_endpoint));
+
+    std::vector<bcos::boostssl::ws::EndPoint> endPoints;
+    endPoints.resize(listSize);
+
+    printf("peers has %i items\n", listSize);
+
+    for (int i = 0; i < listSize; ++i)
+    {
+        // String java.util.List.get
+        jstring jpeer = (jstring)env->CallObjectMethod(jpeersOjbect, listGetMethodID, i);
+        if (jpeer == NULL)
+        {
+            env->FatalError("Can't CallObjectMethod(String java.util.List.get)");
+        }
+
+        const char* peer = env->GetStringUTFChars(jpeer, NULL);
+        if (peer == NULL)
+        {
+            env->FatalError("Can't GetStringUTFChars(String java.util.List.get)");
+        }
+
+        if (!bcos::boostssl::ws::WsTools::stringToEndPoint(peer, endPoints[i]))
+        {
+            printf(" ## ==> index: %d, peer: %s\n", i, peer);
+            env->FatalError("Not valid connected peer");
+            continue;
+        }
+        else
+        {
+            ep[i].host = (char*)endPoints[i].host.c_str();
+            ep[i].port = endPoints[i].port;
+        }
+
+        printf(" ## ==> index: %d, peer: %s\n", i, peer);
+        env->ReleaseStringUTFChars(jpeer, peer);
+    }
+
+    // init bcos_sdk_struct_config
     struct bcos_sdk_struct_config config;
+    config.heartbeat_period_ms = heartbeatPeriodMs;
+    config.reconnect_period_ms = reconnectPeriodMs;
+    config.message_timeout_ms = messageTimeoutMs;
+    config.thread_pool_size = threadPoolSize;
+    config.peers_count = listSize;
+    config.peers = ep;
 
-    char* host = (char*)"127.0.0.1";
-    uint16_t port = 20201;
-
-    config.heartbeat_period_ms = 10000;
-    config.reconnect_period_ms = 20000;
-    config.message_timeout_ms = 20000;
-    config.thread_pool_size = 4;
-
-    struct bcos_sdk_struct_endpoint ep;
-    ep.host = host;
-    ep.port = port;
-
-    config.peers = &ep;
-    config.peers_count = 1;
-
+    // create rpc obj
     void* rpc = bcos_sdk_create_rpc(&config);
+    // free ep
+    free((void*)ep);
     if (rpc == NULL)
     {
+        // TODO: how to handler the error
         env->FatalError("bcos_sdk_create_rpc return NULL");
     }
+
     return reinterpret_cast<jlong>(rpc);
 }
 
@@ -313,7 +400,7 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getBlockNumber(
     std::string tempGroup = obtain_group_params(env, self);
     const char* group = tempGroup.c_str();
     // TODO:
-    bcos_rpc_get_block_number(rpc, group, NULL, NULL);
+    bcos_rpc_get_block_number(rpc, group, handle_rpc_resp_cb, rpc);
 }
 
 /*

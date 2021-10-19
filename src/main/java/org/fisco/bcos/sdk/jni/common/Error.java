@@ -19,4 +19,9 @@ public class Error {
   public void setErrorMessage(String errorMessage) {
     this.errorMessage = errorMessage;
   }
+
+  @Override
+  public String toString() {
+    return "Error{" + "errorCode=" + errorCode + ", errorMessage='" + errorMessage + '\'' + '}';
+  }
 }

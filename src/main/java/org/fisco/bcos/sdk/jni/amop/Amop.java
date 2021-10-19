@@ -94,6 +94,8 @@ public class Amop {
 
   public native void broadcastAmopMsg(String topic, byte[] content);
 
+  public native void sendResponse(String endPoint, String seq, byte[] content);
+
   public native Set<String> getSubTopics();
 
   // ----------------------------- Amop interface end --------------------------------------

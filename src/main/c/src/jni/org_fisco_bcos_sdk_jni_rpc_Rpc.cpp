@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <cstddef>
 #include <cstdio>
+#include <memory>
 #include <string>
 #include <tuple>
 
@@ -67,10 +68,26 @@ static std::string obtain_group_params(JNIEnv* env, jobject self)
     return ret;
 }
 
-static void handle_rpc_resp_cb(struct bcos_sdk_struct_response* struct_resp)
+static void handle_rpc_cb(struct bcos_sdk_struct_response* resp)
 {
-    printf(" ## ==> rpc callback, error : %d, data : %s\n", struct_resp->error,
-        (char*)struct_resp->data);
+    int error = resp->error;
+    // std::string msg = resp->msg ? std::string(resp->msg) : std::string();
+    // auto data = std::make_shared<bcos::bytes>((bcos::byte*)resp->data, resp->size);
+
+    cb_context* context = (cb_context*)resp->context;
+
+    JNIEnv* env = context->env;
+    jobject jcallback = context->jcallback;
+    // delete cb_context when it is not
+    delete context;
+
+    printf(" ## ==> rpc callback, context: %ld, error : %d, data : %s\n",
+        reinterpret_cast<long>(context), error, (char*)resp->data);
+
+    jclass cbClass = env->GetObjectClass(jcallback);
+    jmethodID methodId = env->GetMethodID(cbClass, "onResponse", "()Ljava/lang/String;");
+
+    jstring result = (jstring)env->CallObjectMethod(userData, methodId);
 }
 
 /*
@@ -270,7 +287,7 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getBlockByNumber(JNIE
     int only_txhash = (jonly_txhash == JNI_TRUE ? 1 : 0);
     // TODO:
     bcos_rpc_get_block_by_number(
-        rpc, group, block_number, only_header, only_txhash, handle_rpc_resp_cb, rpc);
+        rpc, group, block_number, only_header, only_txhash, handle_rpc_cb, rpc);
 }
 
 /*
@@ -310,8 +327,12 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getBlockNumber(
     // group
     std::string tempGroup = obtain_group_params(env, self);
     const char* group = tempGroup.c_str();
+
+    cb_context* context = new cb_context();
+    context->jcallback = callback;
+
     // TODO:
-    bcos_rpc_get_block_number(rpc, group, handle_rpc_resp_cb, rpc);
+    bcos_rpc_get_block_number(rpc, group, handle_rpc_cb, context);
 }
 
 /*

@@ -10,7 +10,7 @@
 JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_event_EventSubscribe_newNativeObj(
     JNIEnv* env, jclass, jobject)
 {
-    struct bcos_sdk_struct_config config;
+    struct bcos_sdk_c_config config;
     // TODO: init config
     void* amop = bcos_sdk_create_event_sub(&config);
     if (amop == NULL)

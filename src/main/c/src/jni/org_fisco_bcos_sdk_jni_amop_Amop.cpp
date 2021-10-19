@@ -11,7 +11,7 @@
 JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_amop_Amop_newNativeObj(
     JNIEnv* env, jclass, jobject)
 {
-    struct bcos_sdk_struct_config config;
+    struct bcos_sdk_c_config config;
     // TODO: init config
     void* amop = bcos_sdk_create_amop(&config);
     if (amop == NULL)

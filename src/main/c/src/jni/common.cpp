@@ -1,0 +1,102 @@
+#include "jni/common.h"
+#include "bcos_sdk_c_common.h"
+#include <bcos-boostssl/websocket/WsTools.h>
+#include <stdlib.h>
+#include <vector>
+
+struct bcos_sdk_c_config* init_bcos_sdk_c_config(JNIEnv* env, jobject jconfig)
+{
+    jclass configClass = env->GetObjectClass(jconfig);
+
+    jfieldID threadPoolSizeFieldID = env->GetFieldID(configClass, "threadPoolSize", "I");
+    int threadPoolSize = (int)env->GetIntField(jconfig, threadPoolSizeFieldID);
+
+    jfieldID reconnectPeriodMsFieldID = env->GetFieldID(configClass, "reconnectPeriodMs", "I");
+    int reconnectPeriodMs = (int)env->GetIntField(jconfig, reconnectPeriodMsFieldID);
+
+    jfieldID heartbeatPeriodMsFieldID = env->GetFieldID(configClass, "heartbeatPeriodMs", "I");
+    int heartbeatPeriodMs = (int)env->GetIntField(jconfig, heartbeatPeriodMsFieldID);
+
+    jfieldID messageTimeoutMsFieldID = env->GetFieldID(configClass, "messageTimeoutMs", "I");
+    int messageTimeoutMs = (int)env->GetIntField(jconfig, messageTimeoutMsFieldID);
+
+    jfieldID peersFieldID = env->GetFieldID(configClass, "peers", "Ljava/util/List;");
+    jobject jpeersOjbect = env->GetObjectField(jconfig, peersFieldID);
+    if (jpeersOjbect == NULL)
+    {
+        env->FatalError("Can't GetObjectField for peers of ConfigOption");
+    }
+
+    // Find "java/util/List" Class (Standard JAVA Class).
+    jclass listClass = env->FindClass("java/util/List");
+    if (listClass == NULL)
+    {
+        env->FatalError("Can't Find Class: java/util/List");
+    }
+
+    // Get "java.util.List.get(int location)" MethodID
+    jmethodID listGetMethodID = env->GetMethodID(listClass, "get", "(I)Ljava/lang/Object;");
+    if (listGetMethodID == NULL)
+    {
+        env->FatalError("Can't GetMethodID for java.util.List.get(String)");
+    }
+
+    // Get "int java.util.List.size()" MethodID
+    jmethodID listSizeMethodID = env->GetMethodID(listClass, "size", "()I");
+    if (listSizeMethodID == NULL)
+    {
+        env->FatalError("Can't GetMethodID for String java.util.List.size()");
+    }
+
+    // String java.util.List.size()
+    int listSize = (int)env->CallIntMethod(jpeersOjbect, listSizeMethodID);
+
+    // Note: ep should be free after bcos_sdk_c_config out of use
+    struct bcos_sdk_c_endpoint* ep =
+        (struct bcos_sdk_c_endpoint*)malloc(listSize * sizeof(struct bcos_sdk_c_endpoint));
+
+    printf("peers has %i items\n", listSize);
+
+    for (int i = 0; i < listSize; ++i)
+    {
+        // String java.util.List.get
+        jstring jpeer = (jstring)env->CallObjectMethod(jpeersOjbect, listGetMethodID, i);
+        if (jpeer == NULL)
+        {
+            env->FatalError("Can't CallObjectMethod(String java.util.List.get)");
+        }
+
+        const char* peer = env->GetStringUTFChars(jpeer, NULL);
+        if (peer == NULL)
+        {
+            env->FatalError("Can't GetStringUTFChars(String java.util.List.get)");
+        }
+
+        bcos::boostssl::ws::EndPoint endPoint;
+        if (!bcos::boostssl::ws::WsTools::stringToEndPoint(peer, endPoint))
+        {
+            printf(" ## ==> index: %d, peer: %s\n", i, peer);
+            env->FatalError("Not valid connected peer");
+            continue;
+        }
+        else
+        {
+            ep[i].host = strdup(endPoint.host.c_str());
+            ep[i].port = endPoint.port;
+        }
+
+        printf(" ## ==> index: %d, peer: %s\n", i, peer);
+        env->ReleaseStringUTFChars(jpeer, peer);
+    }
+
+    struct bcos_sdk_c_config* config = bcos_sdk_c_config_new();
+    // init bcos_sdk_c_config
+    config->heartbeat_period_ms = heartbeatPeriodMs;
+    config->reconnect_period_ms = reconnectPeriodMs;
+    config->message_timeout_ms = messageTimeoutMs;
+    config->thread_pool_size = threadPoolSize;
+    config->peers_count = listSize;
+    config->peers = ep;
+
+    return config;
+}

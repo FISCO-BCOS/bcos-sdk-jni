@@ -1,14 +1,15 @@
 #include "jni/org_fisco_bcos_sdk_jni_rpc_Rpc.h"
 #include "bcos_sdk_c.h"
+#include "bcos_sdk_c_common.h"
 #include "bcos_sdk_c_rpc.h"
-#include <bcos-boostssl/websocket/WsTools.h>
+#include "jni/common.h"
 #include <stdint.h>
 #include <stdio.h>
 #include <cstddef>
 #include <cstdio>
 #include <string>
 #include <tuple>
-#include <vector>
+
 
 static void* obtain_rpc_obj(JNIEnv* env, jobject self)
 {
@@ -80,103 +81,12 @@ static void handle_rpc_resp_cb(struct bcos_sdk_struct_response* struct_resp)
 JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_newNativeObj(
     JNIEnv* env, jclass, jobject jconfig)
 {
-    jclass configClass = env->GetObjectClass(jconfig);
-
-    jfieldID threadPoolSizeFieldID = env->GetFieldID(configClass, "threadPoolSize", "I");
-    int threadPoolSize = (int)env->GetIntField(jconfig, threadPoolSizeFieldID);
-
-    jfieldID reconnectPeriodMsFieldID = env->GetFieldID(configClass, "reconnectPeriodMs", "I");
-    int reconnectPeriodMs = (int)env->GetIntField(jconfig, reconnectPeriodMsFieldID);
-
-    jfieldID heartbeatPeriodMsFieldID = env->GetFieldID(configClass, "heartbeatPeriodMs", "I");
-    int heartbeatPeriodMs = (int)env->GetIntField(jconfig, heartbeatPeriodMsFieldID);
-
-    jfieldID messageTimeoutMsFieldID = env->GetFieldID(configClass, "messageTimeoutMs", "I");
-    int messageTimeoutMs = (int)env->GetIntField(jconfig, messageTimeoutMsFieldID);
-
-    jfieldID peersFieldID = env->GetFieldID(configClass, "peers", "Ljava/util/List;");
-    jobject jpeersOjbect = env->GetObjectField(jconfig, peersFieldID);
-    if (jpeersOjbect == NULL)
-    {
-        env->FatalError("Can't GetObjectField for peers of ConfigOption");
-    }
-
-    // Find "java/util/List" Class (Standard JAVA Class).
-    jclass listClass = env->FindClass("java/util/List");
-    if (listClass == NULL)
-    {
-        env->FatalError("Can't Find Class: java/util/List");
-    }
-
-    // Get "java.util.List.get(int location)" MethodID
-    jmethodID listGetMethodID = env->GetMethodID(listClass, "get", "(I)Ljava/lang/Object;");
-    if (listGetMethodID == NULL)
-    {
-        env->FatalError("Can't GetMethodID for java.util.List.get(String)");
-    }
-
-    // Get "int java.util.List.size()" MethodID
-    jmethodID listSizeMethodID = env->GetMethodID(listClass, "size", "()I");
-    if (listSizeMethodID == NULL)
-    {
-        env->FatalError("Can't GetMethodID for String java.util.List.size()");
-    }
-
-    // String java.util.List.size()
-    int listSize = (int)env->CallIntMethod(jpeersOjbect, listSizeMethodID);
-
-    struct bcos_sdk_struct_endpoint* ep = (struct bcos_sdk_struct_endpoint*)malloc(
-        listSize * sizeof(struct bcos_sdk_struct_endpoint));
-
-    std::vector<bcos::boostssl::ws::EndPoint> endPoints;
-    endPoints.resize(listSize);
-
-    printf("peers has %i items\n", listSize);
-
-    for (int i = 0; i < listSize; ++i)
-    {
-        // String java.util.List.get
-        jstring jpeer = (jstring)env->CallObjectMethod(jpeersOjbect, listGetMethodID, i);
-        if (jpeer == NULL)
-        {
-            env->FatalError("Can't CallObjectMethod(String java.util.List.get)");
-        }
-
-        const char* peer = env->GetStringUTFChars(jpeer, NULL);
-        if (peer == NULL)
-        {
-            env->FatalError("Can't GetStringUTFChars(String java.util.List.get)");
-        }
-
-        if (!bcos::boostssl::ws::WsTools::stringToEndPoint(peer, endPoints[i]))
-        {
-            printf(" ## ==> index: %d, peer: %s\n", i, peer);
-            env->FatalError("Not valid connected peer");
-            continue;
-        }
-        else
-        {
-            ep[i].host = (char*)endPoints[i].host.c_str();
-            ep[i].port = endPoints[i].port;
-        }
-
-        printf(" ## ==> index: %d, peer: %s\n", i, peer);
-        env->ReleaseStringUTFChars(jpeer, peer);
-    }
-
-    // init bcos_sdk_struct_config
-    struct bcos_sdk_struct_config config;
-    config.heartbeat_period_ms = heartbeatPeriodMs;
-    config.reconnect_period_ms = reconnectPeriodMs;
-    config.message_timeout_ms = messageTimeoutMs;
-    config.thread_pool_size = threadPoolSize;
-    config.peers_count = listSize;
-    config.peers = ep;
-
+    // config
+    struct bcos_sdk_c_config* config = init_bcos_sdk_c_config(env, jconfig);
     // create rpc obj
-    void* rpc = bcos_sdk_create_rpc(&config);
-    // free ep
-    free((void*)ep);
+    void* rpc = bcos_sdk_create_rpc(config);
+    // destroy config
+    bcos_sdk_c_config_destroy(config);
     if (rpc == NULL)
     {
         // TODO: how to handler the error
@@ -359,7 +269,8 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getBlockByNumber(JNIE
     // only_txhash
     int only_txhash = (jonly_txhash == JNI_TRUE ? 1 : 0);
     // TODO:
-    bcos_rpc_get_block_by_number(rpc, group, block_number, only_header, only_txhash, NULL, NULL);
+    bcos_rpc_get_block_by_number(
+        rpc, group, block_number, only_header, only_txhash, handle_rpc_resp_cb, rpc);
 }
 
 /*

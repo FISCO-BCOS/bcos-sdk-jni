@@ -3,18 +3,23 @@
 
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 //--------------- config items begin ----------------
 
 // connect endpoint
-struct bcos_sdk_struct_endpoint
+struct bcos_sdk_c_endpoint
 {
     char* host;  // c-style string，end with '\0'
     uint16_t port;
 };
 
 // ssl config
-struct bcos_sdk_struct_cert_config
+struct bcos_sdk_c_cert_config
 {
     char* ca_cert;  // Note: buffer of cert should be in der format
 
@@ -23,7 +28,7 @@ struct bcos_sdk_struct_cert_config
 };
 
 // sm ssl config
-struct bcos_sdk_struct_sm_cert_config
+struct bcos_sdk_c_sm_cert_config
 {
     char* ca_cert;
 
@@ -35,7 +40,7 @@ struct bcos_sdk_struct_sm_cert_config
 };
 
 // config for bcos-c-sdk
-struct bcos_sdk_struct_config
+struct bcos_sdk_c_config
 {
     // common config
     int thread_pool_size;
@@ -45,13 +50,20 @@ struct bcos_sdk_struct_config
 
     // ssl type: ssl or sm
     int ssl_type;
-    struct bcos_sdk_struct_cert_config cert_config;
-    struct bcos_sdk_struct_sm_cert_config sm_cert_config;
+    struct bcos_sdk_c_cert_config* cert_config;
+    struct bcos_sdk_c_sm_cert_config* sm_cert_config;
 
     // connected peers info
-    struct bcos_sdk_struct_endpoint* peers;
+    struct bcos_sdk_c_endpoint* peers;
     size_t peers_count;
 };
+
+struct bcos_sdk_c_config* bcos_sdk_c_config_new();
+void bcos_sdk_c_config_destroy(void* p);
+
+void bcos_sdk_c_cert_config_release(void* p);
+void bcos_sdk_c_sm_cert_config_release(void* p);
+
 //--------------- config items end ----------------
 
 //--------------- callback begin------------
@@ -76,4 +88,7 @@ void bcos_sdk_c_handle_response(
 // release bcos_sdk_struct_response object
 void bcos_sdk_c_release_response(void* p);
 
+#ifdef __cplusplus
+}
+#endif
 #endif

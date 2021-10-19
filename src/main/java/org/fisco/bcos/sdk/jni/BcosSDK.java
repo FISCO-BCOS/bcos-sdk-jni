@@ -41,9 +41,7 @@ public class BcosSDK {
    * @param jniConfig
    * @return
    */
-  public static BcosSDK build(JniConfig jniConfig) {
-    return null;
-  }
+  public native static BcosSDK build(JniConfig jniConfig);
 
   private long nativeObj;
   private JniConfig jniConfig;
@@ -52,7 +50,7 @@ public class BcosSDK {
     return nativeObj;
   }
 
-  public void setNativeObj(long nativeObj) {
+  private void setNativeObj(long nativeObj) {
     this.nativeObj = nativeObj;
   }
 
@@ -64,17 +62,11 @@ public class BcosSDK {
     this.jniConfig = jniConfig;
   }
 
-  public Rpc getRpc(String group) {
-    return null;
-  }
+  public native Rpc getRpc(String group);
 
-  public Amop getAmop() {
-    return null;
-  }
+  public native Amop getAmop();
 
-  public EventSubscribe getEventSubscribe(String group) {
-    return null;
-  }
+  public native EventSubscribe getEventSubscribe(String group);
 
-  public void stopAll() {}
+  public native void stopAll();
 }

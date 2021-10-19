@@ -19,14 +19,13 @@ public class RpcTest {
     rpc.start();
 
     while (true) {
-      rpc.getBlockByNumber(1, true, false, null);
+      //  rpc.getBlockByNumber(1, true, false, null);
+      rpc.getBlockNumber(null);
       try {
         Thread.sleep(1000);
       } catch (InterruptedException e) {
         e.printStackTrace();
       }
-
     }
-
   }
 }

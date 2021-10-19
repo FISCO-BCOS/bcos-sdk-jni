@@ -15,6 +15,6 @@
 
 package org.fisco.bcos.sdk.jni.amop;
 
-public abstract class AmopCallback {
-  public abstract byte[] receiveAmopMsg(String endpoint, String seq, byte[] msg);
+public interface AmopCallback {
+  void receiveAmopMsg(String endpoint, String seq, byte[] msg);
 }

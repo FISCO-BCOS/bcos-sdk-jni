@@ -10,7 +10,7 @@ extern "C" {
 /*
  * Class:     org_fisco_bcos_sdk_jni_BcosSDK
  * Method:    newNativeObj
- * Signature: (Lorg/fisco/bcos/sdk/jni/common/ConfigOption;)J
+ * Signature: (Lorg/fisco/bcos/sdk/jni/common/JniConfig;)J
  */
 JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_BcosSDK_newNativeObj
   (JNIEnv *, jclass, jobject);

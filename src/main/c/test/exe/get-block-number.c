@@ -31,15 +31,15 @@ int main(int argc, char** argv)
     char* host = argv[1];
     uint16_t port = atoi(argv[2]);
 
-    // ini bcos_sdk_struct_config
-    struct bcos_sdk_struct_config config;
+    // ini bcos_sdk_c_config
+    struct bcos_sdk_c_config config;
 
     config.heartbeat_period_ms = 20000;
     config.reconnect_period_ms = 20000;
     config.message_timeout_ms = 20000;
     config.thread_pool_size = 4;
 
-    struct bcos_sdk_struct_endpoint ep;
+    struct bcos_sdk_c_endpoint ep;
     ep.host = host;
     ep.port = port;
 

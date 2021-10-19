@@ -5,12 +5,12 @@
 #include "jni/common.h"
 #include <stdint.h>
 #include <stdio.h>
+#include <unistd.h>
 #include <cstddef>
 #include <cstdio>
 #include <memory>
 #include <string>
 #include <tuple>
-
 
 static void* obtain_rpc_obj(JNIEnv* env, jobject self)
 {
@@ -68,6 +68,12 @@ static std::string obtain_group_params(JNIEnv* env, jobject self)
     return ret;
 }
 
+// static void obtain_callback_obj(JNIEnv* env, jobject self)
+// {
+//     (void)env;
+//     (void)self;
+// }
+
 static void handle_rpc_cb(struct bcos_sdk_struct_response* resp)
 {
     int error = resp->error;
@@ -75,25 +81,39 @@ static void handle_rpc_cb(struct bcos_sdk_struct_response* resp)
     // auto data = std::make_shared<bcos::bytes>((bcos::byte*)resp->data, resp->size);
 
     cb_context* context = (cb_context*)resp->context;
-
-    JNIEnv* env = context->env;
+    JavaVM* jvm = context->jvm;
     jobject jcallback = context->jcallback;
-    // delete cb_context when it is not
-    delete context;
 
     printf(" ## ==> rpc callback, context: %ld, error : %d, data : %s\n",
-        reinterpret_cast<long>(context), error, (char*)resp->data);
+        reinterpret_cast<long>(context), error, resp->data ? (char*)resp->data : "");
+
+    // delete cb_context
+    delete context;
+
+    JNIEnv* env;
+    jvm->AttachCurrentThread((void**)&env, NULL);
 
     jclass cbClass = env->GetObjectClass(jcallback);
-    jmethodID methodId = env->GetMethodID(cbClass, "onResponse", "()Ljava/lang/String;");
+    // get onResponse methodID
+    jmethodID onRespMethodID =
+        env->GetMethodID(cbClass, "onResponse", "(Lorg/fisco/bcos/sdk/jni/common/Error;[B)V");
+    if (onRespMethodID == NULL)
+    {
+        env->DeleteGlobalRef(jcallback);
+        printf(" ## ==> Cannot found onResponse");
+        return;
+    }
 
-    jstring result = (jstring)env->CallObjectMethod(userData, methodId);
+    env->DeleteGlobalRef(jcallback);
+    printf(" ## ==> Found onResponse ");
+
+    // jstring result = (jstring)env->CallObjectMethod(userData, methodId);
 }
 
 /*
  * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
  * Method:    newNativeObj
- * Signature: (Lorg/fisco/bcos/sdk/jni/common/ConfigOption;)J
+ * Signature: (Lorg/fisco/bcos/sdk/jni/common/JniConfig;)J
  */
 JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_newNativeObj(
     JNIEnv* env, jclass, jobject jconfig)
@@ -328,10 +348,16 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getBlockNumber(
     std::string tempGroup = obtain_group_params(env, self);
     const char* group = tempGroup.c_str();
 
-    cb_context* context = new cb_context();
-    context->jcallback = callback;
+    // Note: The JNIEnv pointer, passed as the first argument to every native method, can only be
+    // used in the thread with which it is associated. It is wrong to cache the JNIEnv interface
+    // pointer obtained from one thread, and use that pointer in another thread.
+    JavaVM* jvm;
+    env->GetJavaVM(&jvm);
 
-    // TODO:
+    cb_context* context = new cb_context();
+    context->jcallback = env->NewGlobalRef(callback);
+    context->jvm = jvm;
+
     bcos_rpc_get_block_number(rpc, group, handle_rpc_cb, context);
 }
 

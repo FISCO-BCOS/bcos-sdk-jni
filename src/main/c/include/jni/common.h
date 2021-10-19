@@ -11,7 +11,7 @@ extern "C" {
 
 struct cb_context
 {
-    JNIEnv* env;
+    JavaVM* jvm;
     jobject jcallback;
 };
 

@@ -132,6 +132,106 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_stop(JNIEnv* env, job
     bcos_sdk_stop_rpc(rpc);
 }
 
+
+/*
+ * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
+ * Method:    genericMethod
+ * Signature: (Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
+ */
+JNIEXPORT void JNICALL
+Java_org_fisco_bcos_sdk_jni_rpc_Rpc_genericMethod__Ljava_lang_String_2Lorg_fisco_bcos_sdk_jni_rpc_RpcCallback_2(
+    JNIEnv* env, jobject self, jstring jdata, jobject jcallback)
+{
+    // rpc obj handler
+    void* rpc = obtain_native_object(env, self);
+
+    // Note: The JNIEnv pointer, passed as the first argument to every native method, can only be
+    // used in the thread with which it is associated. It is wrong to cache the JNIEnv interface
+    // pointer obtained from one thread, and use that pointer in another thread.
+    JavaVM* jvm;
+    env->GetJavaVM(&jvm);
+
+    cb_context* context = new cb_context();
+    context->jcallback = env->NewGlobalRef(jcallback);
+    context->jvm = jvm;
+
+    // data
+    const char* data = env->GetStringUTFChars(jdata, NULL);
+    bcos_rpc_send_msg(rpc, data, handle_rpc_cb, context);
+    env->ReleaseStringUTFChars(jdata, data);
+}
+
+/*
+ * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
+ * Method:    genericMethod
+ * Signature: (Ljava/lang/String;Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
+ */
+JNIEXPORT void JNICALL
+Java_org_fisco_bcos_sdk_jni_rpc_Rpc_genericMethod__Ljava_lang_String_2Ljava_lang_String_2Lorg_fisco_bcos_sdk_jni_rpc_RpcCallback_2(
+    JNIEnv* env, jobject self, jstring jgroup, jstring jdata, jobject jcallback)
+{
+    // rpc obj handler
+    void* rpc = obtain_native_object(env, self);
+
+
+    // Note: The JNIEnv pointer, passed as the first argument to every native method, can only be
+    // used in the thread with which it is associated. It is wrong to cache the JNIEnv interface
+    // pointer obtained from one thread, and use that pointer in another thread.
+    JavaVM* jvm;
+    env->GetJavaVM(&jvm);
+
+    cb_context* context = new cb_context();
+    context->jcallback = env->NewGlobalRef(jcallback);
+    context->jvm = jvm;
+
+    // group
+    const char* group = env->GetStringUTFChars(jgroup, NULL);
+    // data
+    const char* data = env->GetStringUTFChars(jdata, NULL);
+
+    bcos_rpc_send_msg_to_group(rpc, group, data, handle_rpc_cb, context);
+
+    env->ReleaseStringUTFChars(jgroup, group);
+    env->ReleaseStringUTFChars(jdata, data);
+}
+
+/*
+ * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
+ * Method:    genericMethod
+ * Signature:
+ * (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
+ */
+JNIEXPORT void JNICALL
+Java_org_fisco_bcos_sdk_jni_rpc_Rpc_genericMethod__Ljava_lang_String_2Ljava_lang_String_2Ljava_lang_String_2Lorg_fisco_bcos_sdk_jni_rpc_RpcCallback_2(
+    JNIEnv* env, jobject self, jstring jgroup, jstring jnode, jstring jdata, jobject jcallback)
+{
+    // rpc obj handler
+    void* rpc = obtain_native_object(env, self);
+
+    // Note: The JNIEnv pointer, passed as the first argument to every native method, can only be
+    // used in the thread with which it is associated. It is wrong to cache the JNIEnv interface
+    // pointer obtained from one thread, and use that pointer in another thread.
+    JavaVM* jvm;
+    env->GetJavaVM(&jvm);
+
+    cb_context* context = new cb_context();
+    context->jcallback = env->NewGlobalRef(jcallback);
+    context->jvm = jvm;
+
+    // group
+    const char* group = env->GetStringUTFChars(jgroup, NULL);
+    // node
+    const char* node = env->GetStringUTFChars(jnode, NULL);
+    // data
+    const char* data = env->GetStringUTFChars(jdata, NULL);
+
+    bcos_rpc_send_msg_to_group_node(rpc, group, node, data, handle_rpc_cb, context);
+
+    env->ReleaseStringUTFChars(jgroup, group);
+    env->ReleaseStringUTFChars(jnode, node);
+    env->ReleaseStringUTFChars(jdata, data);
+}
+
 /*
  * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
  * Method:    call

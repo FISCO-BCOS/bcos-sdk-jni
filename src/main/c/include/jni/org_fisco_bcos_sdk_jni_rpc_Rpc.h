@@ -33,6 +33,30 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_stop
 
 /*
  * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
+ * Method:    genericMethod
+ * Signature: (Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
+ */
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_genericMethod__Ljava_lang_String_2Lorg_fisco_bcos_sdk_jni_rpc_RpcCallback_2
+  (JNIEnv *, jobject, jstring, jobject);
+
+/*
+ * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
+ * Method:    genericMethod
+ * Signature: (Ljava/lang/String;Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
+ */
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_genericMethod__Ljava_lang_String_2Ljava_lang_String_2Lorg_fisco_bcos_sdk_jni_rpc_RpcCallback_2
+  (JNIEnv *, jobject, jstring, jstring, jobject);
+
+/*
+ * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
+ * Method:    genericMethod
+ * Signature: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
+ */
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_genericMethod__Ljava_lang_String_2Ljava_lang_String_2Ljava_lang_String_2Lorg_fisco_bcos_sdk_jni_rpc_RpcCallback_2
+  (JNIEnv *, jobject, jstring, jstring, jstring, jobject);
+
+/*
+ * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
  * Method:    call
  * Signature: (Ljava/lang/String;Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
  */

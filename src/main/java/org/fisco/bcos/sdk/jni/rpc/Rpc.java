@@ -90,6 +90,12 @@ public class Rpc {
 
   public native void stop();
 
+  public native void genericMethod(String data, RpcCallback callback);
+
+  public native void genericMethod(String group, String data, RpcCallback callback);
+
+  public native void genericMethod(String group, String node, String data, RpcCallback callback);
+
   public native void call(String to, String data, RpcCallback callback);
 
   public native void sendTransaction(String data, boolean requireProof, RpcCallback callback);

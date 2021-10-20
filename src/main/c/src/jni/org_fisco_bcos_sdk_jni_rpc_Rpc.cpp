@@ -54,6 +54,10 @@ static void handle_rpc_cb(struct bcos_sdk_struct_response* resp)
     // void onResponse(Error error, byte[] msg)
     jmethodID onRespMethodID =
         env->GetMethodID(cbClass, "onResponse", "(Lorg/fisco/bcos/sdk/jni/common/Error;[B)V");
+    if (onRespMethodID == NULL)
+    {
+        env->FatalError("onResponse methodID is NULL");
+    }
 
     int error = resp->error;
     char* desc = resp->desc ? resp->desc : (char*)"";
@@ -71,18 +75,30 @@ static void handle_rpc_cb(struct bcos_sdk_struct_response* resp)
 
     // Error error
     jclass errorClass = env->FindClass("org/fisco/bcos/sdk/jni/common/Error");
+    if (errorClass == NULL)
+    {
+        env->FatalError("Error jclass is NULL");
+    }
     jmethodID mid = env->GetMethodID(errorClass, "<init>", "()V");
     jobject errorObj = env->NewObject(errorClass, mid);
 
     jfieldID errorCodeFieldID = env->GetFieldID(errorClass, "errorCode", "I");
+    if (errorCodeFieldID == NULL)
+    {
+        env->FatalError("errorCode fieldID is NULL");
+    }
     jfieldID errorMsgFieldID = env->GetFieldID(errorClass, "errorMessage", "Ljava/lang/String;");
+    if (errorMsgFieldID == NULL)
+    {
+        env->FatalError("errorMessage fieldID is NULL");
+    }
 
     jstring errorString = env->NewStringUTF(desc);
 
     env->SetLongField(errorObj, errorCodeFieldID, jint(error));
     env->SetObjectField(errorObj, errorMsgFieldID, errorString);
 
-    env->CallObjectMethod(cbClass, onRespMethodID, errorObj, byteArrayObj);
+    env->CallObjectMethod(jcallback, onRespMethodID, errorObj, byteArrayObj);
     // release callback global reference
     env->DeleteGlobalRef(jcallback);
 }

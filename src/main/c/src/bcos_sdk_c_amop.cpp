@@ -90,8 +90,11 @@ void bcos_amop_publish(void* amop, const char* topic, void* data, size_t size, u
         [cb, context](bcos::Error::Ptr error, std::shared_ptr<bcos::boostssl::ws::WsMessage> msg,
             std::shared_ptr<bcos::boostssl::ws::WsSession> session) {
             std::ignore = session;
-            bcos_sdk_c_handle_response(
-                error ? error.get() : NULL, msg->data()->data(), msg->data()->size(), cb, context);
+
+            void* data = msg ? msg->data()->data() : NULL;
+            size_t size = msg ? msg->data()->size() : 0;
+
+            bcos_sdk_c_handle_response(error ? error.get() : NULL, data, size, cb, context);
         });
 }
 

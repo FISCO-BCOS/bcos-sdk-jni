@@ -17,8 +17,8 @@ static void on_receive_amop_request(
 
     jobject jcallback = context->jcallback;
     JavaVM* jvm = context->jvm;
-    // Note: delete cb_context
-    delete context;
+    // Note: the context should not be delete for is is not once used
+    // delete context;
 
     JNIEnv* env;
     jvm->AttachCurrentThread((void**)&env, NULL);
@@ -43,7 +43,8 @@ static void on_receive_amop_request(
         return;
     }
 
-    printf(" ## ==> amop request callback, error : %d, msg: %s, data : %s\n", error, desc, data);
+    printf(" ## ==> amop request callback, endpoint: %s, seq: %s, error : %d, msg: %s, data : %s\n",
+        endpoint, seq, error, desc, data);
 
     jstring jendpoint = env->NewStringUTF(endpoint);
     jstring jseq = env->NewStringUTF(seq);
@@ -58,7 +59,7 @@ static void on_receive_amop_request(
 
     env->CallObjectMethod(jcallback, onReqMethodID, jendpoint, jseq, byteArrayObj);
 
-    // release callback global reference, Note: the callback should not be unreference, it is not
+    // Note: the callback should not be unreference, it is not
     // once used
 
     // env->DeleteGlobalRef(jcallback);
@@ -70,8 +71,8 @@ static void on_receive_amop_response(struct bcos_sdk_c_struct_response* resp)
 
     jobject jcallback = context->jcallback;
     JavaVM* jvm = context->jvm;
-    // Note: delete cb_context
-    delete context;
+    // Note: the context should not be delete for is is not once used
+    // delete context;
 
     JNIEnv* env;
     jvm->AttachCurrentThread((void**)&env, NULL);

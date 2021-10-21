@@ -43,9 +43,11 @@ public class Amop {
    */
   public static Amop build(JniConfig jniConfig) {
     long nativeObj = newNativeObj(jniConfig);
-    logger.info(" nativeObj: {}", nativeObj);
     Amop amop = new Amop();
     amop.setNativeObj(nativeObj);
+    amop.setJniConfig(jniConfig);
+
+    logger.info(" nativeObj: {}, jniConfig: {}", nativeObj, jniConfig);
     return amop;
   }
 

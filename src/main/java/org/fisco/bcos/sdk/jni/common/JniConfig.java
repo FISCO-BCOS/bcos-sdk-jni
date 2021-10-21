@@ -5,8 +5,11 @@ import java.util.List;
 public class JniConfig {
 
   private int threadPoolSize = 4;
-  private int reconnectPeriodMs = 10000;
-  private int heartbeatPeriodMs = 10000;
+  // 20s
+  private int reconnectPeriodMs = 20000;
+  // 20s
+  private int heartbeatPeriodMs = 20000;
+  // 10s
   private int messageTimeoutMs = 10000;
 
   private List<String> peers;

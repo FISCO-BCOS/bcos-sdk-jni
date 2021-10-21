@@ -32,10 +32,11 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_event_EventSubscribe_stop(JNI
 /*
  * Class:     org_fisco_bcos_sdk_jni_event_EventSubscribe
  * Method:    subscribeEvent
- * Signature: (Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/event/EventSubscribeCallback;)V
+ * Signature:
+ * (Ljava/lang/String;Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/event/EventSubscribeCallback;)V
  */
 JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_event_EventSubscribe_subscribeEvent(
-    JNIEnv*, jobject, jstring, jobject);
+    JNIEnv*, jobject, jstring, jstring, jobject);
 
 /*
  * Class:     org_fisco_bcos_sdk_jni_event_EventSubscribe

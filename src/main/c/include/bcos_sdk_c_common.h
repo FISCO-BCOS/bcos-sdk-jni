@@ -85,8 +85,6 @@ typedef void (*bcos_sdk_c_struct_response_cb)(struct bcos_sdk_c_struct_response*
 // handle callback
 void bcos_sdk_c_handle_response(
     void* error, void* data, size_t size, bcos_sdk_c_struct_response_cb callback, void* context);
-// release bcos_sdk_c_struct_response object
-void bcos_sdk_c_release_response(void* p);
 
 #ifdef __cplusplus
 }

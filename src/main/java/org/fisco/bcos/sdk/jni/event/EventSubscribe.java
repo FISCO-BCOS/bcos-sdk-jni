@@ -45,11 +45,13 @@ public class EventSubscribe {
    */
   public static EventSubscribe build(String group, JniConfig jniConfig) {
     long nativeObj = newNativeObj(jniConfig);
-    logger.info(" group: {}, nativeObj: {}", group, nativeObj);
+
     EventSubscribe subscribe = new EventSubscribe();
     subscribe.setNativeObj(nativeObj);
     subscribe.setGroup(group);
     subscribe.setJniConfig(jniConfig);
+
+    logger.info(" nativeObj: {}，group: {}, jniConfig: {}", nativeObj, group, jniConfig);
     return subscribe;
   }
 
@@ -63,7 +65,7 @@ public class EventSubscribe {
     return group;
   }
 
-  public void setGroup(String group) {
+  private void setGroup(String group) {
     this.group = group;
   }
 
@@ -89,9 +91,9 @@ public class EventSubscribe {
 
   public native void stop();
 
-  public native void subscribeEvent(String params, EventSubscribeCallback callback);
+  public native void subscribeEvent(String group, String params, EventSubscribeCallback callback);
 
-  public native void unsubscribeEvent(String eventSubID, EventSubscribeCallback callback);
+  public native void unsubscribeEvent(String eventID, EventSubscribeCallback callback);
 
   public native Set<String> getAllSubscribedEvents();
 

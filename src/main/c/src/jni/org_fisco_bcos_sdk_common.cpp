@@ -1,4 +1,4 @@
-#include "jni/common.h"
+#include "jni/org_fisco_bcos_sdk_common.h"
 #include "bcos_sdk_c_common.h"
 #include <bcos-boostssl/websocket/WsTools.h>
 #include <stdlib.h>

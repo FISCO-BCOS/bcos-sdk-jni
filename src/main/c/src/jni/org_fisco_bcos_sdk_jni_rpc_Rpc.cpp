@@ -2,7 +2,7 @@
 #include "bcos_sdk_c.h"
 #include "bcos_sdk_c_common.h"
 #include "bcos_sdk_c_rpc.h"
-#include "jni/common.h"
+#include "jni/org_fisco_bcos_sdk_common.h"
 #include <stdint.h>
 #include <stdio.h>
 #include <unistd.h>

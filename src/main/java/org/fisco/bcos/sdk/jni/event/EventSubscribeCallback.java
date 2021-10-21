@@ -15,7 +15,7 @@
 
 package org.fisco.bcos.sdk.jni.event;
 
-import org.fisco.bcos.sdk.jni.common.Error;
+import org.fisco.bcos.sdk.jni.common.Response;
 
 /** Event callback */
 public interface EventSubscribeCallback {
@@ -24,9 +24,7 @@ public interface EventSubscribeCallback {
    * onReceiveLog called when sdk receive any response of the target subscription. logs will be
    * parsed by the user through the ABI module.
    *
-   * @param error the status that peer response to sdk
-   * @param eventID event sub task id
-   * @param eventLogs logs from the message
+   * @param response
    */
-  void onReceiveLog(Error error, String eventID, String eventLogs);
+  void onReceiveLog(Response response);
 }

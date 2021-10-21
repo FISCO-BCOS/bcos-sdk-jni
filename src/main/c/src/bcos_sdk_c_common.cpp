@@ -97,11 +97,3 @@ void bcos_sdk_c_handle_response(
 
     callback(resp);
 }
-
-// release bcos_sdk_c_struct_response object
-void bcos_sdk_c_release_response(void* p)
-{
-    (void)p;
-    return;
-    // delete (bcos_sdk_c_struct_response *)p;
-}

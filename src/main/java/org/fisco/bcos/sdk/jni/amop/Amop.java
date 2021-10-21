@@ -92,7 +92,8 @@ public class Amop {
 
   public native void setCallback(AmopRequestCallback cb);
 
-  public native void sendAmopMsg(String topic, byte[] data, int timeout, AmopResponseCallback callback);
+  public native void sendAmopMsg(
+      String topic, byte[] data, int timeout, AmopResponseCallback callback);
 
   public native void broadcastAmopMsg(String topic, byte[] data);
 

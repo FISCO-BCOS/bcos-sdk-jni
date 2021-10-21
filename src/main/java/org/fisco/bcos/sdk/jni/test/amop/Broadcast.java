@@ -4,19 +4,15 @@ import java.util.Arrays;
 import org.fisco.bcos.sdk.jni.amop.Amop;
 import org.fisco.bcos.sdk.jni.common.JniConfig;
 import org.fisco.bcos.sdk.jni.test.Utility;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-public class Pub {
-  private static final Logger logger = LoggerFactory.getLogger(Sub.class);
-
+public class Broadcast {
   public static void usage() {
     System.out.println("\tUsage: ");
     System.out.println(
-        "\t\tjava -cp \"conf/:lib/*:apps/*\"  org.fisco.bcos.sdk.jni.test.amop.Pub ip:port topic msg");
+        "\t\tjava -cp \"conf/:lib/*:apps/*\"  org.fisco.bcos.sdk.jni.test.amop.Broadcast ip:port topic msg");
     System.out.println("\tExample:");
     System.out.println(
-        "\t\tjava -cp \"conf/:lib/*:apps/*\"  org.fisco.bcos.sdk.jni.test.amop.Pub 127.0.0.1:20201 topic HelloWorld");
+        "\t\tjava -cp \"conf/:lib/*:apps/*\"  org.fisco.bcos.sdk.jni.test.amop.Broadcast 127.0.0.1:20201 topic HelloWorld");
     System.exit(0);
   }
 
@@ -35,17 +31,7 @@ public class Pub {
     amop.start();
 
     while (true) {
-      amop.sendAmopMsg(
-          topic,
-          msg.getBytes(),
-          0,
-          response ->
-              logger.info(
-                  " ==> receive response message from server, errorCode: {}, errorMessage: {}, data: {}",
-                  response.getErrorCode(),
-                  response.getErrorMessage(),
-                  new String(response.getData())));
-
+      amop.broadcastAmopMsg(topic, msg.getBytes());
       Thread.sleep(10000);
     }
   }

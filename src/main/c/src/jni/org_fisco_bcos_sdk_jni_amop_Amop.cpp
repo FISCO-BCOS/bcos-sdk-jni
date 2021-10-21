@@ -26,9 +26,9 @@ static void on_receive_amop_request(
     jclass cbClass = env->GetObjectClass(jcallback);
 
     // onRequest(String endpoint, String seq, byte[] msg)
-    jmethodID onRespMethodID =
-        env->GetMethodID(cbClass, "onRequest", "(Ljava.lang.String;Ljava.lang.String;[B)V");
-    if (onRespMethodID == NULL)
+    jmethodID onReqMethodID =
+        env->GetMethodID(cbClass, "onRequest", "(Ljava/lang/String;Ljava/lang/String;[B)V");
+    if (onReqMethodID == NULL)
     {
         env->FatalError("Cannot found onRequest methodID");
     }
@@ -56,7 +56,7 @@ static void on_receive_amop_request(
         env->SetByteArrayRegion(byteArrayObj, 0, resp->size, data);
     }
 
-    env->CallObjectMethod(jcallback, onRespMethodID, jendpoint, jseq, byteArrayObj);
+    env->CallObjectMethod(jcallback, onReqMethodID, jendpoint, jseq, byteArrayObj);
 
     // release callback global reference, Note: the callback should not be unreference, it is not
     // once used
@@ -78,9 +78,9 @@ static void on_receive_amop_response(struct bcos_sdk_c_struct_response* resp)
 
     jclass cbClass = env->GetObjectClass(jcallback);
     // void onResponse(Response)
-    jmethodID onRespMethodID =
-        env->GetMethodID(cbClass, "onResponse", "(Lorg/fisco/bcos/sdk/jni/common/Response)V");
-    if (onRespMethodID == NULL)
+    jmethodID onReqMethodID =
+        env->GetMethodID(cbClass, "onResponse", "(Lorg/fisco/bcos/sdk/jni/common/Response;)V");
+    if (onReqMethodID == NULL)
     {
         env->FatalError("Cannot found onResponse methodID");
     }
@@ -134,7 +134,7 @@ static void on_receive_amop_response(struct bcos_sdk_c_struct_response* resp)
     }
     env->SetObjectField(responseObj, dataFieldID, byteArrayObj);
 
-    env->CallObjectMethod(jcallback, onRespMethodID, responseObj);
+    env->CallObjectMethod(jcallback, onReqMethodID, responseObj);
 
     //  Note: the callback should not be unreference, it is not
     // once used
@@ -237,10 +237,10 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_Amop_subscribeTopic__Lja
 /*
  * Class:     org_fisco_bcos_sdk_jni_amop_Amop
  * Method:    subscribeTopic
- * Signature: (Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/amop/AmopCallback;)V
+ * Signature: (Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/amop/AmopRequestCallback;)V
  */
 JNIEXPORT void JNICALL
-Java_org_fisco_bcos_sdk_jni_amop_Amop_subscribeTopic__Ljava_lang_String_2Lorg_fisco_bcos_sdk_jni_amop_AmopCallback_2(
+Java_org_fisco_bcos_sdk_jni_amop_Amop_subscribeTopic__Ljava_lang_String_2Lorg_fisco_bcos_sdk_jni_amop_AmopRequestCallback_2(
     JNIEnv* env, jobject self, jstring jtopic, jobject jcallback)
 {
     void* amop = obtain_native_object(env, self);

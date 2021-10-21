@@ -54,7 +54,8 @@ static void on_receive_rpc_response(struct bcos_sdk_c_struct_response* resp)
     jclass cbClass = env->GetObjectClass(jcallback);
     // void onResponse(Response)
     jmethodID onRespMethodID =
-        env->GetMethodID(cbClass, "onResponse", "(Lorg/fisco/bcos/sdk/jni/common/Response)V");
+        env->GetMethodID(cbClass, "onResponse", "(Lorg/fisco/bcos/sdk/jni/common/Response;)V");
+
     if (onRespMethodID == NULL)
     {
         env->FatalError("Cannot found onResponse methodID");

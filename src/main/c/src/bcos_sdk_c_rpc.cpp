@@ -7,7 +7,7 @@
 // ------------------------common send message interface begin----------------
 // send message to rpc server
 void bcos_rpc_send_msg(
-    void* rpc, const char* data, bcos_sdk_struct_response_cb callback, void* context)
+    void* rpc, const char* data, bcos_sdk_c_struct_response_cb callback, void* context)
 {
     auto rpcPointer = (bcos::cppsdk::jsonrpc::JsonRpcInterface*)rpc;
 
@@ -20,7 +20,7 @@ void bcos_rpc_send_msg(
 
 // send message to group
 void bcos_rpc_send_msg_to_group(void* rpc, const char* group, const char* data,
-    bcos_sdk_struct_response_cb callback, void* context)
+    bcos_sdk_c_struct_response_cb callback, void* context)
 {
     auto rpcPointer = (bcos::cppsdk::jsonrpc::JsonRpcInterface*)rpc;
 
@@ -33,7 +33,7 @@ void bcos_rpc_send_msg_to_group(void* rpc, const char* group, const char* data,
 
 // send message to group of node
 void bcos_rpc_send_msg_to_group_node(void* rpc, const char* group, const char* node,
-    const char* data, bcos_sdk_struct_response_cb callback, void* context)
+    const char* data, bcos_sdk_c_struct_response_cb callback, void* context)
 {
     auto rpcPointer = (bcos::cppsdk::jsonrpc::JsonRpcInterface*)rpc;
 
@@ -48,7 +48,7 @@ void bcos_rpc_send_msg_to_group_node(void* rpc, const char* group, const char* n
 // ------------------------------rpc interface begin -------------------------
 // call
 void bcos_rpc_call(void* rpc, const char* group, const char* to, const char* data,
-    bcos_sdk_struct_response_cb callback, void* context)
+    bcos_sdk_c_struct_response_cb callback, void* context)
 {
     auto rpcPointer = (bcos::cppsdk::jsonrpc::JsonRpcInterface*)rpc;
 
@@ -61,7 +61,7 @@ void bcos_rpc_call(void* rpc, const char* group, const char* to, const char* dat
 
 // sendTransaction
 void bcos_rpc_send_transaction(void* rpc, const char* group, const char* data, int proof,
-    bcos_sdk_struct_response_cb callback, void* context)
+    bcos_sdk_c_struct_response_cb callback, void* context)
 {
     auto rpcPointer = (bcos::cppsdk::jsonrpc::JsonRpcInterface*)rpc;
 
@@ -74,7 +74,7 @@ void bcos_rpc_send_transaction(void* rpc, const char* group, const char* data, i
 
 // getTransaction
 void bcos_rpc_get_transaction(void* rpc, const char* group, const char* tx_hash, int proof,
-    bcos_sdk_struct_response_cb callback, void* context)
+    bcos_sdk_c_struct_response_cb callback, void* context)
 {
     auto rpcPointer = (bcos::cppsdk::jsonrpc::JsonRpcInterface*)rpc;
 
@@ -87,7 +87,7 @@ void bcos_rpc_get_transaction(void* rpc, const char* group, const char* tx_hash,
 
 // getTransactionReceipt
 void bcos_rpc_get_transaction_receipt(void* rpc, const char* group, const char* tx_hash, int proof,
-    bcos_sdk_struct_response_cb callback, void* context)
+    bcos_sdk_c_struct_response_cb callback, void* context)
 {
     auto rpcPointer = (bcos::cppsdk::jsonrpc::JsonRpcInterface*)rpc;
 
@@ -100,7 +100,7 @@ void bcos_rpc_get_transaction_receipt(void* rpc, const char* group, const char* 
 
 // getBlockByHash
 void bcos_rpc_get_block_by_hash(void* rpc, const char* group, const char* block_hash,
-    int only_header, int only_tx_hash, bcos_sdk_struct_response_cb callback, void* context)
+    int only_header, int only_tx_hash, bcos_sdk_c_struct_response_cb callback, void* context)
 {
     auto rpcPointer = (bcos::cppsdk::jsonrpc::JsonRpcInterface*)rpc;
 
@@ -113,7 +113,7 @@ void bcos_rpc_get_block_by_hash(void* rpc, const char* group, const char* block_
 
 // getBlockByNumber
 void bcos_rpc_get_block_by_number(void* rpc, const char* group, int64_t block_number,
-    int only_header, int only_tx_hash, bcos_sdk_struct_response_cb callback, void* context)
+    int only_header, int only_tx_hash, bcos_sdk_c_struct_response_cb callback, void* context)
 {
     auto rpcPointer = (bcos::cppsdk::jsonrpc::JsonRpcInterface*)rpc;
 
@@ -126,7 +126,7 @@ void bcos_rpc_get_block_by_number(void* rpc, const char* group, int64_t block_nu
 
 // getBlockHashByNumber
 void bcos_rpc_get_block_hash_by_number(void* rpc, const char* group, int64_t block_number,
-    bcos_sdk_struct_response_cb callback, void* context)
+    bcos_sdk_c_struct_response_cb callback, void* context)
 {
     auto rpcPointer = (bcos::cppsdk::jsonrpc::JsonRpcInterface*)rpc;
 
@@ -138,7 +138,7 @@ void bcos_rpc_get_block_hash_by_number(void* rpc, const char* group, int64_t blo
 }
 // getBlockNumber
 void bcos_rpc_get_block_number(
-    void* rpc, const char* group, bcos_sdk_struct_response_cb callback, void* context)
+    void* rpc, const char* group, bcos_sdk_c_struct_response_cb callback, void* context)
 {
     auto rpcPointer = (bcos::cppsdk::jsonrpc::JsonRpcInterface*)rpc;
 
@@ -151,7 +151,7 @@ void bcos_rpc_get_block_number(
 
 // getCode
 void bcos_rpc_get_code(void* rpc, const char* group, const char* address,
-    bcos_sdk_struct_response_cb callback, void* context)
+    bcos_sdk_c_struct_response_cb callback, void* context)
 {
     auto rpcPointer = (bcos::cppsdk::jsonrpc::JsonRpcInterface*)rpc;
 
@@ -164,7 +164,7 @@ void bcos_rpc_get_code(void* rpc, const char* group, const char* address,
 
 // getSealerList
 void bcos_rpc_get_sealer_list(
-    void* rpc, const char* group, bcos_sdk_struct_response_cb callback, void* context)
+    void* rpc, const char* group, bcos_sdk_c_struct_response_cb callback, void* context)
 {
     auto rpcPointer = (bcos::cppsdk::jsonrpc::JsonRpcInterface*)rpc;
 
@@ -177,7 +177,7 @@ void bcos_rpc_get_sealer_list(
 
 // getObserverList
 void bcos_rpc_get_observer_list(
-    void* rpc, const char* group, bcos_sdk_struct_response_cb callback, void* context)
+    void* rpc, const char* group, bcos_sdk_c_struct_response_cb callback, void* context)
 {
     auto rpcPointer = (bcos::cppsdk::jsonrpc::JsonRpcInterface*)rpc;
 
@@ -190,7 +190,7 @@ void bcos_rpc_get_observer_list(
 
 // getPbftView
 void bcos_rpc_get_pbft_view(
-    void* rpc, const char* group, bcos_sdk_struct_response_cb callback, void* context)
+    void* rpc, const char* group, bcos_sdk_c_struct_response_cb callback, void* context)
 {
     auto rpcPointer = (bcos::cppsdk::jsonrpc::JsonRpcInterface*)rpc;
 
@@ -203,7 +203,7 @@ void bcos_rpc_get_pbft_view(
 
 // getPendingTxSize
 void bcos_rpc_get_pending_tx_size(
-    void* rpc, const char* group, bcos_sdk_struct_response_cb callback, void* context)
+    void* rpc, const char* group, bcos_sdk_c_struct_response_cb callback, void* context)
 {
     auto rpcPointer = (bcos::cppsdk::jsonrpc::JsonRpcInterface*)rpc;
 
@@ -216,7 +216,7 @@ void bcos_rpc_get_pending_tx_size(
 
 // getSyncStatus
 void bcos_rpc_get_sync_status(
-    void* rpc, const char* group, bcos_sdk_struct_response_cb callback, void* context)
+    void* rpc, const char* group, bcos_sdk_c_struct_response_cb callback, void* context)
 {
     auto rpcPointer = (bcos::cppsdk::jsonrpc::JsonRpcInterface*)rpc;
 
@@ -229,7 +229,7 @@ void bcos_rpc_get_sync_status(
 
 // getConsensusStatus
 void bcos_rpc_get_consensus_status(
-    void* rpc, const char* group, bcos_sdk_struct_response_cb callback, void* context)
+    void* rpc, const char* group, bcos_sdk_c_struct_response_cb callback, void* context)
 {
     auto rpcPointer = (bcos::cppsdk::jsonrpc::JsonRpcInterface*)rpc;
 
@@ -242,7 +242,7 @@ void bcos_rpc_get_consensus_status(
 
 // getSystemConfigByKey
 void bcos_rpc_get_system_config_by_key(void* rpc, const char* group, const char* key,
-    bcos_sdk_struct_response_cb callback, void* context)
+    bcos_sdk_c_struct_response_cb callback, void* context)
 {
     auto rpcPointer = (bcos::cppsdk::jsonrpc::JsonRpcInterface*)rpc;
 
@@ -255,7 +255,7 @@ void bcos_rpc_get_system_config_by_key(void* rpc, const char* group, const char*
 
 // getTotalTransactionCount
 void bcos_rpc_get_total_transaction_count(
-    void* rpc, const char* group, bcos_sdk_struct_response_cb callback, void* context)
+    void* rpc, const char* group, bcos_sdk_c_struct_response_cb callback, void* context)
 {
     auto rpcPointer = (bcos::cppsdk::jsonrpc::JsonRpcInterface*)rpc;
 
@@ -267,7 +267,7 @@ void bcos_rpc_get_total_transaction_count(
 }
 
 // getPeers
-void bcos_rpc_get_peers(void* rpc, bcos_sdk_struct_response_cb callback, void* context)
+void bcos_rpc_get_peers(void* rpc, bcos_sdk_c_struct_response_cb callback, void* context)
 {
     auto rpcPointer = (bcos::cppsdk::jsonrpc::JsonRpcInterface*)rpc;
 
@@ -280,7 +280,7 @@ void bcos_rpc_get_peers(void* rpc, bcos_sdk_struct_response_cb callback, void* c
 
 // createGroup
 void bcos_rpc_create_group(
-    void* rpc, const char* group_info, bcos_sdk_struct_response_cb callback, void* context)
+    void* rpc, const char* group_info, bcos_sdk_c_struct_response_cb callback, void* context)
 {
     auto rpcPointer = (bcos::cppsdk::jsonrpc::JsonRpcInterface*)rpc;
 
@@ -293,7 +293,7 @@ void bcos_rpc_create_group(
 
 // expandGroupNode
 void bcos_rpc_expand_group_node(void* rpc, const char* group, const char* node_info,
-    bcos_sdk_struct_response_cb callback, void* context)
+    bcos_sdk_c_struct_response_cb callback, void* context)
 {
     auto rpcPointer = (bcos::cppsdk::jsonrpc::JsonRpcInterface*)rpc;
 
@@ -306,7 +306,7 @@ void bcos_rpc_expand_group_node(void* rpc, const char* group, const char* node_i
 
 // removeGroup
 void bcos_rpc_remove_group(
-    void* rpc, const char* group, bcos_sdk_struct_response_cb callback, void* context)
+    void* rpc, const char* group, bcos_sdk_c_struct_response_cb callback, void* context)
 {
     auto rpcPointer = (bcos::cppsdk::jsonrpc::JsonRpcInterface*)rpc;
 
@@ -319,7 +319,7 @@ void bcos_rpc_remove_group(
 
 // recoverGroupNode
 void bcos_rpc_recover_group_node(void* rpc, const char* group, const char* node,
-    bcos_sdk_struct_response_cb callback, void* context)
+    bcos_sdk_c_struct_response_cb callback, void* context)
 {
     auto rpcPointer = (bcos::cppsdk::jsonrpc::JsonRpcInterface*)rpc;
 
@@ -332,7 +332,7 @@ void bcos_rpc_recover_group_node(void* rpc, const char* group, const char* node,
 
 // startNode
 void bcos_rpc_start_node(void* rpc, const char* group, const char* node,
-    bcos_sdk_struct_response_cb callback, void* context)
+    bcos_sdk_c_struct_response_cb callback, void* context)
 {
     auto rpcPointer = (bcos::cppsdk::jsonrpc::JsonRpcInterface*)rpc;
 
@@ -345,7 +345,7 @@ void bcos_rpc_start_node(void* rpc, const char* group, const char* node,
 
 // stopNode
 void bcos_rpc_stop_node(void* rpc, const char* group, const char* node,
-    bcos_sdk_struct_response_cb callback, void* context)
+    bcos_sdk_c_struct_response_cb callback, void* context)
 {
     auto rpcPointer = (bcos::cppsdk::jsonrpc::JsonRpcInterface*)rpc;
 
@@ -357,7 +357,7 @@ void bcos_rpc_stop_node(void* rpc, const char* group, const char* node,
 }
 
 // getGroupList
-void bcos_rpc_get_group_list(void* rpc, bcos_sdk_struct_response_cb callback, void* context)
+void bcos_rpc_get_group_list(void* rpc, bcos_sdk_c_struct_response_cb callback, void* context)
 {
     auto rpcPointer = (bcos::cppsdk::jsonrpc::JsonRpcInterface*)rpc;
 
@@ -369,7 +369,7 @@ void bcos_rpc_get_group_list(void* rpc, bcos_sdk_struct_response_cb callback, vo
 }
 
 // getGroupInfoList
-void bcos_rpc_get_group_info_list(void* rpc, bcos_sdk_struct_response_cb callback, void* context)
+void bcos_rpc_get_group_info_list(void* rpc, bcos_sdk_c_struct_response_cb callback, void* context)
 {
     auto rpcPointer = (bcos::cppsdk::jsonrpc::JsonRpcInterface*)rpc;
 
@@ -382,7 +382,7 @@ void bcos_rpc_get_group_info_list(void* rpc, bcos_sdk_struct_response_cb callbac
 
 // getGroupInfo
 void bcos_rpc_get_group_info(
-    void* rpc, const char* group, bcos_sdk_struct_response_cb callback, void* context)
+    void* rpc, const char* group, bcos_sdk_c_struct_response_cb callback, void* context)
 {
     auto rpcPointer = (bcos::cppsdk::jsonrpc::JsonRpcInterface*)rpc;
 
@@ -395,7 +395,7 @@ void bcos_rpc_get_group_info(
 
 // getGroupNodeInfo
 void bcos_rpc_get_group_node_info(void* rpc, const char* group, const char* node,
-    bcos_sdk_struct_response_cb callback, void* context)
+    bcos_sdk_c_struct_response_cb callback, void* context)
 {
     auto rpcPointer = (bcos::cppsdk::jsonrpc::JsonRpcInterface*)rpc;
 
@@ -407,7 +407,7 @@ void bcos_rpc_get_group_node_info(void* rpc, const char* group, const char* node
 }
 
 // getNodeInfo // TODO: Temporary interface, should be removed in the end
-void bcos_rpc_get_node_info(void* rpc, bcos_sdk_struct_response_cb callback, void* context)
+void bcos_rpc_get_node_info(void* rpc, bcos_sdk_c_struct_response_cb callback, void* context)
 {
     auto rpcPointer = (bcos::cppsdk::jsonrpc::JsonRpcInterface*)rpc;
 

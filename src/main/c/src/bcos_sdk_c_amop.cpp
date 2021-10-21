@@ -40,7 +40,7 @@ void bcos_amop_subscribe_topic_with_cb(
             bcos::bytesConstRef data, std::shared_ptr<bcos::boostssl::ws::WsSession> session) {
             std::ignore = session;
             // create resp obj
-            bcos_sdk_struct_response resp;
+            bcos_sdk_c_struct_response resp;
             resp.context = context;
             if (error && error->errorCode() != bcos::protocol::CommonError::SUCCESS)
             {
@@ -125,7 +125,7 @@ void bcos_amop_set_subscribe_topic_cb(void* amop, bcos_sdk_c_amop_subscribe_cb c
             bcos::bytesConstRef data, std::shared_ptr<bcos::boostssl::ws::WsSession> session) {
             std::ignore = session;
             // create resp obj
-            bcos_sdk_struct_response resp;
+            bcos_sdk_c_struct_response resp;
             resp.context = context;
             if (error && error->errorCode() != bcos::protocol::CommonError::SUCCESS)
             {

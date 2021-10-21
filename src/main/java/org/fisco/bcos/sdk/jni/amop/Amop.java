@@ -78,7 +78,7 @@ public class Amop {
 
   public native void subscribeTopic(Set<String> topicsName);
 
-  public native void subscribeTopic(String topicName, AmopCallback callback);
+  public native void subscribeTopic(String topicName, AmopRequestCallback callback);
 
   public void unsubscribeTopic(String topicName) {
     Set<String> topicsName = new HashSet<>();
@@ -88,13 +88,13 @@ public class Amop {
 
   public native void unsubscribeTopic(Set<String> topicsName);
 
-  public native void setCallback(AmopCallback cb);
+  public native void setCallback(AmopRequestCallback cb);
 
-  public native void sendAmopMsg(String topic, byte[] content, AmopResponseCallback callback);
+  public native void sendAmopMsg(String topic, byte[] data, int timeout, AmopResponseCallback callback);
 
-  public native void broadcastAmopMsg(String topic, byte[] content);
+  public native void broadcastAmopMsg(String topic, byte[] data);
 
-  public native void sendResponse(String endPoint, String seq, byte[] content);
+  public native void sendResponse(String endPoint, String seq, byte[] data);
 
   public native Set<String> getSubTopics();
 

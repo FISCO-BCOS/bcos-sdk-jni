@@ -22,7 +22,7 @@ static std::string obtain_group_params(JNIEnv* env, jobject self)
     jfieldID groupFieldID = env->GetFieldID(cls, "group", "Ljava/lang/String;");
     if (!groupFieldID)
     {
-        env->FatalError("Can't GetFieldID, obtain_group_params failed");
+        env->FatalError("Cannot  GetFieldID, obtain_group_params failed");
     }
 
     jstring groupString = (jstring)env->GetObjectField(self, groupFieldID);
@@ -30,7 +30,7 @@ static std::string obtain_group_params(JNIEnv* env, jobject self)
     const char* group = env->GetStringUTFChars(groupString, NULL);
     if (group == NULL)
     {
-        env->FatalError("Can't GetStringField, obtain_group_params failed");
+        env->FatalError("Cannot  GetStringField, obtain_group_params failed");
     }
 
     std::string ret(group);
@@ -38,7 +38,8 @@ static std::string obtain_group_params(JNIEnv* env, jobject self)
     return ret;
 }
 
-static void handle_rpc_cb(struct bcos_sdk_struct_response* resp)
+// receive rpc response and call the cb
+static void on_receive_rpc_response(struct bcos_sdk_c_struct_response* resp)
 {
     cb_context* context = (cb_context*)resp->context;
 
@@ -51,12 +52,12 @@ static void handle_rpc_cb(struct bcos_sdk_struct_response* resp)
     jvm->AttachCurrentThread((void**)&env, NULL);
 
     jclass cbClass = env->GetObjectClass(jcallback);
-    // void onResponse(Error error, byte[] msg)
+    // void onResponse(Response)
     jmethodID onRespMethodID =
-        env->GetMethodID(cbClass, "onResponse", "(Lorg/fisco/bcos/sdk/jni/common/Error;[B)V");
+        env->GetMethodID(cbClass, "onResponse", "(Lorg/fisco/bcos/sdk/jni/common/Response)V");
     if (onRespMethodID == NULL)
     {
-        env->FatalError("onResponse methodID is NULL");
+        env->FatalError("Cannot found onResponse methodID");
     }
 
     int error = resp->error;
@@ -65,40 +66,51 @@ static void handle_rpc_cb(struct bcos_sdk_struct_response* resp)
 
     printf(" ## ==> rpc callback, error : %d, msg: %s, data : %s\n", error, desc, data);
 
-    // byte[] msg
+    // Response obj construct begin
+    jclass responseClass = env->FindClass("org/fisco/bcos/sdk/jni/common/Response");
+    if (responseClass == NULL)
+    {
+        env->FatalError("Cannot find org.fisco.bcos.sdk.jni.common.Response class");
+    }
+
+    jmethodID mid = env->GetMethodID(responseClass, "<init>", "()V");
+    jobject responseObj = env->NewObject(responseClass, mid);
+
+    // errorCode
+    jfieldID errorCodeFieldID = env->GetFieldID(responseClass, "errorCode", "I");
+    if (errorCodeFieldID == NULL)
+    {
+        env->FatalError("Cannot find errorCodeFieldID fieldID");
+    }
+
+    // errorMessage
+    jfieldID errorMsgFieldID = env->GetFieldID(responseClass, "errorMessage", "Ljava/lang/String;");
+    if (errorMsgFieldID == NULL)
+    {
+        env->FatalError("Cannot find errorMsgFieldID fieldID");
+    }
+
+    // byte[] data
+    jfieldID dataFieldID = env->GetFieldID(responseClass, "data", "[B");
+    if (errorMsgFieldID == NULL)
+    {
+        env->FatalError("Cannot find data fieldID");
+    }
+
+    jstring errorString = env->NewStringUTF(desc);
+    env->SetLongField(responseObj, errorCodeFieldID, jint(error));
+    env->SetObjectField(responseObj, errorMsgFieldID, errorString);
+
     jbyteArray byteArrayObj = env->NewByteArray(resp->size);
     if (resp->size > 0)
     {
         jbyte* data = (jbyte*)resp->data;
         env->SetByteArrayRegion(byteArrayObj, 0, resp->size, data);
     }
+    env->SetObjectField(responseObj, dataFieldID, byteArrayObj);
 
-    // Error error
-    jclass errorClass = env->FindClass("org/fisco/bcos/sdk/jni/common/Error");
-    if (errorClass == NULL)
-    {
-        env->FatalError("Error jclass is NULL");
-    }
-    jmethodID mid = env->GetMethodID(errorClass, "<init>", "()V");
-    jobject errorObj = env->NewObject(errorClass, mid);
+    env->CallObjectMethod(jcallback, onRespMethodID, responseObj);
 
-    jfieldID errorCodeFieldID = env->GetFieldID(errorClass, "errorCode", "I");
-    if (errorCodeFieldID == NULL)
-    {
-        env->FatalError("errorCode fieldID is NULL");
-    }
-    jfieldID errorMsgFieldID = env->GetFieldID(errorClass, "errorMessage", "Ljava/lang/String;");
-    if (errorMsgFieldID == NULL)
-    {
-        env->FatalError("errorMessage fieldID is NULL");
-    }
-
-    jstring errorString = env->NewStringUTF(desc);
-
-    env->SetLongField(errorObj, errorCodeFieldID, jint(error));
-    env->SetObjectField(errorObj, errorMsgFieldID, errorString);
-
-    env->CallObjectMethod(jcallback, onRespMethodID, errorObj, byteArrayObj);
     // release callback global reference
     env->DeleteGlobalRef(jcallback);
 }
@@ -173,7 +185,7 @@ Java_org_fisco_bcos_sdk_jni_rpc_Rpc_genericMethod__Ljava_lang_String_2Lorg_fisco
 
     // data
     const char* data = env->GetStringUTFChars(jdata, NULL);
-    bcos_rpc_send_msg(rpc, data, handle_rpc_cb, context);
+    bcos_rpc_send_msg(rpc, data, on_receive_rpc_response, context);
     env->ReleaseStringUTFChars(jdata, data);
 }
 
@@ -205,7 +217,7 @@ Java_org_fisco_bcos_sdk_jni_rpc_Rpc_genericMethod__Ljava_lang_String_2Ljava_lang
     // data
     const char* data = env->GetStringUTFChars(jdata, NULL);
 
-    bcos_rpc_send_msg_to_group(rpc, group, data, handle_rpc_cb, context);
+    bcos_rpc_send_msg_to_group(rpc, group, data, on_receive_rpc_response, context);
 
     env->ReleaseStringUTFChars(jgroup, group);
     env->ReleaseStringUTFChars(jdata, data);
@@ -241,7 +253,7 @@ Java_org_fisco_bcos_sdk_jni_rpc_Rpc_genericMethod__Ljava_lang_String_2Ljava_lang
     // data
     const char* data = env->GetStringUTFChars(jdata, NULL);
 
-    bcos_rpc_send_msg_to_group_node(rpc, group, node, data, handle_rpc_cb, context);
+    bcos_rpc_send_msg_to_group_node(rpc, group, node, data, on_receive_rpc_response, context);
 
     env->ReleaseStringUTFChars(jgroup, group);
     env->ReleaseStringUTFChars(jnode, node);
@@ -276,7 +288,7 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_call(
     context->jcallback = env->NewGlobalRef(callback);
     context->jvm = jvm;
 
-    bcos_rpc_call(rpc, group, to, data, handle_rpc_cb, context);
+    bcos_rpc_call(rpc, group, to, data, on_receive_rpc_response, context);
 
     env->ReleaseStringUTFChars(jto, to);
     env->ReleaseStringUTFChars(jdata, data);
@@ -310,7 +322,7 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_sendTransaction(
     context->jcallback = env->NewGlobalRef(callback);
     context->jvm = jvm;
 
-    bcos_rpc_send_transaction(rpc, group, data, proof, handle_rpc_cb, context);
+    bcos_rpc_send_transaction(rpc, group, data, proof, on_receive_rpc_response, context);
 
     env->ReleaseStringUTFChars(jdata, data);
 }
@@ -344,7 +356,7 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getTransaction(
     context->jcallback = env->NewGlobalRef(callback);
     context->jvm = jvm;
 
-    bcos_rpc_get_transaction(rpc, group, tx_hash, proof, handle_rpc_cb, context);
+    bcos_rpc_get_transaction(rpc, group, tx_hash, proof, on_receive_rpc_response, context);
 
     env->ReleaseStringUTFChars(jtx_hash, tx_hash);
 }
@@ -377,7 +389,7 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getTransactionReceipt
     context->jcallback = env->NewGlobalRef(callback);
     context->jvm = jvm;
 
-    bcos_rpc_get_transaction_receipt(rpc, group, tx_hash, proof, handle_rpc_cb, context);
+    bcos_rpc_get_transaction_receipt(rpc, group, tx_hash, proof, on_receive_rpc_response, context);
 
     env->ReleaseStringUTFChars(jtx_hash, tx_hash);
 }
@@ -413,7 +425,7 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getBlockByHash(JNIEnv
     context->jvm = jvm;
 
     bcos_rpc_get_block_by_hash(
-        rpc, group, block_hash, only_header, only_txhash, handle_rpc_cb, context);
+        rpc, group, block_hash, only_header, only_txhash, on_receive_rpc_response, context);
 
     env->ReleaseStringUTFChars(jblock_hash, block_hash);
 }
@@ -449,7 +461,7 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getBlockByNumber(JNIE
     context->jvm = jvm;
 
     bcos_rpc_get_block_by_number(
-        rpc, group, block_number, only_header, only_txhash, handle_rpc_cb, context);
+        rpc, group, block_number, only_header, only_txhash, on_receive_rpc_response, context);
 }
 
 /*
@@ -479,7 +491,7 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getBlockHashByNumber(
     // block number
     long block_number = reinterpret_cast<long>(jnumber);
     // TODO:
-    bcos_rpc_get_block_hash_by_number(rpc, group, block_number, handle_rpc_cb, context);
+    bcos_rpc_get_block_hash_by_number(rpc, group, block_number, on_receive_rpc_response, context);
 }
 
 
@@ -507,7 +519,7 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getBlockNumber(
     context->jcallback = env->NewGlobalRef(callback);
     context->jvm = jvm;
 
-    bcos_rpc_get_block_number(rpc, group, handle_rpc_cb, context);
+    bcos_rpc_get_block_number(rpc, group, on_receive_rpc_response, context);
 }
 
 /*
@@ -536,7 +548,7 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getCode(
     context->jcallback = env->NewGlobalRef(callback);
     context->jvm = jvm;
 
-    bcos_rpc_get_code(rpc, group, address, handle_rpc_cb, context);
+    bcos_rpc_get_code(rpc, group, address, on_receive_rpc_response, context);
     env->ReleaseStringUTFChars(jaddress, address);
 }
 
@@ -564,7 +576,7 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getSealerList(
     context->jcallback = env->NewGlobalRef(callback);
     context->jvm = jvm;
 
-    bcos_rpc_get_sealer_list(rpc, group, handle_rpc_cb, context);
+    bcos_rpc_get_sealer_list(rpc, group, on_receive_rpc_response, context);
 }
 
 /*
@@ -591,7 +603,7 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getObserverList(
     context->jcallback = env->NewGlobalRef(callback);
     context->jvm = jvm;
 
-    bcos_rpc_get_observer_list(rpc, group, handle_rpc_cb, context);
+    bcos_rpc_get_observer_list(rpc, group, on_receive_rpc_response, context);
 }
 /*
  * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
@@ -617,7 +629,7 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getPbftView(
     context->jcallback = env->NewGlobalRef(callback);
     context->jvm = jvm;
 
-    bcos_rpc_get_pbft_view(rpc, group, handle_rpc_cb, context);
+    bcos_rpc_get_pbft_view(rpc, group, on_receive_rpc_response, context);
 }
 
 /*
@@ -644,7 +656,7 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getPendingTxSize(
     context->jcallback = env->NewGlobalRef(callback);
     context->jvm = jvm;
 
-    bcos_rpc_get_pending_tx_size(rpc, group, handle_rpc_cb, context);
+    bcos_rpc_get_pending_tx_size(rpc, group, on_receive_rpc_response, context);
 }
 
 /*
@@ -671,7 +683,7 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getSyncStatus(
     context->jcallback = env->NewGlobalRef(callback);
     context->jvm = jvm;
 
-    bcos_rpc_get_sync_status(rpc, group, handle_rpc_cb, context);
+    bcos_rpc_get_sync_status(rpc, group, on_receive_rpc_response, context);
 }
 
 /*
@@ -700,7 +712,7 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getSystemConfigByKey(
     context->jcallback = env->NewGlobalRef(callback);
     context->jvm = jvm;
 
-    bcos_rpc_get_system_config_by_key(rpc, group, key, handle_rpc_cb, context);
+    bcos_rpc_get_system_config_by_key(rpc, group, key, on_receive_rpc_response, context);
 
     env->ReleaseStringUTFChars(jkey, key);
 }
@@ -729,7 +741,7 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getTotalTransactionCo
     context->jcallback = env->NewGlobalRef(callback);
     context->jvm = jvm;
 
-    bcos_rpc_get_total_transaction_count(rpc, group, handle_rpc_cb, context);
+    bcos_rpc_get_total_transaction_count(rpc, group, on_receive_rpc_response, context);
 }
 
 
@@ -754,7 +766,7 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getPeers(
     context->jcallback = env->NewGlobalRef(callback);
     context->jvm = jvm;
 
-    bcos_rpc_get_peers(rpc, handle_rpc_cb, context);
+    bcos_rpc_get_peers(rpc, on_receive_rpc_response, context);
 }
 
 /*
@@ -778,5 +790,5 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getNodeInfo(
     context->jcallback = env->NewGlobalRef(callback);
     context->jvm = jvm;
 
-    bcos_rpc_get_node_info(rpc, handle_rpc_cb, context);
+    bcos_rpc_get_node_info(rpc, on_receive_rpc_response, context);
 }

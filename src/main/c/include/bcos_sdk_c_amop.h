@@ -9,8 +9,8 @@ extern "C" {
 
 //------------------------- amop callback begin----------------------------
 typedef void (*bcos_sdk_c_amop_subscribe_cb)(
-    const char* endpoint, const char* seq, struct bcos_sdk_struct_response*);
-typedef void (*bcos_sdk_c_amop_publish_cb)(struct bcos_sdk_struct_response*);
+    const char* endpoint, const char* seq, struct bcos_sdk_c_struct_response*);
+typedef void (*bcos_sdk_c_amop_publish_cb)(struct bcos_sdk_c_struct_response*);
 //------------------------- amop callback end -----------------------------
 
 // -------------------------amop interface begin --------------------------

@@ -9,20 +9,20 @@ void* obtain_native_object(JNIEnv* env, jobject self)
     jclass cls = env->GetObjectClass(self);
     if (!cls)
     {
-        env->FatalError("Can't GetObjectClass, obtain_native_object");
+        env->FatalError("Cannot  GetObjectClass, obtain_native_object");
     }
 
     jfieldID nativeFieldID = env->GetFieldID(cls, "nativeObj", "J");
     if (!nativeFieldID)
     {
-        env->FatalError("Can't GetFieldID, obtain_native_object");
+        env->FatalError("Cannot  GetFieldID, obtain_native_object");
     }
 
     jlong nativeObj = env->GetLongField(self, nativeFieldID);
     void* rpc = reinterpret_cast<void*>(nativeObj);
     if (rpc == NULL)
     {
-        env->FatalError("Can't GetFieldID, obtain_native_object");
+        env->FatalError("Cannot  GetFieldID, obtain_native_object");
     }
 
     return rpc;
@@ -48,28 +48,28 @@ struct bcos_sdk_c_config* init_bcos_sdk_c_config(JNIEnv* env, jobject jconfig)
     jobject jpeersOjbect = env->GetObjectField(jconfig, peersFieldID);
     if (jpeersOjbect == NULL)
     {
-        env->FatalError("Can't GetObjectField for peers of JniConfig");
+        env->FatalError("Cannot  GetObjectField for peers of JniConfig");
     }
 
     // Find "java/util/List" Class (Standard JAVA Class).
     jclass listClass = env->FindClass("java/util/List");
     if (listClass == NULL)
     {
-        env->FatalError("Can't Find Class: java/util/List");
+        env->FatalError("Cannot  Find Class: java/util/List");
     }
 
     // Get "java.util.List.get(int location)" MethodID
     jmethodID listGetMethodID = env->GetMethodID(listClass, "get", "(I)Ljava/lang/Object;");
     if (listGetMethodID == NULL)
     {
-        env->FatalError("Can't GetMethodID for java.util.List.get(String)");
+        env->FatalError("Cannot  GetMethodID for java.util.List.get(String)");
     }
 
     // Get "int java.util.List.size()" MethodID
     jmethodID listSizeMethodID = env->GetMethodID(listClass, "size", "()I");
     if (listSizeMethodID == NULL)
     {
-        env->FatalError("Can't GetMethodID for String java.util.List.size()");
+        env->FatalError("Cannot  GetMethodID for String java.util.List.size()");
     }
 
     // String java.util.List.size()
@@ -85,13 +85,13 @@ struct bcos_sdk_c_config* init_bcos_sdk_c_config(JNIEnv* env, jobject jconfig)
         jstring jpeer = (jstring)env->CallObjectMethod(jpeersOjbect, listGetMethodID, i);
         if (jpeer == NULL)
         {
-            env->FatalError("Can't CallObjectMethod(String java.util.List.get)");
+            env->FatalError("Cannot  CallObjectMethod(String java.util.List.get)");
         }
 
         const char* peer = env->GetStringUTFChars(jpeer, NULL);
         if (peer == NULL)
         {
-            env->FatalError("Can't GetStringUTFChars(String java.util.List.get)");
+            env->FatalError("Cannot  GetStringUTFChars(String java.util.List.get)");
         }
 
         bcos::boostssl::ws::EndPoint endPoint;

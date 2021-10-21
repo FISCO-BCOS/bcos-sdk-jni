@@ -24,8 +24,9 @@ public interface EventSubscribeCallback {
    * onReceiveLog called when sdk receive any response of the target subscription. logs will be
    * parsed by the user through the ABI module.
    *
-   * @param error the status that peer response to sdk.
-   * @param eventLogs logs from the message.
+   * @param error the status that peer response to sdk
+   * @param eventID event sub task id
+   * @param eventLogs logs from the message
    */
-  void onReceiveLog(Error error, String eventSubID, String eventLogs);
+  void onReceiveLog(Error error, String eventID, String eventLogs);
 }

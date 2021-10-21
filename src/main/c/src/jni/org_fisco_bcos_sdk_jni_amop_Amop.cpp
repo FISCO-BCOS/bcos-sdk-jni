@@ -10,6 +10,137 @@
 #include <utility>
 #include <vector>
 
+static void on_receive_amop_request(
+    const char* endpoint, const char* seq, struct bcos_sdk_c_struct_response* resp)
+{
+    cb_context* context = (cb_context*)resp->context;
+
+    jobject jcallback = context->jcallback;
+    JavaVM* jvm = context->jvm;
+    // Note: delete cb_context
+    delete context;
+
+    JNIEnv* env;
+    jvm->AttachCurrentThread((void**)&env, NULL);
+
+    jclass cbClass = env->GetObjectClass(jcallback);
+
+    // onRequest(String endpoint, String seq, byte[] msg)
+    jmethodID onRespMethodID =
+        env->GetMethodID(cbClass, "onRequest", "(Ljava.lang.String;Ljava.lang.String;[B)V");
+    if (onRespMethodID == NULL)
+    {
+        env->FatalError("Cannot found onRequest methodID");
+    }
+
+    int error = resp->error;
+    char* desc = resp->desc ? resp->desc : (char*)"";
+    char* data = resp->data ? (char*)resp->data : (char*)"";
+    if (error != 0)  // Note: error
+    {
+        printf(" [error] ## ==> amop request callback, error : %d, msg: %s, data : %s\n", error,
+            desc, data);
+        return;
+    }
+
+    printf(" ## ==> amop request callback, error : %d, msg: %s, data : %s\n", error, desc, data);
+
+    jstring jendpoint = env->NewStringUTF(endpoint);
+    jstring jseq = env->NewStringUTF(seq);
+
+    // byte[] msg
+    jbyteArray byteArrayObj = env->NewByteArray(resp->size);
+    if (resp->size > 0)
+    {
+        jbyte* data = (jbyte*)resp->data;
+        env->SetByteArrayRegion(byteArrayObj, 0, resp->size, data);
+    }
+
+    env->CallObjectMethod(jcallback, onRespMethodID, jendpoint, jseq, byteArrayObj);
+
+    // release callback global reference, Note: the callback should not be unreference, it is not
+    // once used
+
+    // env->DeleteGlobalRef(jcallback);
+}
+
+static void on_receive_amop_response(struct bcos_sdk_c_struct_response* resp)
+{
+    cb_context* context = (cb_context*)resp->context;
+
+    jobject jcallback = context->jcallback;
+    JavaVM* jvm = context->jvm;
+    // Note: delete cb_context
+    delete context;
+
+    JNIEnv* env;
+    jvm->AttachCurrentThread((void**)&env, NULL);
+
+    jclass cbClass = env->GetObjectClass(jcallback);
+    // void onResponse(Response)
+    jmethodID onRespMethodID =
+        env->GetMethodID(cbClass, "onResponse", "(Lorg/fisco/bcos/sdk/jni/common/Response)V");
+    if (onRespMethodID == NULL)
+    {
+        env->FatalError("Cannot found onResponse methodID");
+    }
+
+    int error = resp->error;
+    char* desc = resp->desc ? resp->desc : (char*)"";
+    char* data = resp->data ? (char*)resp->data : (char*)"";
+
+    printf(" ## ==> rpc response callback, error : %d, msg: %s, data : %s\n", error, desc, data);
+
+    // Response obj construct begin
+    jclass responseClass = env->FindClass("org/fisco/bcos/sdk/jni/common/Response");
+    if (responseClass == NULL)
+    {
+        env->FatalError("Cannot find org.fisco.bcos.sdk.jni.common.Response class");
+    }
+
+    jmethodID mid = env->GetMethodID(responseClass, "<init>", "()V");
+    jobject responseObj = env->NewObject(responseClass, mid);
+
+    // errorCode
+    jfieldID errorCodeFieldID = env->GetFieldID(responseClass, "errorCode", "I");
+    if (errorCodeFieldID == NULL)
+    {
+        env->FatalError("Cannot find errorCodeFieldID fieldID");
+    }
+
+    // errorMessage
+    jfieldID errorMsgFieldID = env->GetFieldID(responseClass, "errorMessage", "Ljava/lang/String;");
+    if (errorMsgFieldID == NULL)
+    {
+        env->FatalError("Cannot find errorMsgFieldID fieldID");
+    }
+
+    // byte[] data
+    jfieldID dataFieldID = env->GetFieldID(responseClass, "data", "[B");
+    if (errorMsgFieldID == NULL)
+    {
+        env->FatalError("Cannot find data fieldID");
+    }
+
+    jstring errorString = env->NewStringUTF(desc);
+    env->SetLongField(responseObj, errorCodeFieldID, jint(error));
+    env->SetObjectField(responseObj, errorMsgFieldID, errorString);
+
+    jbyteArray byteArrayObj = env->NewByteArray(resp->size);
+    if (resp->size > 0)
+    {
+        jbyte* data = (jbyte*)resp->data;
+        env->SetByteArrayRegion(byteArrayObj, 0, resp->size, data);
+    }
+    env->SetObjectField(responseObj, dataFieldID, byteArrayObj);
+
+    env->CallObjectMethod(jcallback, onRespMethodID, responseObj);
+
+    //  Note: the callback should not be unreference, it is not
+    // once used
+    // env->DeleteGlobalRef(jcallback);
+}
+
 /*
  * Class:     org_fisco_bcos_sdk_jni_amop_Amop
  * Method:    newNativeObj
@@ -87,7 +218,9 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_Amop_subscribeTopic__Lja
         {
             jstring stringObj = (jstring)env->GetObjectArrayElement(arrayOfElements, i);
             const char* topic = env->GetStringUTFChars(stringObj, 0);
-            printf(" ==> index: %d, topic: %s\n", i, topic);
+
+            // printf(" ==> index: %d, topic: %s\n", i, topic);
+
             topics[i] = strdup(topic);
             env->ReleaseStringUTFChars(stringObj, topic);
         }
@@ -111,11 +244,20 @@ Java_org_fisco_bcos_sdk_jni_amop_Amop_subscribeTopic__Ljava_lang_String_2Lorg_fi
     JNIEnv* env, jobject self, jstring jtopic, jobject jcallback)
 {
     void* amop = obtain_native_object(env, self);
-    (void)amop;
 
     const char* topic = env->GetStringUTFChars(jtopic, 0);
 
-    (void)jcallback;
+    // Note: The JNIEnv pointer, passed as the first argument to every native method, can only be
+    // used in the thread with which it is associated. It is wrong to cache the JNIEnv interface
+    // pointer obtained from one thread, and use that pointer in another thread.
+    JavaVM* jvm;
+    env->GetJavaVM(&jvm);
+
+    cb_context* context = new cb_context();
+    context->jcallback = env->NewGlobalRef(jcallback);
+    context->jvm = jvm;
+
+    bcos_amop_subscribe_topic_with_cb(amop, topic, on_receive_amop_request, context);
 
     // release topic
     env->ReleaseStringUTFChars(jtopic, topic);
@@ -172,23 +314,54 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_Amop_unsubscribeTopic(
  * Signature: (Lorg/fisco/bcos/sdk/jni/amop/AmopCallback;)V
  */
 JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_Amop_setCallback(
-    JNIEnv* env, jobject, jobject callback)
+    JNIEnv* env, jobject self, jobject jcallback)
 {
-    std::ignore = env;
-    std::ignore = callback;
+    void* amop = obtain_native_object(env, self);
+
+    // Note: The JNIEnv pointer, passed as the first argument to every native method, can only be
+    // used in the thread with which it is associated. It is wrong to cache the JNIEnv interface
+    // pointer obtained from one thread, and use that pointer in another thread.
+    JavaVM* jvm;
+    env->GetJavaVM(&jvm);
+
+    cb_context* context = new cb_context();
+    context->jcallback = env->NewGlobalRef(jcallback);
+    context->jvm = jvm;
+
+    bcos_amop_set_subscribe_topic_cb(amop, on_receive_amop_request, context);
 }
 
 /*
  * Class:     org_fisco_bcos_sdk_jni_amop_Amop
  * Method:    sendAmopMsg
- * Signature: ([BLorg/fisco/bcos/sdk/jni/amop/AmopResponseCallback;)V
+ * Signature: (Ljava/lang/String;[BILorg/fisco/bcos/sdk/jni/amop/AmopResponseCallback;)V
  */
 JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_Amop_sendAmopMsg(
-    JNIEnv* env, jobject, jbyteArray data, jobject callback)
+    JNIEnv* env, jobject self, jstring jtopic, jbyteArray jdata, jint jtimeout, jobject jcallback)
 {
-    std::ignore = env;
-    std::ignore = data;
-    std::ignore = callback;
+    void* amop = obtain_native_object(env, self);
+
+    // Note: The JNIEnv pointer, passed as the first argument to every native method, can only be
+    // used in the thread with which it is associated. It is wrong to cache the JNIEnv interface
+    // pointer obtained from one thread, and use that pointer in another thread.
+    JavaVM* jvm;
+    env->GetJavaVM(&jvm);
+
+    cb_context* context = new cb_context();
+    context->jcallback = env->NewGlobalRef(jcallback);
+    context->jvm = jvm;
+
+    const char* topic = env->GetStringUTFChars(jtopic, 0);
+
+    int timeout = (int)jtimeout;
+
+    jsize len = env->GetArrayLength(jdata);
+    jbyte* data = (jbyte*)env->GetByteArrayElements(jdata, 0);
+
+    bcos_amop_publish(
+        amop, topic, (void*)data, (size_t)len, timeout, on_receive_amop_response, context);
+    // release topic
+    env->ReleaseStringUTFChars(jtopic, topic);
 }
 
 /*
@@ -205,10 +378,6 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_Amop_broadcastAmopMsg(
     jsize len = env->GetArrayLength(jdata);
     jbyte* data = (jbyte*)env->GetByteArrayElements(jdata, 0);
 
-    std::string msg;
-    msg.insert(msg.begin(), (char*)data, (char*)data + len);
-    // printf(" ===>>>> broadcast message: %s\n", msg.c_str());
-
     bcos_amop_broadcast(amop, topic, (void*)data, (size_t)len);
 
     // release topic
@@ -223,6 +392,8 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_Amop_broadcastAmopMsg(
 JNIEXPORT jobject JNICALL Java_org_fisco_bcos_sdk_jni_amop_Amop_getSubTopics(
     JNIEnv* env, jobject self)
 {
+    // TODO:
+
     std::ignore = env;
     std::ignore = self;
 

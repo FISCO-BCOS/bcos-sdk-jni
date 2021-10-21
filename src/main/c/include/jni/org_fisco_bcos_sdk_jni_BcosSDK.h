@@ -12,48 +12,36 @@ extern "C" {
  * Method:    newNativeObj
  * Signature: (Lorg/fisco/bcos/sdk/jni/common/JniConfig;)J
  */
-JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_BcosSDK_newNativeObj
-  (JNIEnv *, jclass, jobject);
-
-/*
- * Class:     org_fisco_bcos_sdk_jni_BcosSDK
- * Method:    build
- * Signature: (Lorg/fisco/bcos/sdk/jni/common/JniConfig;)Lorg/fisco/bcos/sdk/jni/BcosSDK;
- */
-JNIEXPORT jobject JNICALL Java_org_fisco_bcos_sdk_jni_BcosSDK_build
-  (JNIEnv *, jclass, jobject);
+JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_BcosSDK_newNativeObj(JNIEnv*, jclass, jobject);
 
 /*
  * Class:     org_fisco_bcos_sdk_jni_BcosSDK
  * Method:    getRpc
  * Signature: (Ljava/lang/String;)Lorg/fisco/bcos/sdk/jni/rpc/Rpc;
  */
-JNIEXPORT jobject JNICALL Java_org_fisco_bcos_sdk_jni_BcosSDK_getRpc
-  (JNIEnv *, jobject, jstring);
+JNIEXPORT jobject JNICALL Java_org_fisco_bcos_sdk_jni_BcosSDK_getRpc(JNIEnv*, jobject, jstring);
 
 /*
  * Class:     org_fisco_bcos_sdk_jni_BcosSDK
  * Method:    getAmop
  * Signature: ()Lorg/fisco/bcos/sdk/jni/amop/Amop;
  */
-JNIEXPORT jobject JNICALL Java_org_fisco_bcos_sdk_jni_BcosSDK_getAmop
-  (JNIEnv *, jobject);
+JNIEXPORT jobject JNICALL Java_org_fisco_bcos_sdk_jni_BcosSDK_getAmop(JNIEnv*, jobject);
 
 /*
  * Class:     org_fisco_bcos_sdk_jni_BcosSDK
  * Method:    getEventSubscribe
  * Signature: (Ljava/lang/String;)Lorg/fisco/bcos/sdk/jni/event/EventSubscribe;
  */
-JNIEXPORT jobject JNICALL Java_org_fisco_bcos_sdk_jni_BcosSDK_getEventSubscribe
-  (JNIEnv *, jobject, jstring);
+JNIEXPORT jobject JNICALL Java_org_fisco_bcos_sdk_jni_BcosSDK_getEventSubscribe(
+    JNIEnv*, jobject, jstring);
 
 /*
  * Class:     org_fisco_bcos_sdk_jni_BcosSDK
- * Method:    stopAll
+ * Method:    finalize
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_BcosSDK_stopAll
-  (JNIEnv *, jobject);
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_BcosSDK_finalize(JNIEnv*, jobject);
 
 #ifdef __cplusplus
 }

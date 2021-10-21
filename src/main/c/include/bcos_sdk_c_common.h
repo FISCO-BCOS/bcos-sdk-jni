@@ -68,7 +68,7 @@ void bcos_sdk_c_sm_cert_config_release(void* p);
 
 //--------------- callback begin------------
 // response
-struct bcos_sdk_struct_response
+struct bcos_sdk_c_struct_response
 {
     int error;   // status code
     char* desc;  // status describe
@@ -79,13 +79,13 @@ struct bcos_sdk_struct_response
     void* context;  // callback context
 };
 
-typedef void (*bcos_sdk_struct_response_cb)(struct bcos_sdk_struct_response*);
+typedef void (*bcos_sdk_c_struct_response_cb)(struct bcos_sdk_c_struct_response*);
 //--------------- callback end------------
 
 // handle callback
 void bcos_sdk_c_handle_response(
-    void* error, void* data, size_t size, bcos_sdk_struct_response_cb callback, void* context);
-// release bcos_sdk_struct_response object
+    void* error, void* data, size_t size, bcos_sdk_c_struct_response_cb callback, void* context);
+// release bcos_sdk_c_struct_response object
 void bcos_sdk_c_release_response(void* p);
 
 #ifdef __cplusplus

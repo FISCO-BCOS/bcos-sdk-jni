@@ -72,10 +72,10 @@ void bcos_sdk_c_config_destroy(void* p)
 
 
 void bcos_sdk_c_handle_response(
-    void* error, void* data, size_t size, bcos_sdk_struct_response_cb callback, void* context)
+    void* error, void* data, size_t size, bcos_sdk_c_struct_response_cb callback, void* context)
 {
-    // auto resp = new bcos_sdk_struct_response();
-    bcos_sdk_struct_response temp_resp;
+    // auto resp = new bcos_sdk_c_struct_response();
+    bcos_sdk_c_struct_response temp_resp;
     auto resp = &temp_resp;
     resp->context = context;
 
@@ -98,10 +98,10 @@ void bcos_sdk_c_handle_response(
     callback(resp);
 }
 
-// release bcos_sdk_struct_response object
+// release bcos_sdk_c_struct_response object
 void bcos_sdk_c_release_response(void* p)
 {
     (void)p;
     return;
-    // delete (bcos_sdk_struct_response *)p;
+    // delete (bcos_sdk_c_struct_response *)p;
 }

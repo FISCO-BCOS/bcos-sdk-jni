@@ -40,10 +40,10 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_Amop_subscribeTopic__Lja
 /*
  * Class:     org_fisco_bcos_sdk_jni_amop_Amop
  * Method:    subscribeTopic
- * Signature: (Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/amop/AmopCallback;)V
+ * Signature: (Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/amop/AmopRequestCallback;)V
  */
 JNIEXPORT void JNICALL
-Java_org_fisco_bcos_sdk_jni_amop_Amop_subscribeTopic__Ljava_lang_String_2Lorg_fisco_bcos_sdk_jni_amop_AmopCallback_2(
+Java_org_fisco_bcos_sdk_jni_amop_Amop_subscribeTopic__Ljava_lang_String_2Lorg_fisco_bcos_sdk_jni_amop_AmopRequestCallback_2(
     JNIEnv*, jobject, jstring, jobject);
 
 /*
@@ -57,17 +57,17 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_Amop_unsubscribeTopic(
 /*
  * Class:     org_fisco_bcos_sdk_jni_amop_Amop
  * Method:    setCallback
- * Signature: (Lorg/fisco/bcos/sdk/jni/amop/AmopCallback;)V
+ * Signature: (Lorg/fisco/bcos/sdk/jni/amop/AmopRequestCallback;)V
  */
 JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_Amop_setCallback(JNIEnv*, jobject, jobject);
 
 /*
  * Class:     org_fisco_bcos_sdk_jni_amop_Amop
  * Method:    sendAmopMsg
- * Signature: (Ljava/lang/String;[BLorg/fisco/bcos/sdk/jni/amop/AmopResponseCallback;)V
+ * Signature: (Ljava/lang/String;[BILorg/fisco/bcos/sdk/jni/amop/AmopResponseCallback;)V
  */
 JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_Amop_sendAmopMsg(
-    JNIEnv*, jobject, jstring, jbyteArray, jobject);
+    JNIEnv*, jobject, jstring, jbyteArray, jint, jobject);
 
 /*
  * Class:     org_fisco_bcos_sdk_jni_amop_Amop
@@ -76,6 +76,14 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_Amop_sendAmopMsg(
  */
 JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_Amop_broadcastAmopMsg(
     JNIEnv*, jobject, jstring, jbyteArray);
+
+/*
+ * Class:     org_fisco_bcos_sdk_jni_amop_Amop
+ * Method:    sendResponse
+ * Signature: (Ljava/lang/String;Ljava/lang/String;[B)V
+ */
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_Amop_sendResponse(
+    JNIEnv*, jobject, jstring, jstring, jbyteArray);
 
 /*
  * Class:     org_fisco_bcos_sdk_jni_amop_Amop

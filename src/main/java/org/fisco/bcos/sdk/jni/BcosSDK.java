@@ -41,7 +41,21 @@ public class BcosSDK {
    * @param jniConfig
    * @return
    */
-  public static native BcosSDK build(JniConfig jniConfig);
+  public static BcosSDK build(JniConfig jniConfig) {
+    long nativeObj = newNativeObj(jniConfig);
+    if (nativeObj == 0) {
+      // TODO: error handler
+    }
+
+    logger.info("newNativeObj, nativeObj: {}, jniConfig: {}", nativeObj, jniConfig);
+
+    BcosSDK sdk = new BcosSDK();
+    sdk.setNativeObj(nativeObj);
+    sdk.setJniConfig(jniConfig);
+    return sdk;
+  }
+
+  private BcosSDK() {}
 
   private long nativeObj;
   private JniConfig jniConfig;
@@ -62,11 +76,14 @@ public class BcosSDK {
     this.jniConfig = jniConfig;
   }
 
+  // ----------------------------- SDK interface begin --------------------------------------
+
   public native Rpc getRpc(String group);
 
   public native Amop getAmop();
 
   public native EventSubscribe getEventSubscribe(String group);
 
-  public native void stopAll();
+  // ----------------------------- SDK interface begin --------------------------------------
+  public native void finalize();
 }

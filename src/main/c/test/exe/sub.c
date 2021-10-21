@@ -14,7 +14,7 @@ void usage()
     exit(0);
 }
 
-void sub_cb(const char* endpoint, const char* seq, struct bcos_sdk_struct_response* resp)
+void sub_cb(const char* endpoint, const char* seq, struct bcos_sdk_c_struct_response* resp)
 {
     printf(" ==> receive request, status: %d, data: %s\n", resp->error, (char*)resp->data);
     bcos_amop_send_response(resp->context, endpoint, seq, resp->data, resp->size);

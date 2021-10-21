@@ -15,7 +15,7 @@ void usage()
     exit(0);
 }
 
-void callback(struct bcos_sdk_struct_response* resp)
+void callback(struct bcos_sdk_c_struct_response* resp)
 {
     printf(" ==> receive response, status: %d, data: %s\n", resp->error, (char*)resp->data);
 }

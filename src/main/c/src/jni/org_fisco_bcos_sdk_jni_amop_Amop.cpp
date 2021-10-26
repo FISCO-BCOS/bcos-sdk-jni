@@ -3,6 +3,7 @@
 #include "bcos_sdk_c_amop.h"
 #include "bcos_sdk_c_common.h"
 #include "jni/org_fisco_bcos_sdk_common.h"
+#include <string.h>
 #include <algorithm>
 #include <cstdio>
 #include <string>

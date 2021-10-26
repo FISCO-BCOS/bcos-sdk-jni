@@ -21,6 +21,9 @@ cd src/main/c/
     echo " == clean bcos-cmake-scripts "
 }
 
+export CFLAGS="${CFLAGS} -fPIC"
+export CXXFLAGS="${CXXFLAGS} -fPIC"
+
 mkdir -p build && cd build
 cmake ../
 make -j4

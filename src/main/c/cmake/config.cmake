@@ -11,7 +11,7 @@ hunter_config(bcos-cpp-sdk
 )
 
 hunter_config(bcos-framework VERSION 3.0.0-33486b94
-	URL https://${URL_BASE}/ywy2090/bcos-framework/archive/be46e2d1c39c3f5bef3eccbab682c04233c58888.tar.gz
-	SHA1 c0ec3bcbaa636f4c5e5af7d158045f7b2ade1fce
+	URL https://${URL_BASE}/FISCO-BCOS/bcos-framework/archive/31185b68ebde9c03803f5711a546c83186945ff0.tar.gz
+	SHA1 f7b25fd567c9303a68c6d47942670a1f443d390a
 	CMAKE_ARGS HUNTER_PACKAGE_LOG_BUILD=ON HUNTER_PACKAGE_LOG_INSTALL=ON
 )

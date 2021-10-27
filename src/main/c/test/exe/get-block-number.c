@@ -7,9 +7,10 @@
 
 void usage()
 {
-    printf("Usage: get-block-number <host> <port>\n");
+    printf("Usage: get-block-number <host> <port> <node>(optional)\n");
     printf("Example:\n");
     printf("    ./get-block-number 127.0.0.1 20200\n");
+    printf("    ./get-block-number 127.0.0.1 20200 node0\n");
     exit(0);
 }
 
@@ -30,6 +31,8 @@ int main(int argc, char** argv)
 
     char* host = argv[1];
     uint16_t port = atoi(argv[2]);
+
+    char* node = argc > 3 ? argv[3] : "";
 
     // ini bcos_sdk_c_config
     struct bcos_sdk_c_config config;
@@ -76,8 +79,8 @@ int main(int argc, char** argv)
     {
         sleep(5);
         int con_count = bcos_ws_connection_count(ws);
-        printf(" ==> websocket connection count: %d\n", con_count);
-        bcos_rpc_get_block_number(rpc, group, callback, rpc);
+        printf(" ==> websockets connection count: %d\n", con_count);
+        bcos_rpc_get_block_number(rpc, group, node, callback, rpc);
     }
 
     return 0;

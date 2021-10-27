@@ -133,7 +133,11 @@ public class Rpc {
 
   public native void getPeers(RpcCallback callback);
 
-  public native void getNodeInfo(RpcCallback callback);
+  public native void getGroupList();
+
+  public native void getGroupInfoList();
+
+  public native void getGroupNodeInfo();
 
   // ----------------------------- RPC interface end --------------------------------------
 }

@@ -90,28 +90,30 @@ public class Rpc {
 
   public native void stop();
 
-  //-----------------------------------------------------------------------------------------
+  // -----------------------------------------------------------------------------------------
   public native void genericMethod(String data, RpcCallback callback);
 
   public native void genericMethod(String group, String data, RpcCallback callback);
 
   public native void genericMethod(String group, String node, String data, RpcCallback callback);
-  //-----------------------------------------------------------------------------------------
+  // -----------------------------------------------------------------------------------------
 
   public native void call(String group, String to, String data, RpcCallback callback);
 
-  public native void sendTransaction(String group, String data, boolean requireProof, RpcCallback callback);
+  public native void sendTransaction(
+      String group, String data, boolean requireProof, RpcCallback callback);
 
-  public native void getTransaction(String group, String txHash, boolean requireProof, RpcCallback callback);
+  public native void getTransaction(
+      String group, String txHash, boolean requireProof, RpcCallback callback);
 
-  public native void getTransactionReceipt(String group,
-      String txHash, boolean requireProof, RpcCallback callback);
+  public native void getTransactionReceipt(
+      String group, String txHash, boolean requireProof, RpcCallback callback);
 
-  public native void getBlockByHash(String group,
-      String blockHash, boolean onlyHeader, boolean onlyTxHash, RpcCallback callback);
+  public native void getBlockByHash(
+      String group, String blockHash, boolean onlyHeader, boolean onlyTxHash, RpcCallback callback);
 
-  public native void getBlockByNumber(String group,
-      long blockNumber, boolean onlyHeader, boolean onlyTxHash, RpcCallback callback);
+  public native void getBlockByNumber(
+      String group, long blockNumber, boolean onlyHeader, boolean onlyTxHash, RpcCallback callback);
 
   public native void getBlockHashByNumber(String group, long blockNumber, RpcCallback callback);
 
@@ -125,7 +127,7 @@ public class Rpc {
 
   public native void getPbftView(String group, RpcCallback callback);
 
-  public native void getPendingTxSize(String group,String node, RpcCallback callback);
+  public native void getPendingTxSize(String group, String node, RpcCallback callback);
 
   public native void getSyncStatus(String group, String node, RpcCallback callback);
 

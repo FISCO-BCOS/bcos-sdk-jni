@@ -25,13 +25,14 @@ public class GetBlock {
     }
 
     String endpoint = args[1];
-      String group = args[2];
+    String group = args[2];
     JniConfig jniConfig = Utility.newJniConfig(Arrays.asList(endpoint));
     Rpc rpc = Rpc.build(group, jniConfig);
     rpc.start();
 
     while (true) {
-      rpc.getBlockNumber(group,
+      rpc.getBlockNumber(
+          group,
           new RpcCallback() {
             @Override
             public void onResponse(Response response) {
@@ -39,7 +40,8 @@ public class GetBlock {
             }
           });
 
-      rpc.getBlockByNumber(group,
+      rpc.getBlockByNumber(
+          group,
           0,
           false,
           false,

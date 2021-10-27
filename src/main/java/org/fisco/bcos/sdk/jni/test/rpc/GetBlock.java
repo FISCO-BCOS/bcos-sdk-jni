@@ -12,25 +12,26 @@ public class GetBlock {
   public static void usage() {
     System.out.println("\tUsage: ");
     System.out.println(
-        "\t\t\"java -cp \"conf/:lib/*:apps/*\"  org.fisco.bcos.sdk.jni.test.amop.GetBlock ip:port");
+        "\t\t\"java -cp \"conf/:lib/*:apps/*\"  org.fisco.bcos.sdk.jni.test.amop.GetBlock ip:port group");
     System.out.println("\tExample:");
     System.out.println(
-        "\t\t\"java -cp \"conf/:lib/*:apps/*\"  org.fisco.bcos.sdk.jni.test.amop.GetBlock 127.0.0.1:20201");
+        "\t\t\"java -cp \"conf/:lib/*:apps/*\"  org.fisco.bcos.sdk.jni.test.amop.GetBlock group0 127.0.0.1:20201");
     System.exit(0);
   }
 
   public static void main(String[] args) {
-    if (args.length < 2) {
+    if (args.length < 3) {
       usage();
     }
 
     String endpoint = args[1];
+      String group = args[2];
     JniConfig jniConfig = Utility.newJniConfig(Arrays.asList(endpoint));
-    Rpc rpc = Rpc.build("group", jniConfig);
+    Rpc rpc = Rpc.build(group, jniConfig);
     rpc.start();
 
     while (true) {
-      rpc.getBlockNumber(
+      rpc.getBlockNumber(group,
           new RpcCallback() {
             @Override
             public void onResponse(Response response) {
@@ -38,7 +39,7 @@ public class GetBlock {
             }
           });
 
-      rpc.getBlockByNumber(
+      rpc.getBlockByNumber(group,
           0,
           false,
           false,

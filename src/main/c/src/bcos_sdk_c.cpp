@@ -44,7 +44,7 @@ void* bcos_sdk_create(struct bcos_sdk_c_config* config)
     auto factory = std::make_shared<bcos::cppsdk::SdkFactory>();
     factory->setConfig(initWsConfig(config));
 
-    auto wsService = factory->buildWsService();
+    auto wsService = factory->buildService();
 
     auto rpc = factory->buildJsonRpc(wsService);
     auto amop = factory->buildAMOP(wsService);
@@ -133,7 +133,7 @@ void* bcos_sdk_create_rpc(struct bcos_sdk_c_config* config)
     auto factory = std::make_shared<bcos::cppsdk::SdkFactory>();
     factory->setConfig(wsConfig);
 
-    auto wsService = factory->buildWsService();
+    auto wsService = factory->buildService();
     auto rpc = factory->buildJsonRpc(wsService);
 
     auto rpcPointer = rpc.release();
@@ -182,7 +182,7 @@ void* bcos_sdk_create_amop(struct bcos_sdk_c_config* config)
     auto factory = std::make_shared<bcos::cppsdk::SdkFactory>();
     factory->setConfig(wsConfig);
 
-    auto wsService = factory->buildWsService();
+    auto wsService = factory->buildService();
     auto amop = factory->buildAMOP(wsService);
 
     auto amopPointer = amop.release();
@@ -231,7 +231,7 @@ void* bcos_sdk_create_event_sub(struct bcos_sdk_c_config* config)
     auto factory = std::make_shared<bcos::cppsdk::SdkFactory>();
     factory->setConfig(wsConfig);
 
-    auto wsService = factory->buildWsService();
+    auto wsService = factory->buildService();
     auto event = factory->buildEventSub(wsService);
 
     auto eventPointer = event.release();

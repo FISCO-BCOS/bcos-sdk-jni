@@ -90,54 +90,58 @@ public class Rpc {
 
   public native void stop();
 
+  //-----------------------------------------------------------------------------------------
   public native void genericMethod(String data, RpcCallback callback);
 
   public native void genericMethod(String group, String data, RpcCallback callback);
 
   public native void genericMethod(String group, String node, String data, RpcCallback callback);
+  //-----------------------------------------------------------------------------------------
 
-  public native void call(String to, String data, RpcCallback callback);
+  public native void call(String group, String to, String data, RpcCallback callback);
 
-  public native void sendTransaction(String data, boolean requireProof, RpcCallback callback);
+  public native void sendTransaction(String group, String data, boolean requireProof, RpcCallback callback);
 
-  public native void getTransaction(String txHash, boolean requireProof, RpcCallback callback);
+  public native void getTransaction(String group, String txHash, boolean requireProof, RpcCallback callback);
 
-  public native void getTransactionReceipt(
+  public native void getTransactionReceipt(String group,
       String txHash, boolean requireProof, RpcCallback callback);
 
-  public native void getBlockByHash(
+  public native void getBlockByHash(String group,
       String blockHash, boolean onlyHeader, boolean onlyTxHash, RpcCallback callback);
 
-  public native void getBlockByNumber(
+  public native void getBlockByNumber(String group,
       long blockNumber, boolean onlyHeader, boolean onlyTxHash, RpcCallback callback);
 
-  public native void getBlockHashByNumber(long blockNumber, RpcCallback callback);
+  public native void getBlockHashByNumber(String group, long blockNumber, RpcCallback callback);
 
-  public native void getBlockNumber(RpcCallback callback);
+  public native void getBlockNumber(String group, RpcCallback callback);
 
-  public native void getCode(String contractAddress, RpcCallback callback);
+  public native void getCode(String group, String contractAddress, RpcCallback callback);
 
-  public native void getSealerList(RpcCallback callback);
+  public native void getSealerList(String group, RpcCallback callback);
 
-  public native void getObserverList(RpcCallback callback);
+  public native void getObserverList(String group, RpcCallback callback);
 
-  public native void getPbftView(RpcCallback callback);
+  public native void getPbftView(String group, RpcCallback callback);
 
-  public native void getPendingTxSize(RpcCallback callback);
+  public native void getPendingTxSize(String group,String node, RpcCallback callback);
 
-  public native void getSyncStatus(RpcCallback callback);
+  public native void getSyncStatus(String group, String node, RpcCallback callback);
 
-  public native void getSystemConfigByKey(String keyValue, RpcCallback callback);
+  public native void getSystemConfigByKey(String group, String keyValue, RpcCallback callback);
 
-  public native void getTotalTransactionCount(RpcCallback callback);
+  public native void getTotalTransactionCount(String group, RpcCallback callback);
 
   public native void getPeers(RpcCallback callback);
 
-  public native void getGroupList();
+  public native void getGroupList(RpcCallback callback);
 
-  public native void getGroupInfoList();
+  public native void getGroupInfo(String group, RpcCallback callback);
 
-  public native void getGroupNodeInfo();
+  public native void getGroupInfoList(RpcCallback callback);
+
+  public native void getGroupNodeInfo(String group, String node, RpcCallback callback);
 
   // ----------------------------- RPC interface end --------------------------------------
 }

@@ -15,17 +15,18 @@ public class GetBlock {
         "\t\t\"java -cp \"conf/:lib/*:apps/*\"  org.fisco.bcos.sdk.jni.test.amop.GetBlock ip:port group");
     System.out.println("\tExample:");
     System.out.println(
-        "\t\t\"java -cp \"conf/:lib/*:apps/*\"  org.fisco.bcos.sdk.jni.test.amop.GetBlock group0 127.0.0.1:20201");
+        "\t\t\"java -cp \"conf/:lib/*:apps/*\"  org.fisco.bcos.sdk.jni.test.amop.GetBlock 127.0.0.1:20201 group0");
     System.exit(0);
   }
 
   public static void main(String[] args) {
-    if (args.length < 3) {
+    if (args.length < 2) {
+      System.out.println("args length = " + args.length);
       usage();
     }
 
-    String endpoint = args[1];
-    String group = args[2];
+    String endpoint = args[0];
+    String group = args[1];
     JniConfig jniConfig = Utility.newJniConfig(Arrays.asList(endpoint));
     Rpc rpc = Rpc.build(group, jniConfig);
     rpc.start();
@@ -39,18 +40,16 @@ public class GetBlock {
               System.out.println("getBlockNumber ==>>>" + response);
             }
           });
-
-      rpc.getBlockByNumber(
+      /*
+      rpc.getGroupInfo(
           group,
-          0,
-          false,
-          false,
           new RpcCallback() {
             @Override
             public void onResponse(Response response) {
-              System.out.println("getBlockByNumber ==>>>" + response);
+              System.out.println("getBlockNumber ==>>>" + response);
             }
           });
+      */
       try {
         Thread.sleep(1000);
       } catch (InterruptedException e) {

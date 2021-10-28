@@ -28,7 +28,7 @@ dependencies {
 
 archivesBaseName = 'fisco-bcos-java-sdk-jni'
 group = 'org.fisco-bcos'
-version = '3.0.0-SNAPSHOT'
+version = '3.0.0-10270-SNAPSHOT'
 
 // Additional attribute definition
 ext {
@@ -76,6 +76,11 @@ jar {
 
         copy {
             from file('src/test/resources/log4j.properties')
+            into 'dist/conf'
+        }
+
+        copy {
+            from file('src/test/resources/clog.ini')
             into 'dist/conf'
         }
     }

@@ -28,7 +28,7 @@ dependencies {
 
 archivesBaseName = 'fisco-bcos-java-sdk-jni'
 group = 'org.fisco-bcos'
-version = '3.0.0-10270-SNAPSHOT'
+version = '3.0.0-102700-SNAPSHOT'
 
 // Additional attribute definition
 ext {

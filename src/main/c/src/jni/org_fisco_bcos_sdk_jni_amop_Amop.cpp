@@ -34,6 +34,7 @@ static void on_receive_amop_request(
         env->FatalError("Cannot found onRequest methodID");
     }
 
+#if 0
     int error = resp->error;
     char* desc = resp->desc ? resp->desc : (char*)"";
     char* data = resp->data ? (char*)resp->data : (char*)"";
@@ -44,8 +45,10 @@ static void on_receive_amop_request(
         return;
     }
 
-    printf(" ## ==> amop request callback, endpoint: %s, seq: %s, error : %d, msg: %s, data : %s\n",
-        endpoint, seq, error, desc, data);
+    // printf(" ## ==> amop request callback, endpoint: %s, seq: %s, error : %d, msg: %s, data :
+    // %s\n",
+    //     endpoint, seq, error, desc, data);
+#endif
 
     jstring jendpoint = env->NewStringUTF(endpoint);
     jstring jseq = env->NewStringUTF(seq);
@@ -87,11 +90,13 @@ static void on_receive_amop_response(struct bcos_sdk_c_struct_response* resp)
         env->FatalError("Cannot found onResponse methodID");
     }
 
+
     int error = resp->error;
     char* desc = resp->desc ? resp->desc : (char*)"";
+#if 0
     char* data = resp->data ? (char*)resp->data : (char*)"";
-
     printf(" ## ==> rpc response callback, error : %d, msg: %s, data : %s\n", error, desc, data);
+#endif
 
     // Response obj construct begin
     jclass responseClass = env->FindClass("org/fisco/bcos/sdk/jni/common/Response");

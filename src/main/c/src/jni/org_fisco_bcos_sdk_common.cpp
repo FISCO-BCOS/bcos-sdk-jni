@@ -97,7 +97,7 @@ struct bcos_sdk_c_config* init_bcos_sdk_c_config(JNIEnv* env, jobject jconfig)
         bcos::boostssl::ws::EndPoint endPoint;
         if (!bcos::boostssl::ws::WsTools::stringToEndPoint(peer, endPoint))
         {
-            printf(" ## ==> index: %d, peer: %s\n", i, peer);
+            // printf(" ## ==> index: %d, peer: %s\n", i, peer);
             env->FatalError("Not valid connected peer");
             continue;
         }
@@ -107,7 +107,7 @@ struct bcos_sdk_c_config* init_bcos_sdk_c_config(JNIEnv* env, jobject jconfig)
             ep[i].port = endPoint.port;
         }
 
-        printf(" ## ==> index: %d, peer: %s\n", i, peer);
+        // printf(" ## ==> index: %d, peer: %s\n", i, peer);
         env->ReleaseStringUTFChars(jpeer, peer);
     }
 

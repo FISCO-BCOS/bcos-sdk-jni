@@ -36,9 +36,12 @@ static void on_receive_rpc_response(struct bcos_sdk_c_struct_response* resp)
 
     int error = resp->error;
     char* desc = resp->desc ? resp->desc : (char*)"";
+
+#if 0
     char* data = resp->data ? (char*)resp->data : (char*)"";
 
     printf(" ## ==> rpc callback, error : %d, msg: %s, data : %s\n", error, desc, data);
+#endif
 
     // Response obj construct begin
     jclass responseClass = env->FindClass("org/fisco/bcos/sdk/jni/common/Response");

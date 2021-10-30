@@ -26,10 +26,12 @@ static void on_receive_event_sub_response(struct bcos_sdk_c_struct_response* res
 
     int error = resp->error;
     char* desc = resp->desc ? resp->desc : (char*)"";
+#if 0
     char* data = resp->data ? (char*)resp->data : (char*)"";
 
-    printf(
-        " ## ==> event sub response callback, error : %d, msg: %s, data : %s\n", error, desc, data);
+     printf(
+     " ## ==> event sub response callback, error : %d, msg: %s, data : %s\n", error, desc, data);
+#endif
 
     // Response obj construct begin
     jclass responseClass = env->FindClass("org/fisco/bcos/sdk/jni/common/Response");

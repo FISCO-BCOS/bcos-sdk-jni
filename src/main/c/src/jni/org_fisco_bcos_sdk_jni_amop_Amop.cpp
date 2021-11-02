@@ -26,12 +26,15 @@ static void on_receive_amop_request(
 
     jclass cbClass = env->GetObjectClass(jcallback);
 
+    std::string className = "org/fisco/bcos/sdk/jni/amop/AmopRequestCallback";
     // onRequest(String endpoint, String seq, byte[] msg)
     jmethodID onReqMethodID =
         env->GetMethodID(cbClass, "onRequest", "(Ljava/lang/String;Ljava/lang/String;[B)V");
     if (onReqMethodID == NULL)
     {
-        env->FatalError("Cannot found onRequest methodID");
+        env->FatalError(
+            ("No such method in the class, className: " + className + " ,method: onRequest")
+                .c_str());
     }
 
 #if defined(_BCOS_SDK_JNI_DEBUG_)
@@ -80,13 +83,17 @@ static void on_receive_amop_response(struct bcos_sdk_c_struct_response* resp)
     JNIEnv* env;
     jvm->AttachCurrentThread((void**)&env, NULL);
 
+    std::string className = "org/fisco/bcos/sdk/jni/common/Response";
+
     jclass cbClass = env->GetObjectClass(jcallback);
     // void onResponse(Response)
     jmethodID onReqMethodID =
         env->GetMethodID(cbClass, "onResponse", "(Lorg/fisco/bcos/sdk/jni/common/Response;)V");
     if (onReqMethodID == NULL)
     {
-        env->FatalError("Cannot found onResponse methodID");
+        env->FatalError(
+            ("No such method in the class, className: " + className + " ,method: onResponse")
+                .c_str());
     }
 
 
@@ -98,11 +105,11 @@ static void on_receive_amop_response(struct bcos_sdk_c_struct_response* resp)
     printf(" ## ==> rpc response callback, error : %d, msg: %s, data : %s\n", error, desc, data);
 #endif
 
-    // Response obj construct begin
-    jclass responseClass = env->FindClass("org/fisco/bcos/sdk/jni/common/Response");
+    // Response obj constructor
+    jclass responseClass = env->FindClass(className.c_str());
     if (responseClass == NULL)
     {
-        env->FatalError("Cannot find org.fisco.bcos.sdk.jni.common.Response class");
+        env->FatalError(("No such class, className: " + className).c_str());
     }
 
     jmethodID mid = env->GetMethodID(responseClass, "<init>", "()V");
@@ -112,21 +119,25 @@ static void on_receive_amop_response(struct bcos_sdk_c_struct_response* resp)
     jfieldID errorCodeFieldID = env->GetFieldID(responseClass, "errorCode", "I");
     if (errorCodeFieldID == NULL)
     {
-        env->FatalError("Cannot find errorCodeFieldID fieldID");
+        env->FatalError(
+            ("No such field in the class, className: " + className + " ,field: errorCode").c_str());
     }
 
     // errorMessage
     jfieldID errorMsgFieldID = env->GetFieldID(responseClass, "errorMessage", "Ljava/lang/String;");
     if (errorMsgFieldID == NULL)
     {
-        env->FatalError("Cannot find errorMsgFieldID fieldID");
+        env->FatalError(
+            ("No such field in the class, className: " + className + " ,field: errorMessage")
+                .c_str());
     }
 
     // byte[] data
     jfieldID dataFieldID = env->GetFieldID(responseClass, "data", "[B");
     if (errorMsgFieldID == NULL)
     {
-        env->FatalError("Cannot find data fieldID");
+        env->FatalError(
+            ("No such field in the class, className: " + className + " ,field: data").c_str());
     }
 
     jstring errorString = env->NewStringUTF(desc);

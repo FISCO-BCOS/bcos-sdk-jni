@@ -2,6 +2,7 @@
 #include "bcos_sdk_c.h"
 #include "bcos_sdk_c_event_sub.h"
 #include "jni/org_fisco_bcos_sdk_common.h"
+#include <string>
 
 static void on_receive_event_sub_response(struct bcos_sdk_c_struct_response* resp)
 {
@@ -16,12 +17,16 @@ static void on_receive_event_sub_response(struct bcos_sdk_c_struct_response* res
     jvm->AttachCurrentThread((void**)&env, NULL);
 
     jclass cbClass = env->GetObjectClass(jcallback);
+
+    std::string className = "org/fisco/bcos/sdk/jni/common/Response";
+    std::string onRespSig = "(Lorg/fisco/bcos/sdk/jni/common/Response)V";
     // void onResponse(Response)
-    jmethodID onRespMethodID =
-        env->GetMethodID(cbClass, "onResponse", "(Lorg/fisco/bcos/sdk/jni/common/Response)V");
+    jmethodID onRespMethodID = env->GetMethodID(cbClass, "onResponse", onRespSig.c_str());
     if (onRespMethodID == NULL)
     {
-        env->FatalError("Cannot found onResponse methodID");
+        env->FatalError(("No such method in the class, className: " + className +
+                         " ,method: onResponse ,signature: " + onRespSig)
+                            .c_str());
     }
 
     int error = resp->error;
@@ -34,10 +39,10 @@ static void on_receive_event_sub_response(struct bcos_sdk_c_struct_response* res
 #endif
 
     // Response obj construct begin
-    jclass responseClass = env->FindClass("org/fisco/bcos/sdk/jni/common/Response");
+    jclass responseClass = env->FindClass(className.c_str());
     if (responseClass == NULL)
     {
-        env->FatalError("Cannot find org.fisco.bcos.sdk.jni.common.Response class");
+        env->FatalError(("No such class, className: " + className).c_str());
     }
 
     jmethodID mid = env->GetMethodID(responseClass, "<init>", "()V");
@@ -47,21 +52,26 @@ static void on_receive_event_sub_response(struct bcos_sdk_c_struct_response* res
     jfieldID errorCodeFieldID = env->GetFieldID(responseClass, "errorCode", "I");
     if (errorCodeFieldID == NULL)
     {
-        env->FatalError("Cannot find errorCodeFieldID fieldID");
+        env->FatalError(
+            ("No such field in the class, className: " + className + " ,fieldName: errorCode")
+                .c_str());
     }
 
     // errorMessage
     jfieldID errorMsgFieldID = env->GetFieldID(responseClass, "errorMessage", "Ljava/lang/String;");
     if (errorMsgFieldID == NULL)
     {
-        env->FatalError("Cannot find errorMsgFieldID fieldID");
+        env->FatalError(
+            ("No such field in the class, className: " + className + " ,filedName: errorMessage")
+                .c_str());
     }
 
     // byte[] data
     jfieldID dataFieldID = env->GetFieldID(responseClass, "data", "[B");
     if (errorMsgFieldID == NULL)
     {
-        env->FatalError("Cannot find data fieldID");
+        env->FatalError(
+            ("No such field in the class, className: " + className + " ,filedName: data").c_str());
     }
 
     jstring errorString = env->NewStringUTF(desc);

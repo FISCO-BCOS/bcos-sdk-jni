@@ -1,6 +1,6 @@
 
 #include "bcos_sdk_c_common.h"
-#include <jni.h>
+#include "org_fisco_bcos_sdk_exception.h"
 /* Header for class common */
 
 #ifndef _Included_org_fisco_bcos_sdk_jni_common

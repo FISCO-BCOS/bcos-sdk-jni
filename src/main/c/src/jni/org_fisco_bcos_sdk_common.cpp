@@ -1,5 +1,6 @@
 #include "jni/org_fisco_bcos_sdk_common.h"
 #include "bcos_sdk_c_common.h"
+#include "jni/org_fisco_bcos_sdk_exception.h"
 #include <bcos-boostssl/websocket/WsTools.h>
 #include <stdlib.h>
 #include <string.h>
@@ -9,22 +10,22 @@
 void* get_obj_native_member(JNIEnv* env, jobject self)
 {
     jclass cls = env->GetObjectClass(self);
-    if (!cls)
+    if (cls == NULL)
     {
-        env->FatalError("Cannot GetObjectClass, get_obj_native_member");
+        env->FatalError("No such class, object class is null in acquire native class");
     }
 
     jfieldID nativeFieldID = env->GetFieldID(cls, "nativeObj", "J");
-    if (!nativeFieldID)
+    if (nativeFieldID == NULL)
     {
-        env->FatalError("Cannot GetFieldID, get_obj_native_member");
+        env->FatalError("No such field, native field is null in acquire native field");
     }
 
     jlong nativeObj = env->GetLongField(self, nativeFieldID);
     void* native = reinterpret_cast<void*>(nativeObj);
     if (native == NULL)
-    {
-        env->FatalError("Cannot GetFieldID, get_obj_native_member");
+    {  // TODO: native handle is not init
+        env->FatalError("No such long field, object obj is null in acquire native obj");
     }
 
     return native;
@@ -40,27 +41,36 @@ static bcos_sdk_c_cert_config* create_bcos_sdk_c_cert_config(
         private String nodeCert;
     }
     */
+    std::string className = "org/fisco/bcos/sdk/jni/common/JniConfig$CertConfig";
     jfieldID caCertField = env->GetFieldID(certConfigClass, "caCert", "Ljava/lang/String;");
     if (caCertField == NULL)
     {
-        env->FatalError("Cannot GetFieldID for caCert of CertConfig");
+        env->FatalError(
+            ("No such field in the class, className: " + className + ",fieldName: caCert").c_str());
     }
+
     jstring jCaCert = (jstring)env->GetObjectField(jCertConfig, caCertField);
     const char* caCert = jCaCert ? env->GetStringUTFChars(jCaCert, NULL) : NULL;
 
     jfieldID nodeKeyField = env->GetFieldID(certConfigClass, "nodeKey", "Ljava/lang/String;");
     if (nodeKeyField == NULL)
     {
-        env->FatalError("Cannot GetFieldID for nodeKey of CertConfig");
+        env->FatalError(
+            ("No such field in the class, className: " + className + ",fieldName: nodeKey")
+                .c_str());
     }
+
     jstring jNodeKey = (jstring)env->GetObjectField(jCertConfig, nodeKeyField);
     const char* nodeKey = jNodeKey ? env->GetStringUTFChars(jNodeKey, NULL) : NULL;
 
     jfieldID nodeCertField = env->GetFieldID(certConfigClass, "nodeCert", "Ljava/lang/String;");
     if (nodeCertField == NULL)
     {
-        env->FatalError("Cannot GetFieldID for nodeCert of CertConfig");
+        env->FatalError(
+            ("No such field in the class, className: " + className + ",fieldName: nodeCert")
+                .c_str());
     }
+
     jstring jNodeCert = (jstring)env->GetObjectField(jCertConfig, nodeCertField);
     const char* nodeCert = jNodeCert ? env->GetStringUTFChars(jNodeCert, NULL) : NULL;
 
@@ -101,12 +111,15 @@ static bcos_sdk_c_sm_cert_config* create_bcos_sdk_c_sm_cert_config(
         private String enNodeCert;
         private String enNodeKey;
     */
+    const std::string className = "org/fisco/bcos/sdk/jni/common/JniConfig$SMCertConfig";
     // caCert
     jfieldID caCertField = env->GetFieldID(smCertConfigClass, "caCert", "Ljava/lang/String;");
     if (caCertField == NULL)
     {
-        env->FatalError("Cannot GetFieldID for caCert of SMCertConfig");
+        env->FatalError(
+            ("No such field in the class, className: " + className + ",fieldName: caCert").c_str());
     }
+
     jstring jCaCert = (jstring)env->GetObjectField(jSmCertConfig, caCertField);
     const char* caCert = jCaCert ? env->GetStringUTFChars(jCaCert, NULL) : NULL;
 
@@ -114,7 +127,9 @@ static bcos_sdk_c_sm_cert_config* create_bcos_sdk_c_sm_cert_config(
     jfieldID nodeCertField = env->GetFieldID(smCertConfigClass, "nodeCert", "Ljava/lang/String;");
     if (nodeCertField == NULL)
     {
-        env->FatalError("Cannot GetFieldID for nodeCert of SMCertConfig");
+        env->FatalError(
+            ("No such field in the class, className: " + className + ",fieldName: nodeCert")
+                .c_str());
     }
     jstring jNodeCert = (jstring)env->GetObjectField(jSmCertConfig, nodeCertField);
     const char* nodeCert = jNodeCert ? env->GetStringUTFChars(jNodeCert, NULL) : NULL;
@@ -123,7 +138,9 @@ static bcos_sdk_c_sm_cert_config* create_bcos_sdk_c_sm_cert_config(
     jfieldID nodeKeyField = env->GetFieldID(smCertConfigClass, "nodeKey", "Ljava/lang/String;");
     if (nodeKeyField == NULL)
     {
-        env->FatalError("Cannot GetFieldID for nodeKey of SMCertConfig");
+        env->FatalError(
+            ("No such field in the class, className: " + className + ",fieldName: nodeKey")
+                .c_str());
     }
     jstring jNodeKey = (jstring)env->GetObjectField(jSmCertConfig, nodeKeyField);
     const char* nodeKey = jNodeKey ? env->GetStringUTFChars(jNodeKey, NULL) : NULL;
@@ -133,7 +150,9 @@ static bcos_sdk_c_sm_cert_config* create_bcos_sdk_c_sm_cert_config(
         env->GetFieldID(smCertConfigClass, "enNodeCert", "Ljava/lang/String;");
     if (enNodeCertField == NULL)
     {
-        env->FatalError("Cannot GetFieldID for enNodeCert of SMCertConfig");
+        env->FatalError(
+            ("No such field in the class, className: " + className + ",fieldName: enNodeCert")
+                .c_str());
     }
     jstring jEnNodeCert = (jstring)env->GetObjectField(jSmCertConfig, enNodeCertField);
     const char* enNodeCert = jEnNodeCert ? env->GetStringUTFChars(jEnNodeCert, NULL) : NULL;
@@ -142,7 +161,9 @@ static bcos_sdk_c_sm_cert_config* create_bcos_sdk_c_sm_cert_config(
     jfieldID enNodeKeyField = env->GetFieldID(smCertConfigClass, "enNodeKey", "Ljava/lang/String;");
     if (enNodeKeyField == NULL)
     {
-        env->FatalError("Cannot GetFieldID for enNodeCert of SMCertConfig");
+        env->FatalError(
+            ("No such field in the class, className: " + className + ",fieldName: enNodeKey")
+                .c_str());
     }
     jstring jEnNodeKey = (jstring)env->GetObjectField(jSmCertConfig, enNodeKeyField);
     const char* enNodeKey = jEnNodeKey ? env->GetStringUTFChars(jEnNodeKey, NULL) : NULL;
@@ -207,29 +228,29 @@ struct bcos_sdk_c_config* create_bcos_sdk_c_config_from_java_obj(JNIEnv* env, jo
     jfieldID peersFieldID = env->GetFieldID(configClass, "peers", "Ljava/util/List;");
     jobject jpeersOjbect = env->GetObjectField(jconfig, peersFieldID);
     if (jpeersOjbect == NULL)
-    {  // TODO: jpeersOjbect will be null if peer is empty, how to fix.
-        env->FatalError("Cannot GetObjectField for peers of JniConfig");
+    {
+        throwJniException(env, "Peers is empty, please set set the connected peers");
     }
 
     // Find "java/util/List" Class (Standard JAVA Class).
     jclass listClass = env->FindClass("java/util/List");
     if (listClass == NULL)
     {
-        env->FatalError("Cannot Find Class: java/util/List");
+        env->FatalError("No such class, className: java/util/List");
     }
 
     // Get "java.util.List.get(int location)" MethodID
     jmethodID listGetMethodID = env->GetMethodID(listClass, "get", "(I)Ljava/lang/Object;");
     if (listGetMethodID == NULL)
     {
-        env->FatalError("Cannot GetMethodID for java.util.List.get(String)");
+        env->FatalError("No such method, className: java.util.List<String>, method: get()");
     }
 
     // Get "int java.util.List.size()" MethodID
     jmethodID listSizeMethodID = env->GetMethodID(listClass, "size", "()I");
     if (listSizeMethodID == NULL)
     {
-        env->FatalError("Cannot GetMethodID for String java.util.List.size()");
+        env->FatalError("No such method, className: java.util.List<String>, method: size()");
     }
 
     // String java.util.List.size()
@@ -245,19 +266,17 @@ struct bcos_sdk_c_config* create_bcos_sdk_c_config_from_java_obj(JNIEnv* env, jo
         jstring jpeer = (jstring)env->CallObjectMethod(jpeersOjbect, listGetMethodID, i);
         if (jpeer == NULL)
         {
-            env->FatalError("Cannot CallObjectMethod(String java.util.List.get)");
+            throwJniException(env, "This connected peer is null, it should be in ip:port format");
         }
 
         const char* peer = env->GetStringUTFChars(jpeer, NULL);
-        if (peer == NULL)
-        {
-            env->FatalError("Cannot GetStringUTFChars(String java.util.List.get)");
-        }
-
         bcos::boostssl::ws::EndPoint endPoint;
-        if (!bcos::boostssl::ws::WsTools::stringToEndPoint(peer, endPoint))
+        if (!bcos::boostssl::ws::WsTools::stringToEndPoint(peer ? peer : "", endPoint))
         {
-            env->FatalError("Not valid connected peer");
+            throwJniException(
+                env, ("This connected peer should be in ip:port format, invalid value: " +
+                         std::string(peer))
+                         .c_str());
             continue;
         }
         else
@@ -277,13 +296,17 @@ struct bcos_sdk_c_config* create_bcos_sdk_c_config_from_java_obj(JNIEnv* env, jo
     bcos_sdk_c_cert_config* cert_config = NULL;
     bcos_sdk_c_sm_cert_config* sm_cert_config = NULL;
     if (!disableSsl)
+
     {
         {
+            std::string className = "org/fisco/bcos/sdk/jni/common/JniConfig$CertConfig";
             jfieldID certConfigField = env->GetFieldID(
                 configClass, "certConfig", "Lorg/fisco/bcos/sdk/jni/common/JniConfig$CertConfig;");
             if (certConfigField == NULL)
-            {  // TODO: jcertConfig will be null if peer is empty, how to fix.
-                env->FatalError("Cannot GetFieldID for certConfig of JniConfig");
+            {
+                env->FatalError(
+                    ("No such field in the class, className: " + className + " ,field: certConfig")
+                        .c_str());
             }
 
             jobject jcertConfig = env->GetObjectField(jconfig, certConfigField);
@@ -297,8 +320,15 @@ struct bcos_sdk_c_config* create_bcos_sdk_c_config_from_java_obj(JNIEnv* env, jo
         }
 
         {
+            std::string className = "org/fisco/bcos/sdk/jni/common/JniConfig$SMCertConfig";
             jfieldID smCertConfigField = env->GetFieldID(configClass, "smCertConfig",
                 "Lorg/fisco/bcos/sdk/jni/common/JniConfig$SMCertConfig;");
+            if (smCertConfigField == NULL)
+            {
+                env->FatalError((
+                    "No such field in the class, className: " + className + " ,field: smCertConfig")
+                                    .c_str());
+            }
             jobject jSmCertConfig = env->GetObjectField(jconfig, smCertConfigField);
             if (jSmCertConfig == NULL)
             {  // TODO: jcertConfig will be null if peer is empty, how to fix.

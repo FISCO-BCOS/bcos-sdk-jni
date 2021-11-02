@@ -26,11 +26,11 @@ static void on_receive_event_sub_response(struct bcos_sdk_c_struct_response* res
 
     int error = resp->error;
     char* desc = resp->desc ? resp->desc : (char*)"";
-#if 0
+#if defined(_BCOS_SDK_JNI_DEBUG_)
     char* data = resp->data ? (char*)resp->data : (char*)"";
 
-     printf(
-     " ## ==> event sub response callback, error : %d, msg: %s, data : %s\n", error, desc, data);
+    printf(
+        " ## ==> event sub response callback, error : %d, msg: %s, data : %s\n", error, desc, data);
 #endif
 
     // Response obj construct begin
@@ -92,7 +92,7 @@ JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_event_EventSubscribe_newNati
     JNIEnv* env, jclass, jobject jconfig)
 {
     // config
-    struct bcos_sdk_c_config* config = init_bcos_sdk_c_config(env, jconfig);
+    struct bcos_sdk_c_config* config = create_bcos_sdk_c_config_from_java_obj(env, jconfig);
     // create amop obj
     void* amop = bcos_sdk_create_event_sub(config);
     // destroy config
@@ -114,7 +114,7 @@ JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_event_EventSubscribe_newNati
 JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_event_EventSubscribe_start(
     JNIEnv* env, jobject self)
 {
-    void* event = obtain_native_object(env, self);
+    void* event = get_obj_native_member(env, self);
     bcos_sdk_start_event_sub(event);
 }
 
@@ -126,7 +126,7 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_event_EventSubscribe_start(
 JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_event_EventSubscribe_stop(
     JNIEnv* env, jobject self)
 {
-    void* event = obtain_native_object(env, self);
+    void* event = get_obj_native_member(env, self);
     bcos_sdk_stop_event_sub(event);
 }
 
@@ -139,7 +139,7 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_event_EventSubscribe_stop(
 JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_event_EventSubscribe_subscribeEvent(
     JNIEnv* env, jobject self, jstring jgroup, jstring jparams, jobject jcallback)
 {
-    void* event = obtain_native_object(env, self);
+    void* event = get_obj_native_member(env, self);
     const char* group = env->GetStringUTFChars(jgroup, 0);
     const char* params = env->GetStringUTFChars(jparams, 0);
 
@@ -169,7 +169,7 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_event_EventSubscribe_subscrib
 JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_event_EventSubscribe_unsubscribeEvent(
     JNIEnv* env, jobject self, jstring jeventid, jobject jcallback)
 {
-    void* event = obtain_native_object(env, self);
+    void* event = get_obj_native_member(env, self);
     const char* eventid = env->GetStringUTFChars(jeventid, 0);
 
     // Note: The JNIEnv pointer, passed as the first argument to every native method, can only be

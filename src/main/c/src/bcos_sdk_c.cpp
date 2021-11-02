@@ -15,7 +15,7 @@ struct Sdk
 // construct WsConfig obj by struct Config
 static std::shared_ptr<bcos::boostssl::ws::WsConfig> initWsConfig(struct bcos_sdk_c_config* config)
 {
-    // init WsConfig by Config
+    // init WsConfig by c Config
     auto wsConfig = std::make_shared<bcos::boostssl::ws::WsConfig>();
     wsConfig->setModel(bcos::boostssl::ws::WsModel::Client);
 
@@ -28,11 +28,13 @@ static std::shared_ptr<bcos::boostssl::ws::WsConfig> initWsConfig(struct bcos_sd
         peers->push_back(ep);
     }
 
-    // TODO: set default value
     wsConfig->setConnectedPeers(peers);
+    wsConfig->setDisableSsl(config->disableSsl);
     wsConfig->setThreadPoolSize(config->thread_pool_size);
     wsConfig->setReconnectPeriod(config->reconnect_period_ms);
     wsConfig->setHeartbeatPeriod(config->heartbeat_period_ms);
+
+    // TODO: init WsConfig ssl config items
 
     return wsConfig;
 }

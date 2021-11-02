@@ -13,7 +13,7 @@ JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_BcosSDK_newNativeObj(
     JNIEnv* env, jclass, jobject jconfig)
 {
     // config
-    struct bcos_sdk_c_config* config = init_bcos_sdk_c_config(env, jconfig);
+    struct bcos_sdk_c_config* config = create_bcos_sdk_c_config_from_java_obj(env, jconfig);
     // create sdk obj
     void* sdk = bcos_sdk_create(config);
     // destroy config
@@ -77,7 +77,7 @@ JNIEXPORT jobject JNICALL Java_org_fisco_bcos_sdk_jni_BcosSDK_getEventSubscribe(
  */
 JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_BcosSDK_finalize(JNIEnv* env, jobject self)
 {
-    void* sdk = obtain_native_object(env, self);
+    void* sdk = get_obj_native_member(env, self);
     bcos_sdk_stop(sdk);
     bcos_sdk_destroy(sdk);
 }

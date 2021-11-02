@@ -7,6 +7,9 @@ public class Utility {
   public static JniConfig newJniConfig(List<String> peers) {
     JniConfig jniConfig = new JniConfig();
     jniConfig.setPeers(peers);
+    jniConfig.setCertConfig(new JniConfig.CertConfig());
+    jniConfig.setSmCertConfig(new JniConfig.SMCertConfig());
+
     return jniConfig;
   }
 }

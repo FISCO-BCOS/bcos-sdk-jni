@@ -1,26 +1,134 @@
 package org.fisco.bcos.sdk.jni.common;
 
 import java.util.List;
-
 public class JniConfig {
 
   private int threadPoolSize = 4;
-  // 20s
   private int reconnectPeriodMs = 20000;
-  // 20s
   private int heartbeatPeriodMs = 20000;
-  // 10s
   private int messageTimeoutMs = 10000;
+
+  private boolean disableSsl = false;
+  private String sslType;
+  private CertConfig certConfig;
+  private SMCertConfig smCertConfig;
 
   private List<String> peers;
 
-  public List<String> getPeers() {
-    return peers;
-  }
+  public static class CertConfig {
+    private String caCert;
+    private String nodeKey;
+    private String nodeCert;
 
-  public void setPeers(List<String> peers) {
-    this.peers = peers;
-  }
+    public String getCaCert() {
+      return caCert;
+    }
+
+    public void setCaCert(String caCert) {
+      this.caCert = caCert;
+    }
+
+    public String getNodeKey() {
+      return nodeKey;
+    }
+
+    public void setNodeKey(String nodeKey) {
+      this.nodeKey = nodeKey;
+    }
+
+    public String getNodeCert() {
+      return nodeCert;
+    }
+
+    public void setNodeCert(String nodeCert) {
+      this.nodeCert = nodeCert;
+    }
+
+    @Override
+    public String toString() {
+      return "CertConfig{"
+          + "caCert='"
+          + caCert
+          + '\''
+          + ", nodeKey='"
+          + nodeKey
+          + '\''
+          + ", nodeCert='"
+          + nodeCert
+          + '\''
+          + '}';
+    }
+  };
+
+  // cert for sm ssl connection
+  public static class SMCertConfig {
+    private String caCert;
+    private String nodeCert;
+    private String nodeKey;
+    private String enNodeCert;
+    private String enNodeKey;
+
+    public String getCaCert() {
+      return caCert;
+    }
+
+    public void setCaCert(String caCert) {
+      this.caCert = caCert;
+    }
+
+    public String getNodeCert() {
+      return nodeCert;
+    }
+
+    public void setNodeCert(String nodeCert) {
+      this.nodeCert = nodeCert;
+    }
+
+    public String getNodeKey() {
+      return nodeKey;
+    }
+
+    public void setNodeKey(String nodeKey) {
+      this.nodeKey = nodeKey;
+    }
+
+    public String getEnNodeCert() {
+      return enNodeCert;
+    }
+
+    public void setEnNodeCert(String enNodeCert) {
+      this.enNodeCert = enNodeCert;
+    }
+
+    public String getEnNodeKey() {
+      return enNodeKey;
+    }
+
+    public void setEnNodeKey(String enNodeKey) {
+      this.enNodeKey = enNodeKey;
+    }
+
+    @Override
+    public String toString() {
+      return "SMCertConfig{"
+          + "caCert='"
+          + caCert
+          + '\''
+          + ", nodeCert='"
+          + nodeCert
+          + '\''
+          + ", nodeKey='"
+          + nodeKey
+          + '\''
+          + ", enNodeCert='"
+          + enNodeCert
+          + '\''
+          + ", enNodeKey='"
+          + enNodeKey
+          + '\''
+          + '}';
+    }
+  };
 
   public int getThreadPoolSize() {
     return threadPoolSize;
@@ -54,6 +162,46 @@ public class JniConfig {
     this.messageTimeoutMs = messageTimeoutMs;
   }
 
+  public boolean isDisableSsl() {
+    return disableSsl;
+  }
+
+  public void setDisableSsl(boolean disableSsl) {
+    this.disableSsl = disableSsl;
+  }
+
+  public String getSslType() {
+    return sslType;
+  }
+
+  public void setSslType(String sslType) {
+    this.sslType = sslType;
+  }
+
+  public CertConfig getCertConfig() {
+    return certConfig;
+  }
+
+  public void setCertConfig(CertConfig certConfig) {
+    this.certConfig = certConfig;
+  }
+
+  public SMCertConfig getSmCertConfig() {
+    return smCertConfig;
+  }
+
+  public void setSmCertConfig(SMCertConfig smCertConfig) {
+    this.smCertConfig = smCertConfig;
+  }
+
+  public List<String> getPeers() {
+    return peers;
+  }
+
+  public void setPeers(List<String> peers) {
+    this.peers = peers;
+  }
+
   @Override
   public String toString() {
     return "JniConfig{"
@@ -67,6 +215,15 @@ public class JniConfig {
         + messageTimeoutMs
         + ", peers="
         + peers
+        + ", disableSsl="
+        + disableSsl
+        + ", sslType='"
+        + sslType
+        + '\''
+        + ", certConfig="
+        + certConfig
+        + ", smCertConfig="
+        + smCertConfig
         + '}';
   }
 }

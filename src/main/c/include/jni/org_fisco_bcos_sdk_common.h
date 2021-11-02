@@ -15,9 +15,9 @@ struct cb_context
     jobject jcallback;
 };
 
-void* obtain_native_object(JNIEnv* env, jobject self);
+void* get_obj_native_member(JNIEnv* env, jobject self);
 
-struct bcos_sdk_c_config* init_bcos_sdk_c_config(JNIEnv* env, jobject jconfig);
+struct bcos_sdk_c_config* create_bcos_sdk_c_config_from_java_obj(JNIEnv* env, jobject jconfig);
 
 #ifdef __cplusplus
 }

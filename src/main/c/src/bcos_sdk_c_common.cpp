@@ -3,9 +3,31 @@
 #include <bcos-framework/libutilities/Common.h>
 #include <bcos-framework/libutilities/Error.h>
 
-
-void bcos_sdk_c_cert_config_release(void* p)
+struct bcos_sdk_c_config* bcos_sdk_c_config_create()
 {
+    struct bcos_sdk_c_config* config =
+        (struct bcos_sdk_c_config*)malloc(sizeof(struct bcos_sdk_c_config));
+    config->thread_pool_size = -1;
+    config->message_timeout_ms = -1;
+    config->heartbeat_period_ms = -1;
+    config->reconnect_period_ms = -1;
+    config->disableSsl = 0;
+    config->cert_config = NULL;
+    config->sm_cert_config = NULL;
+    config->peers = NULL;
+    config->peers_count = 0;
+
+    return config;
+}
+
+
+void bcos_sdk_c_cert_config_destroy(void* p)
+{
+    if (p == NULL)
+    {
+        return;
+    }
+
     struct bcos_sdk_c_cert_config* config = (struct bcos_sdk_c_cert_config*)p;
     if (config && config->ca_cert)
     {
@@ -25,39 +47,54 @@ void bcos_sdk_c_cert_config_release(void* p)
     free(config);
 }
 
-void bcos_sdk_c_sm_cert_config_release(void* p)
+void bcos_sdk_c_sm_cert_config_destroy(void* p)
 {
-    (void)p;
-    // TODO:
-}
+    if (p == NULL)
+    {
+        return;
+    }
 
-struct bcos_sdk_c_config* bcos_sdk_c_config_new()
-{
-    struct bcos_sdk_c_config* config =
-        (struct bcos_sdk_c_config*)malloc(sizeof(struct bcos_sdk_c_config));
-    config->thread_pool_size = -1;
-    config->message_timeout_ms = -1;
-    config->heartbeat_period_ms = -1;
-    config->reconnect_period_ms = -1;
+    struct bcos_sdk_c_sm_cert_config* config = (struct bcos_sdk_c_sm_cert_config*)p;
+    if (config && config->ca_cert)
+    {
+        free(config->ca_cert);
+    }
 
-    // TODO: init bcos_sdk_c_cert_config and bcos_sdk_c_sm_cert_config
+    if (config && config->node_cert)
+    {
+        free(config->node_cert);
+    }
 
-    config->peers = NULL;
-    config->peers_count = 0;
+    if (config && config->node_key)
+    {
+        free(config->node_key);
+    }
 
-    return config;
+    if (config && config->en_node_key)
+    {
+        free(config->en_node_key);
+    }
+
+    if (config && config->en_node_cert)
+    {
+        free(config->en_node_cert);
+    }
+
+    free(config);
 }
 
 void bcos_sdk_c_config_destroy(void* p)
 {
-    if (p)
+    if (p == NULL)
     {
         return;
     }
 
     struct bcos_sdk_c_config* config = (struct bcos_sdk_c_config*)p;
 
-    // TODO:  free bcos_sdk_c_cert_config and bcos_sdk_c_sm_cert_config
+    bcos_sdk_c_cert_config_destroy(config->cert_config);
+    bcos_sdk_c_sm_cert_config_destroy(config->sm_cert_config);
+
     if (config->peers && config->peers_count > 0)
     {
         for (size_t i = 0; i < config->peers_count; i++)
@@ -69,7 +106,6 @@ void bcos_sdk_c_config_destroy(void* p)
     free((void*)config->peers);
     free((void*)config);
 }
-
 
 void bcos_sdk_c_handle_response(
     void* error, void* data, size_t size, bcos_sdk_c_struct_response_cb callback, void* context)

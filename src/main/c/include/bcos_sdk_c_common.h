@@ -101,9 +101,9 @@ struct bcos_sdk_c_config
 {
     // common config
     int thread_pool_size;
-    int reconnect_period_ms;
-    int heartbeat_period_ms;
     int message_timeout_ms;
+    // int reconnect_period_ms;
+    // int heartbeat_period_ms;
 
     // connected peers
     struct bcos_sdk_c_endpoint* peers;

@@ -60,98 +60,103 @@ Java_org_fisco_bcos_sdk_jni_rpc_Rpc_genericMethod__Ljava_lang_String_2Ljava_lang
  * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
  * Method:    call
  * Signature:
- * (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
+ * (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
  */
 JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_call(
-    JNIEnv*, jobject, jstring, jstring, jstring, jobject);
+    JNIEnv*, jobject, jstring, jstring, jstring, jstring, jobject);
 
 /*
  * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
  * Method:    sendTransaction
- * Signature: (Ljava/lang/String;Ljava/lang/String;ZLorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
+ * Signature:
+ * (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZLorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
  */
 JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_sendTransaction(
-    JNIEnv*, jobject, jstring, jstring, jboolean, jobject);
+    JNIEnv*, jobject, jstring, jstring, jstring, jboolean, jobject);
 
 /*
  * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
  * Method:    getTransaction
- * Signature: (Ljava/lang/String;Ljava/lang/String;ZLorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
+ * Signature:
+ * (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZLorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
  */
 JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getTransaction(
-    JNIEnv*, jobject, jstring, jstring, jboolean, jobject);
+    JNIEnv*, jobject, jstring, jstring, jstring, jboolean, jobject);
 
 /*
  * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
  * Method:    getTransactionReceipt
- * Signature: (Ljava/lang/String;Ljava/lang/String;ZLorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
+ * Signature:
+ * (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZLorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
  */
 JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getTransactionReceipt(
-    JNIEnv*, jobject, jstring, jstring, jboolean, jobject);
+    JNIEnv*, jobject, jstring, jstring, jstring, jboolean, jobject);
 
 /*
  * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
  * Method:    getBlockByHash
- * Signature: (Ljava/lang/String;Ljava/lang/String;ZZLorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
+ * Signature:
+ * (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZZLorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
  */
 JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getBlockByHash(
-    JNIEnv*, jobject, jstring, jstring, jboolean, jboolean, jobject);
+    JNIEnv*, jobject, jstring, jstring, jstring, jboolean, jboolean, jobject);
 
 /*
  * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
  * Method:    getBlockByNumber
- * Signature: (Ljava/lang/String;JZZLorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
+ * Signature: (Ljava/lang/String;Ljava/lang/String;JZZLorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
  */
 JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getBlockByNumber(
-    JNIEnv*, jobject, jstring, jlong, jboolean, jboolean, jobject);
+    JNIEnv*, jobject, jstring, jstring, jlong, jboolean, jboolean, jobject);
 
 /*
  * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
  * Method:    getBlockHashByNumber
- * Signature: (Ljava/lang/String;JLorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
+ * Signature: (Ljava/lang/String;Ljava/lang/String;JLorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
  */
 JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getBlockHashByNumber(
-    JNIEnv*, jobject, jstring, jlong, jobject);
+    JNIEnv*, jobject, jstring, jstring, jlong, jobject);
 
 /*
  * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
  * Method:    getBlockNumber
- * Signature: (Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
- */
-JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getBlockNumber(
-    JNIEnv*, jobject, jstring, jobject);
-
-/*
- * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
- * Method:    getCode
  * Signature: (Ljava/lang/String;Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
  */
-JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getCode(
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getBlockNumber(
     JNIEnv*, jobject, jstring, jstring, jobject);
 
 /*
  * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
+ * Method:    getCode
+ * Signature:
+ * (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
+ */
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getCode(
+    JNIEnv*, jobject, jstring, jstring, jstring, jobject);
+
+/*
+ * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
  * Method:    getSealerList
- * Signature: (Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
+ * Signature: (Ljava/lang/String;Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
  */
 JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getSealerList(
-    JNIEnv*, jobject, jstring, jobject);
+    JNIEnv*, jobject, jstring, jstring, jobject);
 
 /*
  * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
  * Method:    getObserverList
- * Signature: (Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
+ * Signature: (Ljava/lang/String;Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
  */
 JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getObserverList(
-    JNIEnv*, jobject, jstring, jobject);
+    JNIEnv*, jobject, jstring, jstring, jobject);
 
 /*
  * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
  * Method:    getPbftView
- * Signature: (Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
+ * Signature: (Ljava/lang/String;Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
  */
 JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getPbftView(
-    JNIEnv*, jobject, jstring, jobject);
+    JNIEnv*, jobject, jstring, jstring, jobject);
 
 /*
  * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
@@ -172,18 +177,19 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getSyncStatus(
 /*
  * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
  * Method:    getSystemConfigByKey
- * Signature: (Ljava/lang/String;Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
+ * Signature:
+ * (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
  */
 JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getSystemConfigByKey(
-    JNIEnv*, jobject, jstring, jstring, jobject);
+    JNIEnv*, jobject, jstring, jstring, jstring, jobject);
 
 /*
  * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
  * Method:    getTotalTransactionCount
- * Signature: (Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
+ * Signature: (Ljava/lang/String;Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
  */
 JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getTotalTransactionCount(
-    JNIEnv*, jobject, jstring, jobject);
+    JNIEnv*, jobject, jstring, jstring, jobject);
 
 /*
  * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc

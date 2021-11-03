@@ -28,6 +28,7 @@ public class GetBlock {
 
     String endpoint = args[0];
     String group = args[1];
+    String node = "";
     JniConfig jniConfig = Utility.newJniConfig(Arrays.asList(endpoint));
     jniConfig.setDisableSsl(true);
     Rpc rpc = Rpc.build(group, jniConfig);
@@ -36,6 +37,7 @@ public class GetBlock {
     while (true) {
       rpc.getBlockNumber(
           group,
+          node,
           new RpcCallback() {
             @Override
             public void onResponse(Response response) {

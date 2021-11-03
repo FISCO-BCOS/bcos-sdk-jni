@@ -15,6 +15,7 @@ package org.fisco.bcos.sdk.jni;
 
 import org.fisco.bcos.sdk.jni.amop.Amop;
 import org.fisco.bcos.sdk.jni.common.JniConfig;
+import org.fisco.bcos.sdk.jni.common.JniException;
 import org.fisco.bcos.sdk.jni.common.JniLibLoader;
 import org.fisco.bcos.sdk.jni.event.EventSubscribe;
 import org.fisco.bcos.sdk.jni.rpc.Rpc;
@@ -41,14 +42,9 @@ public class BcosSDK {
    * @param jniConfig
    * @return
    */
-  public static BcosSDK build(JniConfig jniConfig) {
+  public static BcosSDK build(JniConfig jniConfig) throws JniException {
     long nativeObj = newNativeObj(jniConfig);
-    if (nativeObj == 0) {
-      // TODO: error handler
-    }
-
     logger.info("newNativeObj, nativeObj: {}, jniConfig: {}", nativeObj, jniConfig);
-
     BcosSDK sdk = new BcosSDK();
     sdk.setNativeObj(nativeObj);
     sdk.setJniConfig(jniConfig);

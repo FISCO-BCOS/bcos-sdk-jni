@@ -3,7 +3,7 @@
 #include <bcos-framework/libutilities/Common.h>
 #include <bcos-framework/libutilities/Error.h>
 
-struct bcos_sdk_c_config* bcos_sdk_c_config_create()
+struct bcos_sdk_c_config* bcos_sdk_c_config_create_empty()
 {
     struct bcos_sdk_c_config* config =
         (struct bcos_sdk_c_config*)malloc(sizeof(struct bcos_sdk_c_config));
@@ -20,6 +20,12 @@ struct bcos_sdk_c_config* bcos_sdk_c_config_create()
     return config;
 }
 
+struct bcos_sdk_c_config* bcos_sdk_c_config_create_with_config(const char* configFile)
+{
+    // TODO:
+    (void)configFile;
+    return NULL;
+}
 
 void bcos_sdk_c_cert_config_destroy(void* p)
 {

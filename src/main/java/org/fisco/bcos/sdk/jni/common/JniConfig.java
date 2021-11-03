@@ -1,20 +1,28 @@
 package org.fisco.bcos.sdk.jni.common;
 
 import java.util.List;
+
+/** Config items need by fisco-bcos-sdk-jni module */
 public class JniConfig {
 
+  /** thread pool size for network send/recv/handle message */
   private int threadPoolSize = 4;
+
   private int reconnectPeriodMs = 20000;
   private int heartbeatPeriodMs = 20000;
   private int messageTimeoutMs = 10000;
-
+  /** if disable the ssl connection */
   private boolean disableSsl = false;
+  /** ssl or sm_ssl */
   private String sslType;
+  /** ssl cert config items */
   private CertConfig certConfig;
+  /** sm cert config items */
   private SMCertConfig smCertConfig;
-
+  /** connected peers list */
   private List<String> peers;
 
+  /** cert for sm ssl connection */
   public static class CertConfig {
     private String caCert;
     private String nodeKey;
@@ -60,7 +68,7 @@ public class JniConfig {
     }
   };
 
-  // cert for sm ssl connection
+  /** cert for sm ssl connection */
   public static class SMCertConfig {
     private String caCert;
     private String nodeCert;

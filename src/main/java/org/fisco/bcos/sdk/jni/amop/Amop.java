@@ -18,6 +18,7 @@ package org.fisco.bcos.sdk.jni.amop;
 import java.util.HashSet;
 import java.util.Set;
 import org.fisco.bcos.sdk.jni.common.JniConfig;
+import org.fisco.bcos.sdk.jni.common.JniException;
 import org.fisco.bcos.sdk.jni.common.JniLibLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,13 +36,13 @@ public class Amop {
    * @param config
    * @return
    */
-  public static native long newNativeObj(JniConfig config);
+  public static native long newNativeObj(JniConfig config) throws JniException;
 
   /**
    * @param jniConfig
    * @return
    */
-  public static Amop build(JniConfig jniConfig) {
+  public static Amop build(JniConfig jniConfig) throws JniException {
     long nativeObj = newNativeObj(jniConfig);
     Amop amop = new Amop();
     amop.setNativeObj(nativeObj);

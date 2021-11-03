@@ -2,6 +2,7 @@ package org.fisco.bcos.sdk.jni.test.rpc;
 
 import java.util.Arrays;
 import org.fisco.bcos.sdk.jni.common.JniConfig;
+import org.fisco.bcos.sdk.jni.common.JniException;
 import org.fisco.bcos.sdk.jni.common.Response;
 import org.fisco.bcos.sdk.jni.rpc.Rpc;
 import org.fisco.bcos.sdk.jni.rpc.RpcCallback;
@@ -19,7 +20,7 @@ public class GetBlock {
     System.exit(0);
   }
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws JniException {
     if (args.length < 2) {
       System.out.println("args length = " + args.length);
       usage();

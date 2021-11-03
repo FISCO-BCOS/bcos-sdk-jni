@@ -3,6 +3,7 @@ package org.fisco.bcos.sdk.jni.test.amop;
 import java.util.Arrays;
 import org.fisco.bcos.sdk.jni.amop.Amop;
 import org.fisco.bcos.sdk.jni.common.JniConfig;
+import org.fisco.bcos.sdk.jni.common.JniException;
 import org.fisco.bcos.sdk.jni.test.Utility;
 
 public class Broadcast {
@@ -16,7 +17,7 @@ public class Broadcast {
     System.exit(0);
   }
 
-  public static void main(String[] args) throws InterruptedException {
+  public static void main(String[] args) throws InterruptedException, JniException {
 
     if (args.length < 3) {
       usage();

@@ -109,12 +109,6 @@ void bcos_amop_broadcast(void* amop, const char* topic, void* data, size_t size)
     amopPointer->broadcast(std::string(topic), bcos::bytesConstRef((bcos::byte*)data, size));
 }
 
-void bcos_amop_query_subscribed_topics(void* amop)
-{
-    std::ignore = amop;
-    // TODO:
-}
-
 void bcos_amop_set_subscribe_topic_cb(void* amop, bcos_sdk_c_amop_subscribe_cb cb, void* context)
 {
     if (!context || !cb)

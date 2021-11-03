@@ -18,6 +18,7 @@ package org.fisco.bcos.sdk.jni.event;
 import java.util.Set;
 import org.fisco.bcos.sdk.jni.amop.Amop;
 import org.fisco.bcos.sdk.jni.common.JniConfig;
+import org.fisco.bcos.sdk.jni.common.JniException;
 import org.fisco.bcos.sdk.jni.common.JniLibLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,14 +37,14 @@ public class EventSubscribe {
    * @param config
    * @return
    */
-  public static native long newNativeObj(JniConfig config);
+  public static native long newNativeObj(JniConfig config) throws JniException;
 
   /**
    * @param group
    * @param jniConfig
    * @return
    */
-  public static EventSubscribe build(String group, JniConfig jniConfig) {
+  public static EventSubscribe build(String group, JniConfig jniConfig) throws JniException {
     long nativeObj = newNativeObj(jniConfig);
 
     EventSubscribe subscribe = new EventSubscribe();

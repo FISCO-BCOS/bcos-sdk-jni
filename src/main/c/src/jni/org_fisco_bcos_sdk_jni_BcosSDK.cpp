@@ -12,19 +12,25 @@
 JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_BcosSDK_newNativeObj(
     JNIEnv* env, jclass, jobject jconfig)
 {
-    // config
-    struct bcos_sdk_c_config* config = create_bcos_sdk_c_config_from_java_obj(env, jconfig);
-    // create sdk obj
-    void* sdk = bcos_sdk_create(config);
-    // destroy config
-    bcos_sdk_c_config_destroy(config);
-    if (sdk == NULL)
+    try
     {
-        // TODO: how to handler the error
-        env->FatalError("bcos_sdk_create return NULL");
-    }
+        // config
+        struct bcos_sdk_c_config* config = create_bcos_sdk_c_config_from_java_obj(env, jconfig);
+        // create sdk obj
+        void* sdk = bcos_sdk_create(config);
+        // destroy config
+        bcos_sdk_c_config_destroy(config);
 
-    return reinterpret_cast<jlong>(sdk);
+        return reinterpret_cast<jlong>(sdk);
+    }
+    catch (const bcos::BcosJniException& _e)
+    {
+        BCOS_LOG(INFO) << LOG_BADGE("Java_org_fisco_bcos_sdk_jni_BcosSDK_newNativeObj")
+                       << LOG_DESC("create bcos sdk native obj failed")
+                       << LOG_KV("e", boost::diagnostic_information(_e));
+        THROW_JNI_EXCEPTION(env, boost::diagnostic_information(_e));
+    }
+    return 0;
 }
 
 /*

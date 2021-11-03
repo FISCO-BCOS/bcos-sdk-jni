@@ -3,6 +3,7 @@
 #include "bcos_sdk_c_common.h"
 #include "bcos_sdk_c_rpc.h"
 #include "jni/org_fisco_bcos_sdk_common.h"
+#include "jni/org_fisco_bcos_sdk_exception.h"
 #include <stdint.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -113,19 +114,25 @@ static void on_receive_rpc_response(struct bcos_sdk_c_struct_response* resp)
 JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_newNativeObj(
     JNIEnv* env, jclass, jobject jconfig)
 {
-    // config
-    struct bcos_sdk_c_config* config = create_bcos_sdk_c_config_from_java_obj(env, jconfig);
-    // create rpc obj
-    void* rpc = bcos_sdk_create_rpc(config);
-    // destroy config
-    bcos_sdk_c_config_destroy(config);
-    if (rpc == NULL)
+    try
     {
-        // TODO: how to handler the error
-        env->FatalError("bcos_sdk_create_rpc return NULL");
-    }
+        // config
+        struct bcos_sdk_c_config* config = create_bcos_sdk_c_config_from_java_obj(env, jconfig);
+        // create rpc obj
+        void* rpc = bcos_sdk_create_rpc(config);
+        // destroy config
+        bcos_sdk_c_config_destroy(config);
 
-    return reinterpret_cast<jlong>(rpc);
+        return reinterpret_cast<jlong>(rpc);
+    }
+    catch (const bcos::BcosJniException& _e)
+    {
+        BCOS_LOG(INFO) << LOG_BADGE("Java_org_fisco_bcos_sdk_jni_rpc_Rpc_newNativeObj")
+                       << LOG_DESC("create rpc native obj failed")
+                       << LOG_KV("e", boost::diagnostic_information(_e));
+        THROW_JNI_EXCEPTION(env, boost::diagnostic_information(_e));
+    }
+    return 0;
 }
 
 /*

@@ -27,8 +27,6 @@ void bcos_amop_publish(void* amop, const char* topic, void* data, size_t size, u
 
 void bcos_amop_broadcast(void* amop, const char* topic, void* data, size_t size);
 
-void bcos_amop_query_subscribed_topics(void* amop);
-
 void bcos_amop_set_subscribe_topic_cb(void* amop, bcos_sdk_c_amop_subscribe_cb cb, void* context);
 
 void bcos_amop_send_response(

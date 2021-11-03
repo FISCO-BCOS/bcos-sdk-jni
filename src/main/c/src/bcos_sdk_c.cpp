@@ -1,6 +1,9 @@
 #include "bcos_sdk_c.h"
+#include <bcos-boostssl/context/ContextBuilder.h>
 #include <bcos-cpp-sdk/SdkFactory.h>
+#include <bcos-framework/libutilities/Log.h>
 #include <cstdio>
+#include <memory>
 #include <mutex>
 
 // c-style sdk obj
@@ -34,7 +37,30 @@ static std::shared_ptr<bcos::boostssl::ws::WsConfig> initWsConfig(struct bcos_sd
     wsConfig->setReconnectPeriod(config->reconnect_period_ms);
     wsConfig->setHeartbeatPeriod(config->heartbeat_period_ms);
 
-    // TODO: init WsConfig ssl config items
+    if (!config->disableSsl)
+    {
+        auto contextConfig = std::make_shared<bcos::boostssl::context::ContextConfig>();
+        contextConfig->setSslType(config->ssl_type);
+        contextConfig->setIsCertPath(false);
+
+        if (contextConfig->sslType() != "sm_ssl")
+        {
+            auto& certConfig = contextConfig->certConfig();
+            certConfig.caCert = config->cert_config->ca_cert;
+            certConfig.nodeCert = config->cert_config->node_cert;
+            certConfig.nodeKey = config->cert_config->node_key;
+        }
+        else
+        {
+            auto& smCertConfig = contextConfig->smCertConfig();
+            smCertConfig.caCert = config->sm_cert_config->ca_cert;
+            smCertConfig.nodeKey = config->sm_cert_config->node_key;
+            smCertConfig.nodeCert = config->sm_cert_config->node_cert;
+            smCertConfig.enNodeCert = config->sm_cert_config->en_node_cert;
+            smCertConfig.enNodeKey = config->sm_cert_config->en_node_key;
+        }
+        wsConfig->setContextConfig(contextConfig);
+    }
 
     return wsConfig;
 }
@@ -72,7 +98,7 @@ void bcos_sdk_destroy(void* sdk)
     {
         bcos_sdk_destroy_rpc(((Sdk*)sdk)->rpc);
         bcos_sdk_destroy_amop(((Sdk*)sdk)->amop);
-        // TODO:
+
         // bcos_sdk_destroy_event_sub(((Sdk *)sdk)->event);
 
         // delete Sdk object

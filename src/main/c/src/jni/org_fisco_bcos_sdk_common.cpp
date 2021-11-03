@@ -24,7 +24,7 @@ void* get_obj_native_member(JNIEnv* env, jobject self)
     jlong nativeObj = env->GetLongField(self, nativeFieldID);
     void* native = reinterpret_cast<void*>(nativeObj);
     if (native == NULL)
-    {  // TODO: native handle is not init
+    {  // TODO: native obj can be NULL when it is not initialized
         env->FatalError("No such long field, object obj is null in acquire native obj");
     }
 
@@ -50,7 +50,13 @@ static bcos_sdk_c_cert_config* create_bcos_sdk_c_cert_config(
     }
 
     jstring jCaCert = (jstring)env->GetObjectField(jCertConfig, caCertField);
-    const char* caCert = jCaCert ? env->GetStringUTFChars(jCaCert, NULL) : NULL;
+    if (!jCaCert)
+    {
+        BOOST_THROW_EXCEPTION(bcos::BcosJniException() << bcos::errinfo_comment(
+                                  "caCert has not been initialized, please set it"));
+    }
+
+    const char* caCert = env->GetStringUTFChars(jCaCert, NULL);
 
     jfieldID nodeKeyField = env->GetFieldID(certConfigClass, "nodeKey", "Ljava/lang/String;");
     if (nodeKeyField == NULL)
@@ -61,7 +67,13 @@ static bcos_sdk_c_cert_config* create_bcos_sdk_c_cert_config(
     }
 
     jstring jNodeKey = (jstring)env->GetObjectField(jCertConfig, nodeKeyField);
-    const char* nodeKey = jNodeKey ? env->GetStringUTFChars(jNodeKey, NULL) : NULL;
+    if (!jNodeKey)
+    {
+        BOOST_THROW_EXCEPTION(bcos::BcosJniException() << bcos::errinfo_comment(
+                                  "node key(nodeKey) has not been initialized, please set it"));
+    }
+
+    const char* nodeKey = env->GetStringUTFChars(jNodeKey, NULL);
 
     jfieldID nodeCertField = env->GetFieldID(certConfigClass, "nodeCert", "Ljava/lang/String;");
     if (nodeCertField == NULL)
@@ -72,17 +84,24 @@ static bcos_sdk_c_cert_config* create_bcos_sdk_c_cert_config(
     }
 
     jstring jNodeCert = (jstring)env->GetObjectField(jCertConfig, nodeCertField);
-    const char* nodeCert = jNodeCert ? env->GetStringUTFChars(jNodeCert, NULL) : NULL;
+    if (!jNodeKey)
+    {
+        BOOST_THROW_EXCEPTION(bcos::BcosJniException() << bcos::errinfo_comment(
+                                  "node cert(nodeCert) has not been initialized, please set it"));
+    }
 
+    const char* nodeCert = env->GetStringUTFChars(jNodeCert, NULL);
     struct bcos_sdk_c_cert_config* config =
         (struct bcos_sdk_c_cert_config*)malloc(sizeof(struct bcos_sdk_c_cert_config));
 
-    config->ca_cert = caCert ? strdup(caCert) : NULL;
-    config->node_cert = nodeCert ? strdup(nodeCert) : NULL;
-    config->node_key = nodeKey ? strdup(nodeKey) : NULL;
+    config->ca_cert = strdup(caCert);
+    config->node_cert = strdup(nodeCert);
+    config->node_key = strdup(nodeKey);
 
+#if defined(_BCOS_SDK_JNI_DEBUG_)
     printf("[create_bcos_sdk_c_cert_config] ==>>ca cert: %s, node cert: %s, node key: %s \n",
         config->ca_cert, config->node_cert, config->node_key);
+#endif
 
     if (caCert)
     {
@@ -121,7 +140,13 @@ static bcos_sdk_c_sm_cert_config* create_bcos_sdk_c_sm_cert_config(
     }
 
     jstring jCaCert = (jstring)env->GetObjectField(jSmCertConfig, caCertField);
-    const char* caCert = jCaCert ? env->GetStringUTFChars(jCaCert, NULL) : NULL;
+    if (!jCaCert)
+    {
+        BOOST_THROW_EXCEPTION(bcos::BcosJniException() << bcos::errinfo_comment(
+                                  "caCert has not been initialized, please set it"));
+    }
+
+    const char* caCert = env->GetStringUTFChars(jCaCert, NULL);
 
     // nodeCert
     jfieldID nodeCertField = env->GetFieldID(smCertConfigClass, "nodeCert", "Ljava/lang/String;");
@@ -132,7 +157,13 @@ static bcos_sdk_c_sm_cert_config* create_bcos_sdk_c_sm_cert_config(
                 .c_str());
     }
     jstring jNodeCert = (jstring)env->GetObjectField(jSmCertConfig, nodeCertField);
-    const char* nodeCert = jNodeCert ? env->GetStringUTFChars(jNodeCert, NULL) : NULL;
+    if (!jNodeCert)
+    {
+        BOOST_THROW_EXCEPTION(bcos::BcosJniException() << bcos::errinfo_comment(
+                                  "nodeCert has not been initialized, please set it"));
+    }
+
+    const char* nodeCert = env->GetStringUTFChars(jNodeCert, NULL);
 
     // nodeKey
     jfieldID nodeKeyField = env->GetFieldID(smCertConfigClass, "nodeKey", "Ljava/lang/String;");
@@ -143,6 +174,12 @@ static bcos_sdk_c_sm_cert_config* create_bcos_sdk_c_sm_cert_config(
                 .c_str());
     }
     jstring jNodeKey = (jstring)env->GetObjectField(jSmCertConfig, nodeKeyField);
+    if (!jNodeKey)
+    {
+        BOOST_THROW_EXCEPTION(bcos::BcosJniException() << bcos::errinfo_comment(
+                                  "nodeKey has not been initialized, please set it"));
+    }
+
     const char* nodeKey = jNodeKey ? env->GetStringUTFChars(jNodeKey, NULL) : NULL;
 
     // enNodeCert
@@ -155,7 +192,14 @@ static bcos_sdk_c_sm_cert_config* create_bcos_sdk_c_sm_cert_config(
                 .c_str());
     }
     jstring jEnNodeCert = (jstring)env->GetObjectField(jSmCertConfig, enNodeCertField);
-    const char* enNodeCert = jEnNodeCert ? env->GetStringUTFChars(jEnNodeCert, NULL) : NULL;
+    if (!jEnNodeCert)
+    {
+        BOOST_THROW_EXCEPTION(
+            bcos::BcosJniException() << bcos::errinfo_comment(
+                "encrypt node cert(enNodeCrt) has not been initialized, please set it"));
+    }
+
+    const char* enNodeCert = env->GetStringUTFChars(jEnNodeCert, NULL);
 
     // enNodeKey
     jfieldID enNodeKeyField = env->GetFieldID(smCertConfigClass, "enNodeKey", "Ljava/lang/String;");
@@ -166,16 +210,23 @@ static bcos_sdk_c_sm_cert_config* create_bcos_sdk_c_sm_cert_config(
                 .c_str());
     }
     jstring jEnNodeKey = (jstring)env->GetObjectField(jSmCertConfig, enNodeKeyField);
-    const char* enNodeKey = jEnNodeKey ? env->GetStringUTFChars(jEnNodeKey, NULL) : NULL;
+    if (!jEnNodeKey)
+    {
+        BOOST_THROW_EXCEPTION(
+            bcos::BcosJniException() << bcos::errinfo_comment(
+                "encrypt node key(enNodeKey) has not been initialized, please set it"));
+    }
+
+    const char* enNodeKey = env->GetStringUTFChars(jEnNodeKey, NULL);
 
     struct bcos_sdk_c_sm_cert_config* config =
         (struct bcos_sdk_c_sm_cert_config*)malloc(sizeof(struct bcos_sdk_c_sm_cert_config));
 
-    config->ca_cert = caCert ? strdup(caCert) : NULL;
-    config->node_cert = nodeCert ? strdup(nodeCert) : NULL;
-    config->node_key = nodeKey ? strdup(nodeKey) : NULL;
-    config->en_node_cert = enNodeCert ? strdup(enNodeCert) : NULL;
-    config->en_node_key = enNodeKey ? strdup(enNodeKey) : NULL;
+    config->ca_cert = strdup(caCert);
+    config->node_cert = strdup(nodeCert);
+    config->node_key = strdup(nodeKey);
+    config->en_node_cert = strdup(enNodeCert);
+    config->en_node_key = strdup(enNodeKey);
 
 #if defined(_BCOS_SDK_JNI_DEBUG_)
     printf(
@@ -185,32 +236,19 @@ static bcos_sdk_c_sm_cert_config* create_bcos_sdk_c_sm_cert_config(
         config->en_node_key);
 #endif
 
-    if (caCert)
-    {
-        env->ReleaseStringUTFChars(jCaCert, caCert);
-    }
-    if (nodeKey)
-    {
-        env->ReleaseStringUTFChars(jNodeKey, nodeKey);
-    }
-    if (nodeCert)
-    {
-        env->ReleaseStringUTFChars(jNodeCert, nodeCert);
-    }
-    if (enNodeKey)
-    {
-        env->ReleaseStringUTFChars(jEnNodeKey, enNodeKey);
-    }
-    if (enNodeCert)
-    {
-        env->ReleaseStringUTFChars(jEnNodeCert, enNodeCert);
-    }
+
+    env->ReleaseStringUTFChars(jCaCert, caCert);
+    env->ReleaseStringUTFChars(jNodeKey, nodeKey);
+    env->ReleaseStringUTFChars(jNodeCert, nodeCert);
+    env->ReleaseStringUTFChars(jEnNodeKey, enNodeKey);
+    env->ReleaseStringUTFChars(jEnNodeCert, enNodeCert);
 
     return config;
 }
 
 struct bcos_sdk_c_config* create_bcos_sdk_c_config_from_java_obj(JNIEnv* env, jobject jconfig)
 {
+    std::string className = "org/fisco/bcos/sdk/jni/common/JniConfig";
     jclass configClass = env->GetObjectClass(jconfig);
 
     jfieldID threadPoolSizeFieldID = env->GetFieldID(configClass, "threadPoolSize", "I");
@@ -229,7 +267,8 @@ struct bcos_sdk_c_config* create_bcos_sdk_c_config_from_java_obj(JNIEnv* env, jo
     jobject jpeersOjbect = env->GetObjectField(jconfig, peersFieldID);
     if (jpeersOjbect == NULL)
     {
-        throwJniException(env, "Peers is empty, please set set the connected peers");
+        BOOST_THROW_EXCEPTION(bcos::BcosJniException() << bcos::errinfo_comment(
+                                  "the connected peers has not been initialized , please set it"));
     }
 
     // Find "java/util/List" Class (Standard JAVA Class).
@@ -264,19 +303,22 @@ struct bcos_sdk_c_config* create_bcos_sdk_c_config_from_java_obj(JNIEnv* env, jo
     {
         // String java.util.List.get
         jstring jpeer = (jstring)env->CallObjectMethod(jpeersOjbect, listGetMethodID, i);
-        if (jpeer == NULL)
+        if (!jpeer)
         {
-            throwJniException(env, "This connected peer is null, it should be in ip:port format");
+            BOOST_THROW_EXCEPTION(
+                bcos::BcosJniException() << bcos::errinfo_comment(
+                    "this connected peer is null value, it should be in ip:port string format"));
         }
 
         const char* peer = env->GetStringUTFChars(jpeer, NULL);
         bcos::boostssl::ws::EndPoint endPoint;
         if (!bcos::boostssl::ws::WsTools::stringToEndPoint(peer ? peer : "", endPoint))
         {
-            throwJniException(
-                env, ("This connected peer should be in ip:port format, invalid value: " +
-                         std::string(peer))
-                         .c_str());
+            BOOST_THROW_EXCEPTION(
+                bcos::BcosJniException() << bcos::errinfo_comment(
+                    ("the connected peer should be in ip:port string format, invalid value: " +
+                        std::string(peer))
+                        .c_str()));
             continue;
         }
         else
@@ -288,16 +330,42 @@ struct bcos_sdk_c_config* create_bcos_sdk_c_config_from_java_obj(JNIEnv* env, jo
         env->ReleaseStringUTFChars(jpeer, peer);
     }
 
-    // add ssl impl
     jfieldID jdisableSsl = env->GetFieldID(configClass, "disableSsl", "Z");
+    if (jdisableSsl == NULL)
+    {
+        env->FatalError(
+            ("No such field in the class, className: " + className + " ,field: disableSsl")
+                .c_str());
+    }
 
     bool disableSsl = (int)env->GetBooleanField(jconfig, jdisableSsl);
+
+    std::string strSslType;
 
     bcos_sdk_c_cert_config* cert_config = NULL;
     bcos_sdk_c_sm_cert_config* sm_cert_config = NULL;
     if (!disableSsl)
-
     {
+        jfieldID sslTypeField = env->GetFieldID(configClass, "sslType", "Ljava/lang/String;");
+        if (sslTypeField == NULL)
+        {
+            env->FatalError(
+                ("No such field in the class, className: " + className + " ,field: sslType")
+                    .c_str());
+        }
+
+        jstring jsslType = (jstring)env->GetObjectField(jconfig, sslTypeField);
+        if (!jsslType)
+        {
+            BOOST_THROW_EXCEPTION(
+                bcos::BcosJniException() << bcos::errinfo_comment(
+                    "sslType has not been initialized, it should be \"ssl\" or \"sm_ssl\""));
+        }
+
+        const char* sslType = env->GetStringUTFChars(jsslType, NULL);
+        strSslType = std::string(sslType);
+        env->ReleaseStringUTFChars(jsslType, sslType);
+        if (strSslType != "sm_ssl")
         {
             std::string className = "org/fisco/bcos/sdk/jni/common/JniConfig$CertConfig";
             jfieldID certConfigField = env->GetFieldID(
@@ -310,15 +378,18 @@ struct bcos_sdk_c_config* create_bcos_sdk_c_config_from_java_obj(JNIEnv* env, jo
             }
 
             jobject jcertConfig = env->GetObjectField(jconfig, certConfigField);
-            if (jcertConfig == NULL)
-            {  // TODO: jcertConfig will be null if peer is empty, how to fix.
-                env->FatalError("Cannot GetObjectField for certConfig of JniConfig");
+            if (!jcertConfig)
+            {
+                BOOST_THROW_EXCEPTION(bcos::BcosJniException() << bcos::errinfo_comment(
+                                          "cert config has not been initialized, it "
+                                          "is used for ssl connection, please "
+                                          "set it"));
             }
 
             jclass certConfigClass = env->GetObjectClass(jcertConfig);
             cert_config = create_bcos_sdk_c_cert_config(env, certConfigClass, jcertConfig);
         }
-
+        else
         {
             std::string className = "org/fisco/bcos/sdk/jni/common/JniConfig$SMCertConfig";
             jfieldID smCertConfigField = env->GetFieldID(configClass, "smCertConfig",
@@ -330,9 +401,12 @@ struct bcos_sdk_c_config* create_bcos_sdk_c_config_from_java_obj(JNIEnv* env, jo
                                     .c_str());
             }
             jobject jSmCertConfig = env->GetObjectField(jconfig, smCertConfigField);
-            if (jSmCertConfig == NULL)
-            {  // TODO: jcertConfig will be null if peer is empty, how to fix.
-                env->FatalError("Cannot GetObjectField for smCertConfig of JniConfig");
+            if (!jSmCertConfig)
+            {
+                BOOST_THROW_EXCEPTION(bcos::BcosJniException() << bcos::errinfo_comment(
+                                          "sm cert config has not been initialized, it "
+                                          "is used for ssl connection, please "
+                                          "set it"));
             }
 
             jclass smCertConfigClass = env->GetObjectClass(jSmCertConfig);
@@ -341,7 +415,7 @@ struct bcos_sdk_c_config* create_bcos_sdk_c_config_from_java_obj(JNIEnv* env, jo
         }
     }
 
-    struct bcos_sdk_c_config* config = bcos_sdk_c_config_create();
+    struct bcos_sdk_c_config* config = bcos_sdk_c_config_create_empty();
     // init bcos_sdk_c_config
     config->heartbeat_period_ms = heartbeatPeriodMs;
     config->reconnect_period_ms = reconnectPeriodMs;
@@ -350,6 +424,7 @@ struct bcos_sdk_c_config* create_bcos_sdk_c_config_from_java_obj(JNIEnv* env, jo
     config->peers_count = listSize;
     config->disableSsl = disableSsl;
     config->peers = ep;
+    config->ssl_type = strdup(strSslType.c_str());
     config->cert_config = cert_config;
     config->sm_cert_config = sm_cert_config;
 

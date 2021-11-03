@@ -1,5 +1,7 @@
 
+#include <bcos-framework/libutilities/Exceptions.h>
 #include <jni.h>
+#include <string>
 /* Header for class common */
 
 #ifndef _Included_org_fisco_bcos_sdk_jni_exception
@@ -8,38 +10,14 @@
 extern "C" {
 #endif
 
-#define IF_THROW_NO_SUCH_FIELD_EXCEPTION(env, field, msg) \
-    do                                                    \
-    {                                                     \
-        if (field == NULL)                                \
-        {                                                 \
-            throwNoSuchFieldError(env, msg);              \
-        }                                                 \
-    } while (0)
+namespace bcos
+{
+DERIVE_BCOS_EXCEPTION(BcosJniException);
+}
 
-#define IF_THROW_NO_SUCH_METHOD_EXCEPTION(env, class, method, sig) \
-    do                                                             \
-    {                                                              \
-        if (obj == NULL)                                           \
-        {                                                          \
-            throwNoSuchMethodError(env, class, method, sig);       \
-        }                                                          \
-    } while (0)
+#define THROW_JNI_EXCEPTION(_ENV_, _INFO_) ThrowJNIException(_ENV_, __FILE__, __LINE__, _INFO_);
 
-#define IF_THROW_NO_CLASS_EXCEPTION(env, msg) \
-    do                                        \
-    {                                         \
-        if (obj == NULL)                      \
-        {                                     \
-            throwNoClassDefError(env, msg);   \
-        }                                     \
-    } while (0)
-
-jint throwNoSuchFieldError(JNIEnv* env, const char* message);
-jint throwNoSuchMethodError(
-    JNIEnv* env, const char* className, const char* methodName, const char* signature);
-jint throwNoClassDefError(JNIEnv* env, const char* message);
-jint throwJniException(JNIEnv* env, const char* message);
+void ThrowJNIException(JNIEnv* env, const char* kpFile, int iLine, const std::string& message);
 
 #ifdef __cplusplus
 }

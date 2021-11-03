@@ -119,10 +119,10 @@ public final class JniLibLoader {
     boolean loadLibFromFsOk = false;
     try {
       // 1. try to load library from filesystem
-      //  -Dorg.fisco.bcos.library.path
-      libPath = System.getProperty("org.fisco.bcos.library.path");
+      //  -Dorg.fisco.bcos.jni.library.path
+      libPath = System.getProperty("org.fisco.bcos.jni.library.path");
       if (libPath != null) {
-        logger.info("try to load library -Dorg.fisco.bcos.library.path, libPath: {}", libPath);
+        logger.info("try to load library -Dorg.fisco.bcos.jni.library.path, libPath: {}", libPath);
         // try to load library from filesystem first
         loadLibraryFromFs(libPath, NATIVE_RESOURCE_LIB_NAME, new File(libPath).isAbsolute());
         loadLibFromFsOk = true;

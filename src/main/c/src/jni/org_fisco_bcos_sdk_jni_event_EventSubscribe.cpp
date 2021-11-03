@@ -101,19 +101,25 @@ static void on_receive_event_sub_response(struct bcos_sdk_c_struct_response* res
 JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_event_EventSubscribe_newNativeObj(
     JNIEnv* env, jclass, jobject jconfig)
 {
-    // config
-    struct bcos_sdk_c_config* config = create_bcos_sdk_c_config_from_java_obj(env, jconfig);
-    // create amop obj
-    void* amop = bcos_sdk_create_event_sub(config);
-    // destroy config
-    bcos_sdk_c_config_destroy(config);
-    if (amop == NULL)
+    try
     {
-        // TODO: how to handler the error
-        env->FatalError("bcos_sdk_create_event_sub return NULL");
-    }
+        // config
+        struct bcos_sdk_c_config* config = create_bcos_sdk_c_config_from_java_obj(env, jconfig);
+        // create amop obj
+        void* amop = bcos_sdk_create_event_sub(config);
+        // destroy config
+        bcos_sdk_c_config_destroy(config);
 
-    return reinterpret_cast<jlong>(amop);
+        return reinterpret_cast<jlong>(amop);
+    }
+    catch (const bcos::BcosJniException& _e)
+    {
+        BCOS_LOG(INFO) << LOG_BADGE("Java_org_fisco_bcos_sdk_jni_event_EventSubscribe_newNativeObj")
+                       << LOG_DESC("create event sub native obj failed")
+                       << LOG_KV("e", boost::diagnostic_information(_e));
+        THROW_JNI_EXCEPTION(env, boost::diagnostic_information(_e));
+    }
+    return 0;
 }
 
 /*

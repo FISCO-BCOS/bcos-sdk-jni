@@ -106,7 +106,7 @@ JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_event_EventSubscribe_newNati
         // config
         struct bcos_sdk_c_config* config = create_bcos_sdk_c_config_from_java_obj(env, jconfig);
         // create amop obj
-        void* amop = bcos_sdk_create_event_sub(config);
+        void* amop = bcos_sdk_create_event_sub_by_config(config);
         // destroy config
         bcos_sdk_c_config_destroy(config);
 
@@ -131,7 +131,10 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_event_EventSubscribe_start(
     JNIEnv* env, jobject self)
 {
     void* event = get_obj_native_member(env, self);
-    bcos_sdk_start_event_sub(event);
+    if (event)
+    {
+        bcos_sdk_start_event_sub(event);
+    }
 }
 
 /*
@@ -143,7 +146,10 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_event_EventSubscribe_stop(
     JNIEnv* env, jobject self)
 {
     void* event = get_obj_native_member(env, self);
-    bcos_sdk_stop_event_sub(event);
+    if (event)
+    {
+        bcos_sdk_stop_event_sub(event);
+    }
 }
 
 /*

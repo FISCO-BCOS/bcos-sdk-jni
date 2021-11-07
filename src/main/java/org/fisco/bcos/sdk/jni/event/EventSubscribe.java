@@ -37,38 +37,38 @@ public class EventSubscribe {
    * @param config
    * @return
    */
-  public static native long newNativeObj(JniConfig config) throws JniException;
+  private static native long newNativeObj(JniConfig config) throws JniException;
 
   /**
-   * @param group
    * @param jniConfig
    * @return
    */
-  public static EventSubscribe build(String group, JniConfig jniConfig) throws JniException {
+  public static EventSubscribe build(JniConfig jniConfig) throws JniException {
     long nativeObj = newNativeObj(jniConfig);
 
     EventSubscribe subscribe = new EventSubscribe();
     subscribe.setNativeObj(nativeObj);
-    subscribe.setGroup(group);
-    subscribe.setJniConfig(jniConfig);
 
-    logger.info(" nativeObj: {}，group: {}, jniConfig: {}", nativeObj, group, jniConfig);
+    logger.info(" nativeObj: {}，jniConfig: {}", nativeObj, jniConfig);
+    return subscribe;
+  }
+
+  /**
+   * @param nativeObj
+   * @return
+   * @throws JniException
+   */
+  public static EventSubscribe build(long nativeObj) throws JniException {
+    EventSubscribe subscribe = new EventSubscribe();
+    subscribe.setNativeObj(nativeObj);
+
+    logger.info(" nativeObj: {}", nativeObj);
     return subscribe;
   }
 
   private EventSubscribe() {}
 
   private long nativeObj;
-  private String group;
-  private JniConfig jniConfig;
-
-  public String getGroup() {
-    return group;
-  }
-
-  private void setGroup(String group) {
-    this.group = group;
-  }
 
   public long getNativeObj() {
     return nativeObj;
@@ -76,14 +76,6 @@ public class EventSubscribe {
 
   private void setNativeObj(long nativeObj) {
     this.nativeObj = nativeObj;
-  }
-
-  public JniConfig getJniConfig() {
-    return jniConfig;
-  }
-
-  private void setJniConfig(JniConfig jniConfig) {
-    this.jniConfig = jniConfig;
   }
 
   // ----------------------------- EventSub interface begin --------------------------------------

@@ -1,6 +1,7 @@
 package org.fisco.bcos.sdk.jni.test.amop;
 
 import java.util.Arrays;
+import org.fisco.bcos.sdk.jni.BcosSDK;
 import org.fisco.bcos.sdk.jni.amop.Amop;
 import org.fisco.bcos.sdk.jni.common.JniConfig;
 import org.fisco.bcos.sdk.jni.common.JniException;
@@ -31,17 +32,19 @@ public class Sub {
     String topic = args[1];
 
     JniConfig jniConfig = Utility.newJniConfig(Arrays.asList(peer));
-    Amop amop = Amop.build(jniConfig);
+    BcosSDK bcosSDK = BcosSDK.build(jniConfig);
+    System.out.println("BcosSDK build");
+    Amop amop = Amop.build(bcosSDK.getAmopNative());
     amop.start();
 
     amop.subscribeTopic(
         topic,
         (endpoint, seq, data) -> {
-          logger.info(
-              " ==> receive message from client, endpoint: {}, seq: {}, data: {}",
-              endpoint,
-              seq,
-              new String(data));
+          System.out.println(" ==> receive message from client");
+          System.out.println(" \t==> endpoint: " + endpoint);
+          System.out.println(" \t==> seq: " + seq);
+          System.out.println(" \t==> data: " + new String(data));
+
           amop.sendResponse(endpoint, seq, data);
         });
 

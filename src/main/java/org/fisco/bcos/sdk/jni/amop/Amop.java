@@ -36,7 +36,7 @@ public class Amop {
    * @param config
    * @return
    */
-  public static native long newNativeObj(JniConfig config) throws JniException;
+  private static native long newNativeObj(JniConfig config) throws JniException;
 
   /**
    * @param jniConfig
@@ -46,16 +46,27 @@ public class Amop {
     long nativeObj = newNativeObj(jniConfig);
     Amop amop = new Amop();
     amop.setNativeObj(nativeObj);
-    amop.setJniConfig(jniConfig);
 
     logger.info(" nativeObj: {}, jniConfig: {}", nativeObj, jniConfig);
+    return amop;
+  }
+
+  /**
+   * @param nativeObj
+   * @return
+   * @throws JniException
+   */
+  public static Amop build(long nativeObj) {
+    Amop amop = new Amop();
+    amop.setNativeObj(nativeObj);
+
+    logger.info(" nativeObj: {}", nativeObj);
     return amop;
   }
 
   private Amop() {}
 
   private long nativeObj;
-  private JniConfig jniConfig;
 
   public long getNativeObj() {
     return nativeObj;
@@ -63,14 +74,6 @@ public class Amop {
 
   private void setNativeObj(long nativeObj) {
     this.nativeObj = nativeObj;
-  }
-
-  public JniConfig getJniConfig() {
-    return jniConfig;
-  }
-
-  private void setJniConfig(JniConfig jniConfig) {
-    this.jniConfig = jniConfig;
   }
 
   // ----------------------------- Amop interface begin --------------------------------------

@@ -12,19 +12,14 @@ extern "C" {
 //--------------------------------------------------------
 // create bcos sdk object by config
 void* bcos_sdk_create(struct bcos_sdk_c_config* config);
+// get bcos sdk rpc object by sdk
+void* bcos_sdk_get_rpc(void* sdk);
+// get bcos sdk amop object by sdk
+void* bcos_sdk_get_amop(void* sdk);
+// get bcos sdk event sub object by sdk
+void* bcos_sdk_get_event_sub(void* sdk);
 // destroy the bcos sdk object
 void bcos_sdk_destroy(void* sdk);
-// start bcos sdk
-void bcos_sdk_start(void* sdk);
-// stop bcos sdk
-void bcos_sdk_stop(void* sdk);
-
-// get rpc module from sdk object
-void* bcos_sdk_get_rpc(void* sdk, const char* group);
-// get amop module from sdk object
-void* bcos_sdk_get_amop(void* sdk);
-// get event sub module from sdk object
-void* bcos_sdk_get_event_sub(void* sdk, const char* group);
 //--------------------------------------------------------
 // bcos sdk function end
 //--------------------------------------------------------
@@ -33,7 +28,7 @@ void* bcos_sdk_get_event_sub(void* sdk, const char* group);
 // bcos rpc function start
 //--------------------------------------------------------
 // create bcos sdk rpc object by config
-void* bcos_sdk_create_rpc(struct bcos_sdk_c_config* config);
+void* bcos_sdk_create_rpc_by_config(struct bcos_sdk_c_config* config);
 // destroy the bcos sdk rpc sdk object
 void bcos_sdk_destroy_rpc(void* rpc);
 // start the rpc service
@@ -48,7 +43,7 @@ void bcos_sdk_stop_rpc(void* rpc);
 // bcos amop function start
 //--------------------------------------------------------
 // create bcos sdk amop by config
-void* bcos_sdk_create_amop(struct bcos_sdk_c_config* config);
+void* bcos_sdk_create_amop_by_config(struct bcos_sdk_c_config* config);
 // destroy the bcos sdk amop object
 void bcos_sdk_destroy_amop(void* amop);
 // start the amop service
@@ -63,7 +58,7 @@ void bcos_sdk_stop_amop(void* amop);
 // bcos event sub function start
 //--------------------------------------------------------
 // create bcos sdk event sub object by config
-void* bcos_sdk_create_event_sub(struct bcos_sdk_c_config* config);
+void* bcos_sdk_create_event_sub_by_config(struct bcos_sdk_c_config* config);
 // destroy the bcos sdk event sub object
 void bcos_sdk_destroy_event_sub(void* event);
 // start the bcos sdk event sub service

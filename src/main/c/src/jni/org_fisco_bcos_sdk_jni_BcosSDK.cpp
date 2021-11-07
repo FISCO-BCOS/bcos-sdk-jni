@@ -23,7 +23,7 @@ JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_BcosSDK_newNativeObj(
 
         return reinterpret_cast<jlong>(sdk);
     }
-    catch (const bcos::BcosJniException& _e)
+    catch (const std::exception& _e)
     {
         BCOS_LOG(INFO) << LOG_BADGE("Java_org_fisco_bcos_sdk_jni_BcosSDK_newNativeObj")
                        << LOG_DESC("create bcos sdk native obj failed")
@@ -35,55 +35,64 @@ JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_BcosSDK_newNativeObj(
 
 /*
  * Class:     org_fisco_bcos_sdk_jni_BcosSDK
- * Method:    getRpc
- * Signature: (Ljava/lang/String;)Lorg/fisco/bcos/sdk/jni/rpc/Rpc;
+ * Method:    getRpcNativeObj
+ * Signature: ()J
  */
-JNIEXPORT jobject JNICALL Java_org_fisco_bcos_sdk_jni_BcosSDK_getRpc(
-    JNIEnv* env, jobject self, jstring jgroup)
-{
-    std::ignore = env;
-    std::ignore = self;
-    std::ignore = jgroup;
-
-    return jobject();
-}
-
-/*
- * Class:     org_fisco_bcos_sdk_jni_BcosSDK
- * Method:    getAmop
- * Signature: ()Lorg/fisco/bcos/sdk/jni/amop/Amop;
- */
-JNIEXPORT jobject JNICALL Java_org_fisco_bcos_sdk_jni_BcosSDK_getAmop(JNIEnv* env, jobject self)
-{
-    std::ignore = env;
-    std::ignore = self;
-
-    return jobject();
-}
-
-/*
- * Class:     org_fisco_bcos_sdk_jni_BcosSDK
- * Method:    getEventSubscribe
- * Signature: (Ljava/lang/String;)Lorg/fisco/bcos/sdk/jni/event/EventSubscribe;
- */
-JNIEXPORT jobject JNICALL Java_org_fisco_bcos_sdk_jni_BcosSDK_getEventSubscribe(
-    JNIEnv* env, jobject self, jstring jgroup)
-{
-    std::ignore = env;
-    std::ignore = self;
-    std::ignore = jgroup;
-
-    return jobject();
-}
-
-/*
- * Class:     org_fisco_bcos_sdk_jni_BcosSDK
- * Method:    finalize
- * Signature: ()V
- */
-JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_BcosSDK_finalize(JNIEnv* env, jobject self)
+JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_BcosSDK_getRpcNativeObj(
+    JNIEnv* env, jobject self)
 {
     void* sdk = get_obj_native_member(env, self);
-    bcos_sdk_stop(sdk);
-    bcos_sdk_destroy(sdk);
+    if (sdk)
+    {
+        return reinterpret_cast<jlong>(bcos_sdk_get_rpc(sdk));
+    }
+
+    return 0;
+}
+
+/*
+ * Class:     org_fisco_bcos_sdk_jni_BcosSDK
+ * Method:    getAmopNative
+ * Signature: ()J
+ */
+JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_BcosSDK_getAmopNative(JNIEnv* env, jclass self)
+{
+    void* sdk = get_obj_native_member(env, self);
+    if (sdk)
+    {
+        return reinterpret_cast<jlong>(bcos_sdk_get_amop(sdk));
+    }
+
+    return 0;
+}
+
+/*
+ * Class:     org_fisco_bcos_sdk_jni_BcosSDK
+ * Method:    getEventSubNative
+ * Signature: ()J
+ */
+JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_BcosSDK_getEventSubNative(
+    JNIEnv* env, jobject self)
+{
+    void* sdk = get_obj_native_member(env, self);
+    if (sdk)
+    {
+        return reinterpret_cast<jlong>(bcos_sdk_get_event_sub(sdk));
+    }
+
+    return 0;
+}
+
+/*
+ * Class:     org_fisco_bcos_sdk_jni_BcosSDK
+ * Method:    destroy
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_BcosSDK_destroy(JNIEnv* env, jobject self)
+{
+    void* sdk = get_obj_native_member(env, self);
+    if (sdk)
+    {
+        bcos_sdk_destroy(sdk);
+    }
 }

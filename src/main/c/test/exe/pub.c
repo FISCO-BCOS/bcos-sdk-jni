@@ -55,7 +55,6 @@ int main(int argc, char** argv)
     }
 
     printf("start sdk service.\n");
-    bcos_sdk_start(sdk);
 
     void* amop = bcos_sdk_get_amop(sdk);
     if (!amop)
@@ -63,6 +62,7 @@ int main(int argc, char** argv)
         printf("bcos_sdk_get_amop failed.\n");
         return 0;
     }
+    bcos_sdk_start_amop(amop);
 
     while (1)
     {

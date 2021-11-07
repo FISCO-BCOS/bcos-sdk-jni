@@ -1,15 +1,17 @@
 #include "bcos_sdk_c.h"
 #include <bcos-boostssl/context/ContextBuilder.h>
+#include <bcos-boostssl/websocket/WsService.h>
 #include <bcos-cpp-sdk/SdkFactory.h>
 #include <bcos-framework/libutilities/Log.h>
 #include <cstdio>
+#include <exception>
 #include <memory>
 #include <mutex>
 
 // c-style sdk obj
 struct Sdk
 {
-    void* service;
+    std::shared_ptr<bcos::cppsdk::service::Service> service;
     void* rpc;
     void* amop;
     void* event;
@@ -68,27 +70,38 @@ static std::shared_ptr<bcos::boostssl::ws::WsConfig> initWsConfig(struct bcos_sd
 // create bcos sdk object by config
 void* bcos_sdk_create(struct bcos_sdk_c_config* config)
 {
-    // construct sdk object
-    auto factory = std::make_shared<bcos::cppsdk::SdkFactory>();
-    factory->setConfig(initWsConfig(config));
+    try
+    {
+        // construct sdk object
+        auto factory = std::make_shared<bcos::cppsdk::SdkFactory>();
+        factory->setConfig(initWsConfig(config));
 
-    auto wsService = factory->buildService();
+        auto sdk = new Sdk();
+        auto service = factory->buildService();
+        sdk->service = service;
 
-    auto rpc = factory->buildJsonRpc(wsService);
-    auto amop = factory->buildAMOP(wsService);
-    // TODO:event sub is not being test
-    // auto event = factory->buildEventSub(wsService);
+        auto rpc = factory->buildJsonRpc(service);
+        auto rpcPointer = rpc.release();
 
-    auto rpcPointer = rpc.release();
-    auto amopPointer = amop.release();
+        auto amop = factory->buildAMOP(service);
+        auto amopPointer = amop.release();
 
-    auto sdk = new Sdk();
-    sdk->service = wsService.get();
-    sdk->rpc = rpcPointer;
-    sdk->amop = amopPointer;
-    // sdk->event = eventPointer;
+        auto event = factory->buildEventSub(service);
+        auto eventPointer = event.release();
 
-    return sdk;
+        sdk->rpc = (void*)rpcPointer;
+        sdk->amop = (void*)amopPointer;
+        sdk->event = (void*)eventPointer;
+
+        return sdk;
+    }
+    catch (const std::exception& _e)
+    {
+        std::cerr << "error: " << _e.what() << std::endl;
+        // TODO: handle error
+    }
+
+    return NULL;
 }
 
 // destroy the bcos sdk object
@@ -96,64 +109,53 @@ void bcos_sdk_destroy(void* sdk)
 {
     if (sdk)
     {
-        bcos_sdk_destroy_rpc(((Sdk*)sdk)->rpc);
-        bcos_sdk_destroy_amop(((Sdk*)sdk)->amop);
+        auto rpcPointer = (bcos::cppsdk::jsonrpc::JsonRpcInterface*)(((Sdk*)sdk)->rpc);
+        auto amopPointer = (bcos::cppsdk::amop::AMOPInterface*)(((Sdk*)sdk)->amop);
+        auto eventPointer = (bcos::cppsdk::event::EventSubInterface*)(((Sdk*)sdk)->event);
 
-        // bcos_sdk_destroy_event_sub(((Sdk *)sdk)->event);
+        delete rpcPointer;
+        delete amopPointer;
+        delete eventPointer;
 
         // delete Sdk object
         delete (Sdk*)sdk;
     }
 }
 
-// start bcos sdk
-void bcos_sdk_start(void* sdk)
+// create bcos sdk rpc object by sdk
+void* bcos_sdk_get_rpc(void* sdk)
 {
     if (sdk)
     {
-        bcos_sdk_start_rpc(((Sdk*)sdk)->rpc);
-        bcos_sdk_start_amop(((Sdk*)sdk)->amop);
-        // TODO:
-        // bcos_sdk_start_event_sub(((Sdk *)sdk)->event);
+        return ((Sdk*)sdk)->rpc;
     }
+
+    return NULL;
 }
 
-// stop bcos sdk
-void bcos_sdk_stop(void* sdk)
+// create bcos sdk event sub object by sdk
+void* bcos_sdk_get_event_sub(void* sdk)
 {
     if (sdk)
     {
-        bcos_sdk_stop_rpc(((Sdk*)sdk)->rpc);
-        bcos_sdk_stop_amop(((Sdk*)sdk)->amop);
-        bcos_sdk_stop_event_sub(((Sdk*)sdk)->event);
+        return ((Sdk*)sdk)->event;
     }
+
+    return NULL;
 }
 
-// get rpc module from sdk object
-void* bcos_sdk_get_rpc(void* sdk, const char* group)
-{
-    // TODO: init with group
-    (void)group;
-
-    return sdk ? ((Sdk*)sdk)->rpc : NULL;
-}
-
-// get event sub module from sdk object
-void* bcos_sdk_get_event_sub(void* sdk, const char* group)
-{
-    // TODO: init with group
-    (void)group;
-
-    return sdk ? ((Sdk*)sdk)->event : NULL;
-}
-
-// get amop module from sdk object
+// create bcos sdk amop object by sdk
 void* bcos_sdk_get_amop(void* sdk)
 {
-    return sdk ? ((Sdk*)sdk)->amop : NULL;
+    if (sdk)
+    {
+        return ((Sdk*)sdk)->amop;
+    }
+
+    return NULL;
 }
 
-void* bcos_sdk_create_rpc(struct bcos_sdk_c_config* config)
+void* bcos_sdk_create_rpc_by_config(struct bcos_sdk_c_config* config)
 {
     auto wsConfig = initWsConfig(config);
 
@@ -202,7 +204,7 @@ void bcos_sdk_stop_rpc(void* rpc)
 }
 
 // create bcos sdk amop object by config
-void* bcos_sdk_create_amop(struct bcos_sdk_c_config* config)
+void* bcos_sdk_create_amop_by_config(struct bcos_sdk_c_config* config)
 {
     auto wsConfig = initWsConfig(config);
 
@@ -251,7 +253,7 @@ void bcos_sdk_stop_amop(void* amop)
 }
 
 // create bcos sdk event sub object by config
-void* bcos_sdk_create_event_sub(struct bcos_sdk_c_config* config)
+void* bcos_sdk_create_event_sub_by_config(struct bcos_sdk_c_config* config)
 {
     auto wsConfig = initWsConfig(config);
 
@@ -265,6 +267,7 @@ void* bcos_sdk_create_event_sub(struct bcos_sdk_c_config* config)
     auto eventPointer = event.release();
     return eventPointer;
 }
+
 
 // destroy the bcos sdk event sub object
 void bcos_sdk_destroy_event_sub(void* event)

@@ -16,32 +16,31 @@ JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_BcosSDK_newNativeObj(JNIEnv*
 
 /*
  * Class:     org_fisco_bcos_sdk_jni_BcosSDK
- * Method:    getRpc
- * Signature: (Ljava/lang/String;)Lorg/fisco/bcos/sdk/jni/rpc/Rpc;
+ * Method:    getRpcNativeObj
+ * Signature: ()J
  */
-JNIEXPORT jobject JNICALL Java_org_fisco_bcos_sdk_jni_BcosSDK_getRpc(JNIEnv*, jobject, jstring);
+JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_BcosSDK_getRpcNativeObj(JNIEnv*, jobject);
 
 /*
  * Class:     org_fisco_bcos_sdk_jni_BcosSDK
- * Method:    getAmop
- * Signature: ()Lorg/fisco/bcos/sdk/jni/amop/Amop;
+ * Method:    getAmopNative
+ * Signature: ()J
  */
-JNIEXPORT jobject JNICALL Java_org_fisco_bcos_sdk_jni_BcosSDK_getAmop(JNIEnv*, jobject);
+JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_BcosSDK_getAmopNative(JNIEnv*, jobject);
 
 /*
  * Class:     org_fisco_bcos_sdk_jni_BcosSDK
- * Method:    getEventSubscribe
- * Signature: (Ljava/lang/String;)Lorg/fisco/bcos/sdk/jni/event/EventSubscribe;
+ * Method:    getEventSubNative
+ * Signature: ()J
  */
-JNIEXPORT jobject JNICALL Java_org_fisco_bcos_sdk_jni_BcosSDK_getEventSubscribe(
-    JNIEnv*, jobject, jstring);
+JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_BcosSDK_getEventSubNative(JNIEnv*, jobject);
 
 /*
  * Class:     org_fisco_bcos_sdk_jni_BcosSDK
- * Method:    finalize
+ * Method:    destroy
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_BcosSDK_finalize(JNIEnv*, jobject);
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_BcosSDK_destroy(JNIEnv*, jobject);
 
 #ifdef __cplusplus
 }

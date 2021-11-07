@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define _BCOS_SDK_JNI_DEBUG_
+// #define _BCOS_SDK_JNI_DEBUG_
 
 #ifdef __cplusplus
 extern "C" {

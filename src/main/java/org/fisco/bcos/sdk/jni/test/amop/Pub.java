@@ -1,6 +1,7 @@
 package org.fisco.bcos.sdk.jni.test.amop;
 
 import java.util.Arrays;
+import org.fisco.bcos.sdk.jni.BcosSDK;
 import org.fisco.bcos.sdk.jni.amop.Amop;
 import org.fisco.bcos.sdk.jni.common.JniConfig;
 import org.fisco.bcos.sdk.jni.common.JniException;
@@ -32,7 +33,11 @@ public class Pub {
     String msg = args[2];
 
     JniConfig jniConfig = Utility.newJniConfig(Arrays.asList(peer));
-    Amop amop = Amop.build(jniConfig);
+    jniConfig.setDisableSsl(true);
+
+    BcosSDK bcosSDK = BcosSDK.build(jniConfig);
+    System.out.println("BcosSDK build");
+    Amop amop = Amop.build(bcosSDK.getAmopNative());
     amop.start();
 
     while (true) {

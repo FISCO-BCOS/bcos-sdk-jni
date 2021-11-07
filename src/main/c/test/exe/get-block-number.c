@@ -56,10 +56,9 @@ int main(int argc, char** argv)
         return 0;
     }
 
-    printf("start sdk service.\n");
-    bcos_sdk_start(sdk);
+    printf("create sdk service.\n");
 
-    void* rpc = bcos_sdk_get_rpc(sdk, "group");
+    void* rpc = bcos_sdk_get_rpc(sdk);
     if (!rpc)
     {
         printf("bcos_sdk_get_rpc failed.\n");

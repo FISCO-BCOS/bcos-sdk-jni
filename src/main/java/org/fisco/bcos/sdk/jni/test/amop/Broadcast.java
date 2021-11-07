@@ -28,6 +28,7 @@ public class Broadcast {
     String msg = args[2];
 
     JniConfig jniConfig = Utility.newJniConfig(Arrays.asList(peer));
+    jniConfig.setDisableSsl(true);
     Amop amop = Amop.build(jniConfig);
     amop.start();
 

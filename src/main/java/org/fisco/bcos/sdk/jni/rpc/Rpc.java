@@ -34,18 +34,23 @@ public class Rpc {
    * @param config
    * @return
    */
-  public static native long newNativeObj(JniConfig config) throws JniException;
+  private static native long newNativeObj(JniConfig config) throws JniException;
 
   /**
-   * @param group
    * @param jniConfig
    * @return
    */
-  public static Rpc build(String group, JniConfig jniConfig) throws JniException {
+  public static Rpc build(JniConfig jniConfig) throws JniException {
     long nativeObj = newNativeObj(jniConfig);
-    logger.info(" group: {}, nativeObj: {}", group, nativeObj);
+    logger.info(" nativeObj: {}", nativeObj);
     Rpc rpc = new Rpc();
-    rpc.setGroup(group);
+    rpc.setNativeObj(nativeObj);
+    return rpc;
+  }
+
+  public static Rpc build(long nativeObj) {
+    logger.info(" nativeObj: {}", nativeObj);
+    Rpc rpc = new Rpc();
     rpc.setNativeObj(nativeObj);
     return rpc;
   }
@@ -62,14 +67,6 @@ public class Rpc {
 
   private void setJniConfig(JniConfig jniConfig) {
     this.jniConfig = jniConfig;
-  }
-
-  public String getGroup() {
-    return group;
-  }
-
-  public void setGroup(String group) {
-    this.group = group;
   }
 
   public long getNativeObj() {

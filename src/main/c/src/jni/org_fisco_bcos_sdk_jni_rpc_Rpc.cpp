@@ -119,7 +119,7 @@ JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_newNativeObj(
         // config
         struct bcos_sdk_c_config* config = create_bcos_sdk_c_config_from_java_obj(env, jconfig);
         // create rpc obj
-        void* rpc = bcos_sdk_create_rpc(config);
+        void* rpc = bcos_sdk_create_rpc_by_config(config);
         // destroy config
         bcos_sdk_c_config_destroy(config);
 
@@ -143,7 +143,10 @@ JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_newNativeObj(
 JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_start(JNIEnv* env, jobject self)
 {
     void* rpc = get_obj_native_member(env, self);
-    bcos_sdk_start_rpc(rpc);
+    if (rpc)
+    {
+        bcos_sdk_start_rpc(rpc);
+    }
 }
 
 /*
@@ -154,7 +157,10 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_start(JNIEnv* env, jo
 JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_stop(JNIEnv* env, jobject self)
 {
     void* rpc = get_obj_native_member(env, self);
-    bcos_sdk_stop_rpc(rpc);
+    if (rpc)
+    {
+        bcos_sdk_stop_rpc(rpc);
+    }
 }
 
 

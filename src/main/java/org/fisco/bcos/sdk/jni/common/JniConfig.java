@@ -11,6 +11,7 @@ public class JniConfig {
   private int reconnectPeriodMs = 20000;
   private int heartbeatPeriodMs = 20000;
   private int messageTimeoutMs = 10000;
+
   /** if disable the ssl connection */
   private boolean disableSsl = false;
   /** ssl or sm_ssl */

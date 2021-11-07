@@ -5,6 +5,7 @@ plugins {
     id 'java-library'
     id 'maven-publish'
     id 'org.ajoberstar.grgit' version '4.0.1'
+    id "de.undercouch.download" version "4.1.2"
     id 'com.github.sherter.google-java-format' version '0.8'
 }
 
@@ -100,6 +101,35 @@ task sourcesJar(type: Jar) {
 task javadocJar(type: Jar) {
     from javadoc
     archiveClassifier = 'javadoc'
+}
+
+//srourceDir="./.source"
+//task downloadBcosCSdk(type: Download) {
+//    src 'http://localhost:8081/example/test-jar-test_1.jar'
+//    dest "$srourceDir"
+//}
+//
+//// Notice: build bcos-sdk jni dynamic library
+//task buildJniTask(type: Exec) {
+//    dependsOn: downloadBcosCSdk
+//    workingDir "$projectDir"
+//    if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+//        // TODO: fix ,add .bat
+//        commandLine 'cmd', '/c', 'scripts/compile_jni_lib.sh'
+//    } else {
+//        commandLine 'sh', '-c', 'bash scripts/compile_jni_lib.sh'
+//    }
+//}
+
+// Notice: build bcos-sdk jni dynamic library
+task java2JniTask(type: Exec) {
+    workingDir "$projectDir"
+    if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+        // TODO: fix ,add .bat
+        commandLine 'cmd', '/c', 'bash scripts/java2jni.sh'
+    } else {
+        commandLine 'sh', '-c', 'bash scripts/java2jni.sh'
+    }
 }
 
 publishing {

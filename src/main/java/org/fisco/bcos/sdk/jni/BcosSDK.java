@@ -13,12 +13,9 @@
  */
 package org.fisco.bcos.sdk.jni;
 
-import org.fisco.bcos.sdk.jni.amop.Amop;
 import org.fisco.bcos.sdk.jni.common.JniConfig;
 import org.fisco.bcos.sdk.jni.common.JniException;
 import org.fisco.bcos.sdk.jni.common.JniLibLoader;
-import org.fisco.bcos.sdk.jni.event.EventSubscribe;
-import org.fisco.bcos.sdk.jni.rpc.Rpc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,13 +27,7 @@ public class BcosSDK {
     JniLibLoader.loadJniLibrary();
   }
 
-  /**
-   * call native c api to create rpc object
-   *
-   * @param config
-   * @return
-   */
-  public static native long newNativeObj(JniConfig config);
+  private BcosSDK() {}
 
   /**
    * @param jniConfig
@@ -47,14 +38,10 @@ public class BcosSDK {
     logger.info("newNativeObj, nativeObj: {}, jniConfig: {}", nativeObj, jniConfig);
     BcosSDK sdk = new BcosSDK();
     sdk.setNativeObj(nativeObj);
-    sdk.setJniConfig(jniConfig);
     return sdk;
   }
 
-  private BcosSDK() {}
-
   private long nativeObj;
-  private JniConfig jniConfig;
 
   public long getNativeObj() {
     return nativeObj;
@@ -64,22 +51,21 @@ public class BcosSDK {
     this.nativeObj = nativeObj;
   }
 
-  public JniConfig getJniConfig() {
-    return jniConfig;
-  }
+  // ---------------------------------------------------------------------------------------
+  /**
+   * call native c api to create rpc object
+   *
+   * @param config
+   * @return
+   */
+  public static native long newNativeObj(JniConfig config) throws JniException;
 
-  private void setJniConfig(JniConfig jniConfig) {
-    this.jniConfig = jniConfig;
-  }
+  public native long getRpcNativeObj();
 
-  // ----------------------------- SDK interface begin --------------------------------------
+  public native long getAmopNative();
 
-  public native Rpc getRpc(String group);
+  public native long getEventSubNative();
 
-  public native Amop getAmop();
-
-  public native EventSubscribe getEventSubscribe(String group);
-
-  // ----------------------------- SDK interface begin --------------------------------------
-  public native void finalize();
+  public native void destroy();
+  // -----------------------------------------------------------------------------------------
 }

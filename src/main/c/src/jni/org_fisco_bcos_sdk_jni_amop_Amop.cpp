@@ -172,7 +172,7 @@ JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_amop_Amop_newNativeObj(
         // config
         struct bcos_sdk_c_config* config = create_bcos_sdk_c_config_from_java_obj(env, jconfig);
         // create amop obj
-        void* amop = bcos_sdk_create_amop(config);
+        void* amop = bcos_sdk_create_amop_by_config(config);
         // destroy config
         bcos_sdk_c_config_destroy(config);
 
@@ -196,7 +196,10 @@ JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_amop_Amop_newNativeObj(
 JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_Amop_start(JNIEnv* env, jobject self)
 {
     void* amop = get_obj_native_member(env, self);
-    bcos_sdk_start_amop(amop);
+    if (amop)
+    {
+        bcos_sdk_start_amop(amop);
+    }
 }
 
 /*
@@ -207,7 +210,10 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_Amop_start(JNIEnv* env, 
 JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_Amop_stop(JNIEnv* env, jobject self)
 {
     void* amop = get_obj_native_member(env, self);
-    bcos_sdk_stop_amop(amop);
+    if (amop)
+    {
+        bcos_sdk_stop_amop(amop);
+    }
 }
 
 /*

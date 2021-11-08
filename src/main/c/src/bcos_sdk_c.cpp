@@ -47,19 +47,21 @@ static std::shared_ptr<bcos::boostssl::ws::WsConfig> initWsConfig(struct bcos_sd
 
         if (contextConfig->sslType() != "sm_ssl")
         {
-            auto& certConfig = contextConfig->certConfig();
+            bcos::boostssl::context::ContextConfig::CertConfig certConfig;
             certConfig.caCert = config->cert_config->ca_cert;
             certConfig.nodeCert = config->cert_config->node_cert;
             certConfig.nodeKey = config->cert_config->node_key;
+            contextConfig->setCertConfig(certConfig);
         }
         else
         {
-            auto& smCertConfig = contextConfig->smCertConfig();
+            bcos::boostssl::context::ContextConfig::SMCertConfig smCertConfig;
             smCertConfig.caCert = config->sm_cert_config->ca_cert;
             smCertConfig.nodeKey = config->sm_cert_config->node_key;
             smCertConfig.nodeCert = config->sm_cert_config->node_cert;
             smCertConfig.enNodeCert = config->sm_cert_config->en_node_cert;
             smCertConfig.enNodeKey = config->sm_cert_config->en_node_key;
+            contextConfig->setSmCertConfig(smCertConfig);
         }
         wsConfig->setContextConfig(contextConfig);
     }

@@ -1,6 +1,7 @@
 
 #include "jni/org_fisco_bcos_sdk_jni_BcosSDK.h"
 #include "bcos_sdk_c.h"
+#include "bcos_sdk_c_error.h"
 #include "jni/org_fisco_bcos_sdk_common.h"
 #include <tuple>
 
@@ -12,24 +13,20 @@
 JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_BcosSDK_newNativeObj(
     JNIEnv* env, jclass, jobject jconfig)
 {
-    try
+    // config
+    struct bcos_sdk_c_config* config = create_bcos_sdk_c_config_from_java_obj(env, jconfig);
+    // create sdk obj
+    void* sdk = bcos_sdk_create(config);
+    // destroy config
+    bcos_sdk_c_config_destroy(config);
+    if (bcos_sdk_get_last_error() == 0)
     {
-        // config
-        struct bcos_sdk_c_config* config = create_bcos_sdk_c_config_from_java_obj(env, jconfig);
-        // create sdk obj
-        void* sdk = bcos_sdk_create(config);
-        // destroy config
-        bcos_sdk_c_config_destroy(config);
-
         return reinterpret_cast<jlong>(sdk);
     }
-    catch (const std::exception& _e)
-    {
-        BCOS_LOG(INFO) << LOG_BADGE("Java_org_fisco_bcos_sdk_jni_BcosSDK_newNativeObj")
-                       << LOG_DESC("create bcos sdk native obj failed")
-                       << LOG_KV("e", boost::diagnostic_information(_e));
-        THROW_JNI_EXCEPTION(env, boost::diagnostic_information(_e));
-    }
+
+    // throw exception in java
+    THROW_JNI_EXCEPTION(env, bcos_sdk_get_last_error_msg());
+
     return 0;
 }
 

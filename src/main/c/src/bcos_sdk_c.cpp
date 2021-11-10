@@ -1,4 +1,5 @@
 #include "bcos_sdk_c.h"
+#include "bcos_sdk_c_error.h"
 #include <bcos-boostssl/context/ContextBuilder.h>
 #include <bcos-boostssl/websocket/WsService.h>
 #include <bcos-cpp-sdk/SdkFactory.h>
@@ -72,6 +73,7 @@ static std::shared_ptr<bcos::boostssl::ws::WsConfig> initWsConfig(struct bcos_sd
 // create bcos sdk object by config
 void* bcos_sdk_create(struct bcos_sdk_c_config* config)
 {
+    bcos_sdk_clear_last_error();
     try
     {
         // construct sdk object
@@ -97,10 +99,11 @@ void* bcos_sdk_create(struct bcos_sdk_c_config* config)
 
         return sdk;
     }
-    catch (const std::exception& _e)
+    catch (const std::exception& e)
     {
-        std::cerr << "error: " << _e.what() << std::endl;
-        // TODO: handle error
+        auto&& msg = boost::diagnostic_information(e);
+        BCOS_LOG(ERROR) << LOG_BADGE("bcos_sdk_create") << LOG_KV("error msg", msg);
+        bcos_sdk_set_last_error_msg(-1, msg.c_str());
     }
 
     return NULL;
@@ -159,17 +162,29 @@ void* bcos_sdk_get_amop(void* sdk)
 
 void* bcos_sdk_create_rpc_by_config(struct bcos_sdk_c_config* config)
 {
-    auto wsConfig = initWsConfig(config);
+    bcos_sdk_clear_last_error();
+    try
+    {
+        auto wsConfig = initWsConfig(config);
 
-    // construct sdk object
-    auto factory = std::make_shared<bcos::cppsdk::SdkFactory>();
-    factory->setConfig(wsConfig);
+        // construct sdk object
+        auto factory = std::make_shared<bcos::cppsdk::SdkFactory>();
+        factory->setConfig(wsConfig);
 
-    auto wsService = factory->buildService();
-    auto rpc = factory->buildJsonRpc(wsService);
+        auto wsService = factory->buildService();
+        auto rpc = factory->buildJsonRpc(wsService);
 
-    auto rpcPointer = rpc.release();
-    return rpcPointer;
+        auto rpcPointer = rpc.release();
+        return rpcPointer;
+    }
+    catch (const std::exception& e)
+    {
+        auto&& msg = boost::diagnostic_information(e);
+        BCOS_LOG(ERROR) << LOG_BADGE("bcos_sdk_create_rpc_by_config") << LOG_KV("error msg", msg);
+        bcos_sdk_set_last_error_msg(-1, msg.c_str());
+    }
+
+    return NULL;
 }
 
 // destroy the bcos sdk rpc sdk object
@@ -188,10 +203,17 @@ void bcos_sdk_destroy_rpc(void* rpc)
 // start the rpc service
 void bcos_sdk_start_rpc(void* rpc)
 {
-    if (rpc)
+    bcos_sdk_clear_last_error();
+    try
     {
         auto rpcPointer = (bcos::cppsdk::jsonrpc::JsonRpcInterface*)rpc;
         rpcPointer->start();
+    }
+    catch (const std::exception& e)
+    {
+        auto&& msg = boost::diagnostic_information(e);
+        BCOS_LOG(ERROR) << LOG_BADGE("bcos_sdk_start_rpc") << LOG_KV("error msg", msg);
+        bcos_sdk_set_last_error_msg(-1, msg.c_str());
     }
 }
 
@@ -208,17 +230,29 @@ void bcos_sdk_stop_rpc(void* rpc)
 // create bcos sdk amop object by config
 void* bcos_sdk_create_amop_by_config(struct bcos_sdk_c_config* config)
 {
-    auto wsConfig = initWsConfig(config);
+    bcos_sdk_clear_last_error();
+    try
+    {
+        auto wsConfig = initWsConfig(config);
 
-    // construct sdk object
-    auto factory = std::make_shared<bcos::cppsdk::SdkFactory>();
-    factory->setConfig(wsConfig);
+        // construct sdk object
+        auto factory = std::make_shared<bcos::cppsdk::SdkFactory>();
+        factory->setConfig(wsConfig);
 
-    auto wsService = factory->buildService();
-    auto amop = factory->buildAMOP(wsService);
+        auto wsService = factory->buildService();
+        auto amop = factory->buildAMOP(wsService);
 
-    auto amopPointer = amop.release();
-    return amopPointer;
+        auto amopPointer = amop.release();
+        return amopPointer;
+    }
+    catch (const std::exception& e)
+    {
+        auto&& msg = boost::diagnostic_information(e);
+        BCOS_LOG(ERROR) << LOG_BADGE("bcos_sdk_create_amop_by_config") << LOG_KV("error msg", msg);
+        bcos_sdk_set_last_error_msg(-1, msg.c_str());
+    }
+
+    return NULL;
 }
 
 // destroy the bcos sdk amop object
@@ -237,10 +271,17 @@ void bcos_sdk_destroy_amop(void* amop)
 // start the amop service
 void bcos_sdk_start_amop(void* amop)
 {
-    if (amop)
+    bcos_sdk_clear_last_error();
+    try
     {
         auto amopPointer = (bcos::cppsdk::amop::AMOPInterface*)amop;
         amopPointer->start();
+    }
+    catch (const std::exception& e)
+    {
+        auto&& msg = boost::diagnostic_information(e);
+        BCOS_LOG(ERROR) << LOG_BADGE("bcos_sdk_start_amop") << LOG_KV("error msg", msg);
+        bcos_sdk_set_last_error_msg(-1, msg.c_str());
     }
 }
 
@@ -257,17 +298,30 @@ void bcos_sdk_stop_amop(void* amop)
 // create bcos sdk event sub object by config
 void* bcos_sdk_create_event_sub_by_config(struct bcos_sdk_c_config* config)
 {
-    auto wsConfig = initWsConfig(config);
+    bcos_sdk_clear_last_error();
+    try
+    {
+        auto wsConfig = initWsConfig(config);
 
-    // construct sdk object
-    auto factory = std::make_shared<bcos::cppsdk::SdkFactory>();
-    factory->setConfig(wsConfig);
+        // construct sdk object
+        auto factory = std::make_shared<bcos::cppsdk::SdkFactory>();
+        factory->setConfig(wsConfig);
 
-    auto wsService = factory->buildService();
-    auto event = factory->buildEventSub(wsService);
+        auto wsService = factory->buildService();
+        auto event = factory->buildEventSub(wsService);
 
-    auto eventPointer = event.release();
-    return eventPointer;
+        auto eventPointer = event.release();
+        return eventPointer;
+    }
+    catch (const std::exception& e)
+    {
+        auto&& msg = boost::diagnostic_information(e);
+        BCOS_LOG(ERROR) << LOG_BADGE("bcos_sdk_create_event_sub_by_config")
+                        << LOG_KV("error msg", msg);
+        bcos_sdk_set_last_error_msg(-1, msg.c_str());
+    }
+
+    return NULL;
 }
 
 
@@ -287,10 +341,17 @@ void bcos_sdk_destroy_event_sub(void* event)
 // start the event sub service
 void bcos_sdk_start_event_sub(void* event)
 {
-    if (event)
+    bcos_sdk_clear_last_error();
+    try
     {
         auto eventPointer = (bcos::cppsdk::event::EventSubInterface*)event;
         eventPointer->start();
+    }
+    catch (const std::exception& e)
+    {
+        auto&& msg = boost::diagnostic_information(e);
+        BCOS_LOG(ERROR) << LOG_BADGE("bcos_sdk_start_event_sub") << LOG_KV("error msg", msg);
+        bcos_sdk_set_last_error_msg(-1, msg.c_str());
     }
 }
 

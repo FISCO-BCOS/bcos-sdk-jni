@@ -35,6 +35,12 @@ void ThrowJNIException(JNIEnv* env, const char* kpFile, int iLine, const std::st
         }
     }
 
+// Notice: debug info
+#if 0
+    std::cerr << "jni exception throw"
+              << " ,msg: " << message << std::endl;
+#endif
+
     // Throw the exception with error info
     env->ThrowNew(tClass, errorMessage.c_str());
     env->DeleteLocalRef(tClass);

@@ -1,6 +1,7 @@
 #include "jni/org_fisco_bcos_sdk_jni_rpc_Rpc.h"
 #include "bcos_sdk_c.h"
 #include "bcos_sdk_c_common.h"
+#include "bcos_sdk_c_error.h"
 #include "bcos_sdk_c_rpc.h"
 #include "jni/org_fisco_bcos_sdk_common.h"
 #include "jni/org_fisco_bcos_sdk_exception.h"
@@ -114,24 +115,21 @@ static void on_receive_rpc_response(struct bcos_sdk_c_struct_response* resp)
 JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_newNativeObj(
     JNIEnv* env, jclass, jobject jconfig)
 {
-    try
-    {
-        // config
-        struct bcos_sdk_c_config* config = create_bcos_sdk_c_config_from_java_obj(env, jconfig);
-        // create rpc obj
-        void* rpc = bcos_sdk_create_rpc_by_config(config);
-        // destroy config
-        bcos_sdk_c_config_destroy(config);
+    // config
+    struct bcos_sdk_c_config* config = create_bcos_sdk_c_config_from_java_obj(env, jconfig);
+    // create rpc obj
+    void* rpc = bcos_sdk_create_rpc_by_config(config);
+    // destroy config
+    bcos_sdk_c_config_destroy(config);
 
+    if (bcos_sdk_get_last_error() == 0)
+    {
         return reinterpret_cast<jlong>(rpc);
     }
-    catch (const bcos::BcosJniException& _e)
-    {
-        BCOS_LOG(INFO) << LOG_BADGE("Java_org_fisco_bcos_sdk_jni_rpc_Rpc_newNativeObj")
-                       << LOG_DESC("create rpc native obj failed")
-                       << LOG_KV("e", boost::diagnostic_information(_e));
-        THROW_JNI_EXCEPTION(env, boost::diagnostic_information(_e));
-    }
+
+    // throw exception in java
+    THROW_JNI_EXCEPTION(env, bcos_sdk_get_last_error_msg());
+
     return 0;
 }
 
@@ -143,9 +141,11 @@ JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_newNativeObj(
 JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_start(JNIEnv* env, jobject self)
 {
     void* rpc = get_obj_native_member(env, self);
-    if (rpc)
+    bcos_sdk_start_rpc(rpc);
+    if (bcos_sdk_get_last_error() != 0)
     {
-        bcos_sdk_start_rpc(rpc);
+        // throw exception in java
+        THROW_JNI_EXCEPTION(env, bcos_sdk_get_last_error_msg());
     }
 }
 

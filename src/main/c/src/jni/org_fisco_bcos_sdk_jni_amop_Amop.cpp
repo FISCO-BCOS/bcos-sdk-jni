@@ -2,6 +2,7 @@
 #include "bcos_sdk_c.h"
 #include "bcos_sdk_c_amop.h"
 #include "bcos_sdk_c_common.h"
+#include "bcos_sdk_c_error.h"
 #include "jni/org_fisco_bcos_sdk_common.h"
 #include <string.h>
 #include <algorithm>
@@ -167,24 +168,21 @@ static void on_receive_amop_response(struct bcos_sdk_c_struct_response* resp)
 JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_amop_Amop_newNativeObj(
     JNIEnv* env, jclass, jobject jconfig)
 {
-    try
-    {
-        // config
-        struct bcos_sdk_c_config* config = create_bcos_sdk_c_config_from_java_obj(env, jconfig);
-        // create amop obj
-        void* amop = bcos_sdk_create_amop_by_config(config);
-        // destroy config
-        bcos_sdk_c_config_destroy(config);
+    // config
+    struct bcos_sdk_c_config* config = create_bcos_sdk_c_config_from_java_obj(env, jconfig);
+    // create amop obj
+    void* amop = bcos_sdk_create_amop_by_config(config);
+    // destroy config
+    bcos_sdk_c_config_destroy(config);
 
+    if (bcos_sdk_get_last_error() == 0)
+    {
         return reinterpret_cast<jlong>(amop);
     }
-    catch (const bcos::BcosJniException& _e)
-    {
-        BCOS_LOG(INFO) << LOG_BADGE("Java_org_fisco_bcos_sdk_jni_amop_Amop_newNativeObj")
-                       << LOG_DESC("create rpc native obj failed")
-                       << LOG_KV("e", boost::diagnostic_information(_e));
-        THROW_JNI_EXCEPTION(env, boost::diagnostic_information(_e));
-    }
+
+    // throw exception in java
+    THROW_JNI_EXCEPTION(env, bcos_sdk_get_last_error_msg());
+
     return 0;
 }
 
@@ -196,9 +194,12 @@ JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_amop_Amop_newNativeObj(
 JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_Amop_start(JNIEnv* env, jobject self)
 {
     void* amop = get_obj_native_member(env, self);
-    if (amop)
+
+    bcos_sdk_start_amop(amop);
+    if (bcos_sdk_get_last_error() != 0)
     {
-        bcos_sdk_start_amop(amop);
+        // throw exception in java
+        THROW_JNI_EXCEPTION(env, bcos_sdk_get_last_error_msg());
     }
 }
 

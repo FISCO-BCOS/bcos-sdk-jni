@@ -1,5 +1,6 @@
 #include "jni/org_fisco_bcos_sdk_jni_event_EventSubscribe.h"
 #include "bcos_sdk_c.h"
+#include "bcos_sdk_c_error.h"
 #include "bcos_sdk_c_event_sub.h"
 #include "jni/org_fisco_bcos_sdk_common.h"
 #include <string>
@@ -101,24 +102,20 @@ static void on_receive_event_sub_response(struct bcos_sdk_c_struct_response* res
 JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_event_EventSubscribe_newNativeObj(
     JNIEnv* env, jclass, jobject jconfig)
 {
-    try
-    {
-        // config
-        struct bcos_sdk_c_config* config = create_bcos_sdk_c_config_from_java_obj(env, jconfig);
-        // create amop obj
-        void* amop = bcos_sdk_create_event_sub_by_config(config);
-        // destroy config
-        bcos_sdk_c_config_destroy(config);
+    // config
+    struct bcos_sdk_c_config* config = create_bcos_sdk_c_config_from_java_obj(env, jconfig);
+    // create event sub obj
+    void* event = bcos_sdk_create_event_sub_by_config(config);
+    // destroy config
+    bcos_sdk_c_config_destroy(config);
 
-        return reinterpret_cast<jlong>(amop);
-    }
-    catch (const bcos::BcosJniException& _e)
+    if (bcos_sdk_get_last_error() == 0)
     {
-        BCOS_LOG(INFO) << LOG_BADGE("Java_org_fisco_bcos_sdk_jni_event_EventSubscribe_newNativeObj")
-                       << LOG_DESC("create event sub native obj failed")
-                       << LOG_KV("e", boost::diagnostic_information(_e));
-        THROW_JNI_EXCEPTION(env, boost::diagnostic_information(_e));
+        return reinterpret_cast<jlong>(event);
     }
+
+    // throw exception in java
+    THROW_JNI_EXCEPTION(env, bcos_sdk_get_last_error_msg());
     return 0;
 }
 
@@ -131,9 +128,12 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_event_EventSubscribe_start(
     JNIEnv* env, jobject self)
 {
     void* event = get_obj_native_member(env, self);
-    if (event)
+
+    bcos_sdk_start_event_sub(event);
+    if (bcos_sdk_get_last_error() != 0)
     {
-        bcos_sdk_start_event_sub(event);
+        // throw exception in java
+        THROW_JNI_EXCEPTION(env, bcos_sdk_get_last_error_msg());
     }
 }
 

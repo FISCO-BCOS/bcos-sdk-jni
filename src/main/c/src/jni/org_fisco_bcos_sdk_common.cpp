@@ -24,7 +24,7 @@ void* get_obj_native_member(JNIEnv* env, jobject self)
     jlong nativeObj = env->GetLongField(self, nativeFieldID);
     void* native = reinterpret_cast<void*>(nativeObj);
     if (native == NULL)
-    {  // TODO: native obj can be NULL when it is not initialized
+    {  // Note: native obj can be NULL when it is not initialized ???
         env->FatalError("No such long field, object obj is null in acquire native obj");
     }
 

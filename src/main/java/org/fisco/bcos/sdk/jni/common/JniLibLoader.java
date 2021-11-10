@@ -89,7 +89,6 @@ public final class JniLibLoader {
       logger.trace("osName: {}, archName: {}", osName, archName);
     }
 
-    // TODO: support arm arch
     if (osName.contains(WIN)) {
       return "lib" + libName + ".dll";
     } else if (osName.contains(LINUX)) {

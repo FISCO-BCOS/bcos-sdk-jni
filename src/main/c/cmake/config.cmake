@@ -6,12 +6,20 @@ hunter_config(bcos-boostssl
 
 hunter_config(bcos-cpp-sdk
 	VERSION 3.0.0-local
-	URL "https://${URL_BASE}/FISCO-BCOS/bcos-cpp-sdk/archive/42add22b27b166b51c414a588ed2ab0487e7f7f2.tar.gz"
-	SHA1 5689c4b3335415e20ff5eb30b633ed251e4357de
+	URL "https://${URL_BASE}/FISCO-BCOS/bcos-cpp-sdk/archive/60fec51ae6b1572389b91f40d0519879a9fcb9b1.tar.gz"
+	SHA1 fdc08b966c900632bfae8fe4db952a84c0264dba
 )
 
 hunter_config(bcos-framework VERSION 3.0.0-local
 	URL https://${URL_BASE}/FISCO-BCOS/bcos-framework/archive/1f7c7de6e0b18486f1dc25de74bf0db148c2e429.tar.gz
     SHA1 f18a5c0c5c4e2c2e12451a0d02a90a446122fb1a
 	CMAKE_ARGS HUNTER_PACKAGE_LOG_BUILD=ON HUNTER_PACKAGE_LOG_INSTALL=ON
+)
+
+# Do not remove this
+hunter_config(
+    Boost
+    VERSION ${HUNTER_Boost_VERSION}
+    CMAKE_ARGS
+    CONFIG_MACRO=BOOST_UUID_RANDOM_PROVIDER_FORCE_POSIX
 )

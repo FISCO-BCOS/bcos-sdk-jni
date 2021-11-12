@@ -815,6 +815,34 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getTotalTransactionCo
 
 /*
  * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
+ * Method:    getGroupPeers
+ * Signature: (Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
+ */
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getGroupPeers(
+    JNIEnv* env, jobject self, jstring jgroup, jobject callback)
+{
+    // rpc obj handler
+    void* rpc = get_obj_native_member(env, self);
+    // group
+    const char* group = env->GetStringUTFChars(jgroup, NULL);
+
+    // Note: The JNIEnv pointer, passed as the first argument to every native method, can only be
+    // used in the thread with which it is associated. It is wrong to cache the JNIEnv interface
+    // pointer obtained from one thread, and use that pointer in another thread.
+    JavaVM* jvm;
+    env->GetJavaVM(&jvm);
+
+    cb_context* context = new cb_context();
+    context->jcallback = env->NewGlobalRef(callback);
+    context->jvm = jvm;
+
+    bcos_rpc_get_group_peers(rpc, group, on_receive_rpc_response, context);
+
+    env->ReleaseStringUTFChars(jgroup, group);
+}
+
+/*
+ * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
  * Method:    getPeers
  * Signature: (Lorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
  */

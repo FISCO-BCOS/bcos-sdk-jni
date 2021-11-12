@@ -91,6 +91,10 @@ void bcos_rpc_get_system_config_by_key(void* rpc, const char* group, const char*
 void bcos_rpc_get_total_transaction_count(void* rpc, const char* group, const char* node,
     bcos_sdk_c_struct_response_cb callback, void* context);
 
+// getGroupPeers
+void bcos_rpc_get_group_peers(
+    void* rpc, const char* group, bcos_sdk_c_struct_response_cb callback, void* context);
+
 // getPeers
 void bcos_rpc_get_peers(void* rpc, bcos_sdk_c_struct_response_cb callback, void* context);
 

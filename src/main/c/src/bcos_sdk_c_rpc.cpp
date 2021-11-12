@@ -268,6 +268,19 @@ void bcos_rpc_get_total_transaction_count(void* rpc, const char* group, const ch
         });
 }
 
+// getGroupPeers
+void bcos_rpc_get_group_peers(
+    void* rpc, const char* group, bcos_sdk_c_struct_response_cb callback, void* context)
+{
+    auto rpcPointer = (bcos::cppsdk::jsonrpc::JsonRpcInterface*)rpc;
+
+    rpcPointer->getGroupPeers(
+        group, [callback, context](bcos::Error::Ptr error, std::shared_ptr<bcos::bytes> resp) {
+            bcos_sdk_c_handle_response(error ? error.get() : NULL,
+                resp ? (void*)resp->data() : NULL, resp ? resp->size() : 0, callback, context);
+        });
+}
+
 // getPeers
 void bcos_rpc_get_peers(void* rpc, bcos_sdk_c_struct_response_cb callback, void* context)
 {

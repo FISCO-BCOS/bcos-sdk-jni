@@ -141,6 +141,8 @@ public class Rpc {
 
   public native void getTotalTransactionCount(String group, String node, RpcCallback callback);
 
+  public native void getGroupPeers(String group, RpcCallback callback);
+
   public native void getPeers(RpcCallback callback);
 
   public native void getGroupList(RpcCallback callback);

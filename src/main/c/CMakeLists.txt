@@ -48,7 +48,7 @@ HunterGate(
 )
 
 # project name
-project(java-sdk-jni VERSION "3.0.0")
+project(bcos-sdk-jni VERSION "3.0.0")
 
 # Debug, Release, RelWithDebInfo, MinSizeRel
 set(CMAKE_BUILD_TYPE Release)
@@ -93,11 +93,11 @@ include(InstallBcosFrameworkDependencies)
 # build dynamic target
 file(GLOB_RECURSE SOURCES "include/*.h" "src/*.cpp" "src/*.c")
 
-set(FISCO_BCOS_JNI_TARGET "fisco-bcos-c-jni")
+set(FISCO_BCOS_JNI_TARGET "bcos-sdk-jni")
 add_library(${FISCO_BCOS_JNI_TARGET} SHARED ${SOURCES})
 target_link_libraries(${FISCO_BCOS_JNI_TARGET} PUBLIC bcos-cpp-sdk::bcos-sdk-static)
 
-set(FISCO_BCOS_JNI_STATIC_TARGET "fisco-bcos-c-jni-static")
+set(FISCO_BCOS_JNI_STATIC_TARGET "bcos-sdk-jni-static")
 add_library(${FISCO_BCOS_JNI_STATIC_TARGET}  STATIC ${SOURCES})
 target_link_libraries(${FISCO_BCOS_JNI_STATIC_TARGET} PUBLIC bcos-cpp-sdk::bcos-sdk-static)
 

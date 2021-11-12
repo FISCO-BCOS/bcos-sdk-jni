@@ -4,7 +4,7 @@ cd ${dirpath}/../
 
 # TODO: check java env
 
-TARGET_LIB_NAME="fisco-bcos-c-jni"
+TARGET_LIB_NAME="bcos-sdk-jni"
 METAINFO_NATIVE_PATH="${dirpath}/../src/main/resources/META-INF/native/"
 
 echo " # Compile JNI dynamic library, Starting ==>> "

@@ -36,7 +36,7 @@ public final class JniLibLoader {
   public static final String MAC = "mac";
   public static final String WIN = "win";
 
-  public static final String NATIVE_RESOURCE_LIB_NAME = "fisco-bcos-c-jni";
+  public static final String NATIVE_RESOURCE_LIB_NAME = "bcos-sdk-jni";
   public static final String NATIVE_RESOURCE_HOME = "/META-INF/native";
 
   public static final String OS_NAME = getOs();

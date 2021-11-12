@@ -27,9 +27,9 @@ dependencies {
     testCompile 'junit:junit:4.12'
 }
 
-archivesBaseName = 'fisco-bcos-java-sdk-jni'
+archivesBaseName = 'bcos-sdk-jni'
 group = 'org.fisco-bcos'
-version = '3.1.0-110701-SNAPSHOT'
+version = '3.1.0-111111-SNAPSHOT'
 
 // Additional attribute definition
 ext {
@@ -146,7 +146,7 @@ publishing {
 
             pom {
                 name = 'fisco-bcos'
-                description = 'fisco-bcos java-sdk-jni'
+                description = 'fisco-bcos bcos-sdk-jni'
                 url = 'http://www.fisco-bcos.org'
 
                 licenses {

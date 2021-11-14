@@ -39,6 +39,7 @@ static std::shared_ptr<bcos::boostssl::ws::WsConfig> initWsConfig(struct bcos_sd
     wsConfig->setThreadPoolSize(config->thread_pool_size);
     wsConfig->setReconnectPeriod(config->reconnect_period_ms);
     wsConfig->setHeartbeatPeriod(config->heartbeat_period_ms);
+    wsConfig->setSendMsgTimeout(config->message_timeout_ms);
 
     if (!config->disableSsl)
     {

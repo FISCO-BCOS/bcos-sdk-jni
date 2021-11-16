@@ -119,6 +119,14 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getBlockHashByNumber(
 
 /*
  * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
+ * Method:    getBlockLimit
+ * Signature: (Ljava/lang/String;)J
+ */
+JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getBlockLimit(
+    JNIEnv*, jobject, jstring);
+
+/*
+ * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
  * Method:    getBlockNumber
  * Signature: (Ljava/lang/String;Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
  */

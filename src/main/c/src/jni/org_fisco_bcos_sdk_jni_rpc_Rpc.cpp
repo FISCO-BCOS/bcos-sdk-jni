@@ -530,6 +530,24 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getBlockHashByNumber(
 
 /*
  * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
+ * Method:    getBlockLimit
+ * Signature: (Ljava/lang/String;)J
+ */
+JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getBlockLimit(
+    JNIEnv* env, jobject self, jstring jgroup)
+{
+    // rpc obj handler
+    void* rpc = get_obj_native_member(env, self);
+    // group
+    const char* group = env->GetStringUTFChars(jgroup, NULL);
+
+    int64_t blk = bcos_rpc_get_block_limit(rpc, group);
+    env->ReleaseStringUTFChars(jgroup, group);
+    return (jlong)blk;
+}
+
+/*
+ * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
  * Method:    getBlockNumber
  * Signature: (Ljava/lang/String;Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
  */

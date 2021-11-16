@@ -121,6 +121,8 @@ public class Rpc {
   public native void getBlockHashByNumber(
       String group, String node, long blockNumber, RpcCallback callback);
 
+  public native long getBlockLimit(String group);
+
   public native void getBlockNumber(String group, String node, RpcCallback callback);
 
   public native void getCode(

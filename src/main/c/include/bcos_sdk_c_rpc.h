@@ -51,6 +51,8 @@ void bcos_rpc_get_block_by_number(void* rpc, const char* group, const char* node
 // getBlockHashByNumber
 void bcos_rpc_get_block_hash_by_number(void* rpc, const char* group, const char* node,
     int64_t block_number, bcos_sdk_c_struct_response_cb callback, void* context);
+// getBlockLimit
+int64_t bcos_rpc_get_block_limit(void* rpc, const char* group);
 // getBlockNumber
 void bcos_rpc_get_block_number(void* rpc, const char* group, const char* node,
     bcos_sdk_c_struct_response_cb callback, void* context);

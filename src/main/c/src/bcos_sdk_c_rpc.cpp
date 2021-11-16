@@ -138,14 +138,21 @@ void bcos_rpc_get_block_hash_by_number(void* rpc, const char* group, const char*
                 resp ? (void*)resp->data() : NULL, resp ? resp->size() : 0, callback, context);
         });
 }
+
+// getBlockLimit
+int64_t bcos_rpc_get_block_limit(void* rpc, const char* group)
+{
+    auto rpcPointer = (bcos::cppsdk::jsonrpc::JsonRpcInterface*)rpc;
+    return rpcPointer->getBlockLimit(group);
+}
+
 // getBlockNumber
 void bcos_rpc_get_block_number(void* rpc, const char* group, const char* node,
     bcos_sdk_c_struct_response_cb callback, void* context)
 {
     auto rpcPointer = (bcos::cppsdk::jsonrpc::JsonRpcInterface*)rpc;
-
-    rpcPointer->getBlockNumber(group, node ? node : "",
-        [callback, context](bcos::Error::Ptr error, std::shared_ptr<bcos::bytes> resp) {
+    rpcPointer->getBlockLimit(
+        group, , [callback, context](bcos::Error::Ptr error, std::shared_ptr<bcos::bytes> resp) {
             bcos_sdk_c_handle_response(error ? error.get() : NULL,
                 resp ? (void*)resp->data() : NULL, resp ? resp->size() : 0, callback, context);
         });

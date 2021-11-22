@@ -425,8 +425,8 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_Amop_sendResponse(
 {
     void* amop = get_obj_native_member(env, self);
 
-    char* endpoint = env->GetStringUTFChars(jendpoint, 0);
-    char* seq = env->GetStringUTFChars(jseq, 0);
+    const char* endpoint = env->GetStringUTFChars(jendpoint, 0);
+    const char* seq = env->GetStringUTFChars(jseq, 0);
 
     jsize len = env->GetArrayLength(jdata);
     jbyte* data = (jbyte*)env->GetByteArrayElements(jdata, 0);

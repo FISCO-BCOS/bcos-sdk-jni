@@ -417,6 +417,30 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_Amop_broadcastAmopMsg(
 
 /*
  * Class:     org_fisco_bcos_sdk_jni_amop_Amop
+ * Method:    sendResponse
+ * Signature: (Ljava/lang/String;Ljava/lang/String;[B)V
+ */
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_Amop_sendResponse(
+    JNIEnv* env, jobject self, jstring jendpoint, jstring jseq, jbyteArray jdata)
+{
+    void* amop = get_obj_native_member(env, self);
+
+    char* endpoint = env->GetStringUTFChars(jendpoint, 0);
+    char* seq = env->GetStringUTFChars(jseq, 0);
+
+    jsize len = env->GetArrayLength(jdata);
+    jbyte* data = (jbyte*)env->GetByteArrayElements(jdata, 0);
+
+    bcos_amop_send_response(amop, topic, (void*)data, (size_t)len);
+
+    // release endpoint
+    env->ReleaseStringUTFChars(jendpoint, endpoint);
+    // release seq
+    env->ReleaseStringUTFChars(jseq, seq);
+}
+
+/*
+ * Class:     org_fisco_bcos_sdk_jni_amop_Amop
  * Method:    getSubTopics
  * Signature: ()Ljava/util/Set;
  */

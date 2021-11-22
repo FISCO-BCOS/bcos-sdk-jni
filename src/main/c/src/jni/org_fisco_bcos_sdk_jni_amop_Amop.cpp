@@ -431,7 +431,7 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_Amop_sendResponse(
     jsize len = env->GetArrayLength(jdata);
     jbyte* data = (jbyte*)env->GetByteArrayElements(jdata, 0);
 
-    bcos_amop_send_response(amop, topic, (void*)data, (size_t)len);
+    bcos_amop_send_response(amop, endpoint, seq, (void*)data, (size_t)len);
 
     // release endpoint
     env->ReleaseStringUTFChars(jendpoint, endpoint);

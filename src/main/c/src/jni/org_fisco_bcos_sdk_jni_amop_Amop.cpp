@@ -38,21 +38,6 @@ static void on_receive_amop_request(
                 .c_str());
     }
 
-#if defined(_BCOS_SDK_JNI_DEBUG_)
-    int error = resp->error;
-    char* desc = resp->desc ? resp->desc : (char*)"";
-    char* data = resp->data ? (char*)resp->data : (char*)"";
-    if (error != 0)  // Note: error
-    {
-        printf(" [error] ## ==> amop request callback, error : %d, msg: %s, data : %s\n", error,
-            desc, data);
-        return;
-    }
-
-    printf(" ## ==> amop request callback, endpoint: %s, seq: %s, error : %d, msg: %s, data :%s\n",
-        endpoint, seq, error, desc, data);
-#endif
-
     jstring jendpoint = env->NewStringUTF(endpoint);
     jstring jseq = env->NewStringUTF(seq);
 
@@ -84,7 +69,7 @@ static void on_receive_amop_response(struct bcos_sdk_c_struct_response* resp)
     JNIEnv* env;
     jvm->AttachCurrentThread((void**)&env, NULL);
 
-    std::string className = "org/fisco/bcos/sdk/jni/common/Response";
+    std::string className = "org/fisco/bcos/sdk/jni/amop/AmopResponseCallback";
 
     jclass cbClass = env->GetObjectClass(jcallback);
     // void onResponse(Response)
@@ -101,17 +86,7 @@ static void on_receive_amop_response(struct bcos_sdk_c_struct_response* resp)
     int error = resp->error;
     char* desc = resp->desc ? resp->desc : (char*)"";
 
-#if defined(_BCOS_SDK_JNI_DEBUG_)
-    char* data = resp->data ? (char*)resp->data : (char*)"";
-    printf(" ## ==> rpc response callback, error : %d, msg: %s, data : %s\n", error, desc, data);
-#endif
-
-    // Response obj constructor
-    jclass responseClass = env->FindClass(className.c_str());
-    if (responseClass == NULL)
-    {
-        env->FatalError(("No such class, className: " + className).c_str());
-    }
+    jclass responseClass = bcos_sdk_c_find_jclass(env, className.c_str());
 
     jmethodID mid = env->GetMethodID(responseClass, "<init>", "()V");
     jobject responseObj = env->NewObject(responseClass, mid);
@@ -288,6 +263,9 @@ Java_org_fisco_bcos_sdk_jni_amop_Amop_subscribeTopic__Ljava_lang_String_2Lorg_fi
     context->jcallback = env->NewGlobalRef(jcallback);
     context->jvm = jvm;
 
+    std::string className = "org/fisco/bcos/sdk/jni/amop/AmopRequestCallback";
+    bcos_sdk_c_find_jclass(env, className.c_str());
+
     bcos_amop_subscribe_topic_with_cb(amop, topic, on_receive_amop_request, context);
 
     // release topic
@@ -359,6 +337,9 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_Amop_setCallback(
     context->jcallback = env->NewGlobalRef(jcallback);
     context->jvm = jvm;
 
+    std::string className = "org/fisco/bcos/sdk/jni/amop/AmopRequestCallback";
+    bcos_sdk_c_find_jclass(env, className.c_str());
+
     bcos_amop_set_subscribe_topic_cb(amop, on_receive_amop_request, context);
 }
 
@@ -388,6 +369,9 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_Amop_sendAmopMsg(
 
     jsize len = env->GetArrayLength(jdata);
     jbyte* data = (jbyte*)env->GetByteArrayElements(jdata, 0);
+
+    std::string className = "org/fisco/bcos/sdk/jni/amop/AmopResponseCallback";
+    bcos_sdk_c_find_jclass(env, className.c_str());
 
     bcos_amop_publish(
         amop, topic, (void*)data, (size_t)len, timeout, on_receive_amop_response, context);

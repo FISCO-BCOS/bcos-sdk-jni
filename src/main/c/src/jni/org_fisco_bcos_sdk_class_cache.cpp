@@ -1,5 +1,6 @@
 
 #include "jni/org_fisco_bcos_sdk_class_cache.h"
+#include <bcos-framework/libutilities/Log.h>
 #include <iostream>
 
 jclass JClassCache::findClass(JNIEnv* _env, const std::string& _fullClassName)
@@ -11,11 +12,15 @@ jclass JClassCache::findClass(JNIEnv* _env, const std::string& _fullClassName)
         auto it = m_classCache.find(_fullClassName);
         if (it != m_classCache.end())
         {
+            BCOS_LOG(DEBUG) << LOG_BADGE("findClass") << LOG_DESC("hit cache")
+                            << LOG_KV("fullClassName", _fullClassName);
             classId = it->second;
             return classId;
         }
     }
 
+    BCOS_LOG(DEBUG) << LOG_BADGE("findClass") << LOG_DESC("load class")
+                    << LOG_KV("fullClassName", _fullClassName);
     // find class
     jclass classId = _env->FindClass(_fullClassName.c_str());
     if (classId == NULL)
@@ -35,7 +40,8 @@ jclass JClassCache::findClass(JNIEnv* _env, const std::string& _fullClassName)
         m_classCache[_fullClassName] = classId;
     }
 
-    std::cout << "add new jclass => className:" << _fullClassName << std::endl;
+    BCOS_LOG(DEBUG) << LOG_BADGE("findClass") << LOG_DESC("add class to cache")
+                    << LOG_KV("fullClassName", _fullClassName);
 
     return classId;
 }

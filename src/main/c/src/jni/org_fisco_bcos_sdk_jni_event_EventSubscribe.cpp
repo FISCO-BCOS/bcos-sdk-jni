@@ -34,7 +34,7 @@ static void on_receive_event_sub_response(struct bcos_sdk_c_struct_response* res
     char* desc = resp->desc ? resp->desc : (char*)"";
 
     // Response obj construct begin
-    jclass responseClass = bcos_sdk_c_find_jclass(env, className);
+    jclass responseClass = bcos_sdk_c_find_jclass(env, className.c_str());
 
     jmethodID mid = env->GetMethodID(responseClass, "<init>", "()V");
     jobject responseObj = env->NewObject(responseClass, mid);
@@ -165,8 +165,8 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_event_EventSubscribe_subscrib
     context->jcallback = env->NewGlobalRef(jcallback);
     context->jvm = jvm;
 
-    std::string respClassName = "org/fisco/bcos/sdk/jni/common/Response";
-    bcos_sdk_c_find_jclass(env, respClassName);
+    std::string className = "org/fisco/bcos/sdk/jni/common/Response";
+    bcos_sdk_c_find_jclass(env, className.c_str());
 
     bcos_event_sub_subscribe_event(event, group, params, on_receive_event_sub_response, context);
 
@@ -197,8 +197,8 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_event_EventSubscribe_unsubscr
     context->jcallback = env->NewGlobalRef(jcallback);
     context->jvm = jvm;
 
-    const char* className = "org/fisco/bcos/sdk/jni/common/Response";
-    bcos_sdk_c_find_jclass(env, className);
+    std::string className = "org/fisco/bcos/sdk/jni/common/Response";
+    bcos_sdk_c_find_jclass(env, className.c_str());
 
     bcos_event_sub_unsubscribe_event(event, eventid, on_receive_event_sub_response, context);
 

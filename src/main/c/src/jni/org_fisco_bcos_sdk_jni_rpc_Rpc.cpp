@@ -43,7 +43,7 @@ static void on_receive_rpc_response(struct bcos_sdk_c_struct_response* resp)
     int error = resp->error;
     char* desc = resp->desc ? resp->desc : (char*)"";
 
-    responseClass responseClass = bcos_sdk_c_find_jclass(env, className);
+    jclass responseClass = bcos_sdk_c_find_jclass(env, className.c_str());
 
     jmethodID mid = env->GetMethodID(responseClass, "<init>", "()V");
     if (mid == NULL)

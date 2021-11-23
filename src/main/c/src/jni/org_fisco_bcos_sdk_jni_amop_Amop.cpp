@@ -101,17 +101,7 @@ static void on_receive_amop_response(struct bcos_sdk_c_struct_response* resp)
     int error = resp->error;
     char* desc = resp->desc ? resp->desc : (char*)"";
 
-#if defined(_BCOS_SDK_JNI_DEBUG_)
-    char* data = resp->data ? (char*)resp->data : (char*)"";
-    printf(" ## ==> rpc response callback, error : %d, msg: %s, data : %s\n", error, desc, data);
-#endif
-
-    // Response obj constructor
-    jclass responseClass = env->FindClass(className.c_str());
-    if (responseClass == NULL)
-    {
-        env->FatalError(("No such class, className: " + className).c_str());
-    }
+    jclass responseClass = bcos_sdk_c_find_jclass(env, className.c_str());
 
     jmethodID mid = env->GetMethodID(responseClass, "<init>", "()V");
     jobject responseObj = env->NewObject(responseClass, mid);

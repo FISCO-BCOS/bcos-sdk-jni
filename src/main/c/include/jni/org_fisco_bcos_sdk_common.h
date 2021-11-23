@@ -17,6 +17,8 @@ struct cb_context
 
 void* get_obj_native_member(JNIEnv* env, jobject self);
 
+jclass bcos_sdk_c_find_jclass(JNIEnv* env, const char* className);
+
 struct bcos_sdk_c_config* create_bcos_sdk_c_config_from_java_obj(JNIEnv* env, jobject jconfig);
 
 #ifdef __cplusplus

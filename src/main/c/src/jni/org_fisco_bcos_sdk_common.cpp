@@ -1,5 +1,6 @@
 #include "jni/org_fisco_bcos_sdk_common.h"
 #include "bcos_sdk_c_common.h"
+#include "jni/org_fisco_bcos_sdk_class_cache.h"
 #include "jni/org_fisco_bcos_sdk_exception.h"
 #include <bcos-boostssl/websocket/WsTools.h>
 #include <stdlib.h>
@@ -429,4 +430,10 @@ struct bcos_sdk_c_config* create_bcos_sdk_c_config_from_java_obj(JNIEnv* env, jo
     config->sm_cert_config = sm_cert_config;
 
     return config;
+}
+
+static JClassCache classCache;
+jclass bcos_sdk_c_find_jclass(JNIEnv* env, const char* className)
+{
+    return classCache.findClass(env, className);
 }

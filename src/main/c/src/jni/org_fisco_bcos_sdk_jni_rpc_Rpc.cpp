@@ -3,6 +3,7 @@
 #include "bcos_sdk_c_common.h"
 #include "bcos_sdk_c_error.h"
 #include "bcos_sdk_c_rpc.h"
+#include "jni/org_fisco_bcos_sdk_class_cache.h"
 #include "jni/org_fisco_bcos_sdk_common.h"
 #include "jni/org_fisco_bcos_sdk_exception.h"
 #include <stdint.h>
@@ -42,18 +43,7 @@ static void on_receive_rpc_response(struct bcos_sdk_c_struct_response* resp)
     int error = resp->error;
     char* desc = resp->desc ? resp->desc : (char*)"";
 
-#if defined(_BCOS_SDK_JNI_DEBUG_)
-    char* data = resp->data ? (char*)resp->data : (char*)"";
-
-    printf(" ## ==> rpc callback, error : %d, msg: %s, data : %s\n", error, desc, data);
-#endif
-
-    // Response obj construct begin
-    jclass responseClass = env->FindClass("org/fisco/bcos/sdk/jni/common/Response");
-    if (responseClass == NULL)
-    {
-        env->FatalError(("No such class, className: " + className).c_str());
-    }
+    responseClass responseClass = bcos_sdk_c_find_jclass(env, className);
 
     jmethodID mid = env->GetMethodID(responseClass, "<init>", "()V");
     if (mid == NULL)
@@ -188,6 +178,10 @@ Java_org_fisco_bcos_sdk_jni_rpc_Rpc_genericMethod__Ljava_lang_String_2Lorg_fisco
 
     // data
     const char* data = env->GetStringUTFChars(jdata, NULL);
+
+    const char* respClassName = "org/fisco/bcos/sdk/jni/common/Response";
+    bcos_sdk_c_find_jclass(env, respClassName);
+
     bcos_rpc_generic_method_call(rpc, data, on_receive_rpc_response, context);
     env->ReleaseStringUTFChars(jdata, data);
 }
@@ -218,6 +212,9 @@ Java_org_fisco_bcos_sdk_jni_rpc_Rpc_genericMethod__Ljava_lang_String_2Ljava_lang
     const char* group = env->GetStringUTFChars(jgroup, NULL);
     // data
     const char* data = env->GetStringUTFChars(jdata, NULL);
+
+    const char* respClassName = "org/fisco/bcos/sdk/jni/common/Response";
+    bcos_sdk_c_find_jclass(env, respClassName);
 
     bcos_rpc_generic_method_call_to_group(rpc, group, data, on_receive_rpc_response, context);
 
@@ -254,6 +251,9 @@ Java_org_fisco_bcos_sdk_jni_rpc_Rpc_genericMethod__Ljava_lang_String_2Ljava_lang
     const char* node = env->GetStringUTFChars(jnode, NULL);
     // data
     const char* data = env->GetStringUTFChars(jdata, NULL);
+
+    const char* respClassName = "org/fisco/bcos/sdk/jni/common/Response";
+    bcos_sdk_c_find_jclass(env, respClassName);
 
     bcos_rpc_generic_method_call_to_group_node(
         rpc, group, node, data, on_receive_rpc_response, context);
@@ -293,6 +293,9 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_call(JNIEnv* env, job
     context->jcallback = env->NewGlobalRef(callback);
     context->jvm = jvm;
 
+    const char* respClassName = "org/fisco/bcos/sdk/jni/common/Response";
+    bcos_sdk_c_find_jclass(env, respClassName);
+
     bcos_rpc_call(rpc, group, node, to, data, on_receive_rpc_response, context);
 
     env->ReleaseStringUTFChars(jgroup, group);
@@ -331,6 +334,9 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_sendTransaction(JNIEn
     context->jcallback = env->NewGlobalRef(callback);
     context->jvm = jvm;
 
+    const char* respClassName = "org/fisco/bcos/sdk/jni/common/Response";
+    bcos_sdk_c_find_jclass(env, respClassName);
+
     bcos_rpc_send_transaction(rpc, group, node, data, proof, on_receive_rpc_response, context);
 
     env->ReleaseStringUTFChars(jgroup, group);
@@ -367,6 +373,9 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getTransaction(JNIEnv
     cb_context* context = new cb_context();
     context->jcallback = env->NewGlobalRef(callback);
     context->jvm = jvm;
+
+    const char* respClassName = "org/fisco/bcos/sdk/jni/common/Response";
+    bcos_sdk_c_find_jclass(env, respClassName);
 
     bcos_rpc_get_transaction(rpc, group, node, tx_hash, proof, on_receive_rpc_response, context);
 
@@ -405,6 +414,9 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getTransactionReceipt
     cb_context* context = new cb_context();
     context->jcallback = env->NewGlobalRef(callback);
     context->jvm = jvm;
+
+    const char* respClassName = "org/fisco/bcos/sdk/jni/common/Response";
+    bcos_sdk_c_find_jclass(env, respClassName);
 
     bcos_rpc_get_transaction_receipt(
         rpc, group, node, tx_hash, proof, on_receive_rpc_response, context);
@@ -447,6 +459,9 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getBlockByHash(JNIEnv
     context->jcallback = env->NewGlobalRef(callback);
     context->jvm = jvm;
 
+    const char* respClassName = "org/fisco/bcos/sdk/jni/common/Response";
+    bcos_sdk_c_find_jclass(env, respClassName);
+
     bcos_rpc_get_block_by_hash(
         rpc, group, node, block_hash, only_header, only_txhash, on_receive_rpc_response, context);
 
@@ -487,6 +502,9 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getBlockByNumber(JNIE
     context->jcallback = env->NewGlobalRef(callback);
     context->jvm = jvm;
 
+    const char* respClassName = "org/fisco/bcos/sdk/jni/common/Response";
+    bcos_sdk_c_find_jclass(env, respClassName);
+
     bcos_rpc_get_block_by_number(
         rpc, group, node, block_number, only_header, only_txhash, on_receive_rpc_response, context);
 
@@ -518,6 +536,9 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getBlockHashByNumber(
     cb_context* context = new cb_context();
     context->jcallback = env->NewGlobalRef(callback);
     context->jvm = jvm;
+
+    const char* respClassName = "org/fisco/bcos/sdk/jni/common/Response";
+    bcos_sdk_c_find_jclass(env, respClassName);
 
     // block number
     long block_number = reinterpret_cast<long>(jnumber);
@@ -571,6 +592,9 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getBlockNumber(
     context->jcallback = env->NewGlobalRef(callback);
     context->jvm = jvm;
 
+    const char* respClassName = "org/fisco/bcos/sdk/jni/common/Response";
+    bcos_sdk_c_find_jclass(env, respClassName);
+
     bcos_rpc_get_block_number(rpc, group, node, on_receive_rpc_response, context);
 
     env->ReleaseStringUTFChars(jgroup, group);
@@ -605,6 +629,9 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getCode(
     context->jcallback = env->NewGlobalRef(callback);
     context->jvm = jvm;
 
+    const char* respClassName = "org/fisco/bcos/sdk/jni/common/Response";
+    bcos_sdk_c_find_jclass(env, respClassName);
+
     bcos_rpc_get_code(rpc, group, node, address, on_receive_rpc_response, context);
 
     env->ReleaseStringUTFChars(jaddress, address);
@@ -637,6 +664,9 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getSealerList(
     context->jcallback = env->NewGlobalRef(callback);
     context->jvm = jvm;
 
+    const char* respClassName = "org/fisco/bcos/sdk/jni/common/Response";
+    bcos_sdk_c_find_jclass(env, respClassName);
+
     bcos_rpc_get_sealer_list(rpc, group, node, on_receive_rpc_response, context);
 
     env->ReleaseStringUTFChars(jgroup, group);
@@ -668,6 +698,9 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getObserverList(
     context->jcallback = env->NewGlobalRef(callback);
     context->jvm = jvm;
 
+    const char* respClassName = "org/fisco/bcos/sdk/jni/common/Response";
+    bcos_sdk_c_find_jclass(env, respClassName);
+
     bcos_rpc_get_observer_list(rpc, group, node, on_receive_rpc_response, context);
 
     env->ReleaseStringUTFChars(jgroup, group);
@@ -697,6 +730,9 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getPbftView(
     cb_context* context = new cb_context();
     context->jcallback = env->NewGlobalRef(callback);
     context->jvm = jvm;
+
+    const char* respClassName = "org/fisco/bcos/sdk/jni/common/Response";
+    bcos_sdk_c_find_jclass(env, respClassName);
 
     bcos_rpc_get_pbft_view(rpc, group, node, on_receive_rpc_response, context);
 
@@ -729,6 +765,9 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getPendingTxSize(
     context->jcallback = env->NewGlobalRef(callback);
     context->jvm = jvm;
 
+    const char* respClassName = "org/fisco/bcos/sdk/jni/common/Response";
+    bcos_sdk_c_find_jclass(env, respClassName);
+
     bcos_rpc_get_pending_tx_size(rpc, group, node, on_receive_rpc_response, context);
 
     env->ReleaseStringUTFChars(jgroup, group);
@@ -759,6 +798,9 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getSyncStatus(
     cb_context* context = new cb_context();
     context->jcallback = env->NewGlobalRef(callback);
     context->jvm = jvm;
+
+    const char* respClassName = "org/fisco/bcos/sdk/jni/common/Response";
+    bcos_sdk_c_find_jclass(env, respClassName);
 
     bcos_rpc_get_sync_status(rpc, group, node, on_receive_rpc_response, context);
     env->ReleaseStringUTFChars(jgroup, group);
@@ -793,6 +835,9 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getSystemConfigByKey(
     context->jcallback = env->NewGlobalRef(callback);
     context->jvm = jvm;
 
+    const char* respClassName = "org/fisco/bcos/sdk/jni/common/Response";
+    bcos_sdk_c_find_jclass(env, respClassName);
+
     bcos_rpc_get_system_config_by_key(rpc, group, node, key, on_receive_rpc_response, context);
 
     env->ReleaseStringUTFChars(jkey, key);
@@ -825,6 +870,9 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getTotalTransactionCo
     context->jcallback = env->NewGlobalRef(callback);
     context->jvm = jvm;
 
+    const char* respClassName = "org/fisco/bcos/sdk/jni/common/Response";
+    bcos_sdk_c_find_jclass(env, respClassName);
+
     bcos_rpc_get_total_transaction_count(rpc, group, node, on_receive_rpc_response, context);
 
     env->ReleaseStringUTFChars(jgroup, group);
@@ -854,6 +902,9 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getGroupPeers(
     context->jcallback = env->NewGlobalRef(callback);
     context->jvm = jvm;
 
+    const char* respClassName = "org/fisco/bcos/sdk/jni/common/Response";
+    bcos_sdk_c_find_jclass(env, respClassName);
+
     bcos_rpc_get_group_peers(rpc, group, on_receive_rpc_response, context);
 
     env->ReleaseStringUTFChars(jgroup, group);
@@ -880,6 +931,9 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getPeers(
     context->jcallback = env->NewGlobalRef(callback);
     context->jvm = jvm;
 
+    const char* respClassName = "org/fisco/bcos/sdk/jni/common/Response";
+    bcos_sdk_c_find_jclass(env, respClassName);
+
     bcos_rpc_get_peers(rpc, on_receive_rpc_response, context);
 }
 
@@ -903,6 +957,9 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getGroupList(
     cb_context* context = new cb_context();
     context->jcallback = env->NewGlobalRef(callback);
     context->jvm = jvm;
+
+    const char* respClassName = "org/fisco/bcos/sdk/jni/common/Response";
+    bcos_sdk_c_find_jclass(env, respClassName);
 
     bcos_rpc_get_group_list(rpc, on_receive_rpc_response, context);
 }
@@ -930,6 +987,9 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getGroupInfo(
     context->jcallback = env->NewGlobalRef(callback);
     context->jvm = jvm;
 
+    const char* respClassName = "org/fisco/bcos/sdk/jni/common/Response";
+    bcos_sdk_c_find_jclass(env, respClassName);
+
     bcos_rpc_get_group_info(rpc, group, on_receive_rpc_response, context);
 
     env->ReleaseStringUTFChars(jgroup, group);
@@ -955,6 +1015,9 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getGroupInfoList(
     cb_context* context = new cb_context();
     context->jcallback = env->NewGlobalRef(callback);
     context->jvm = jvm;
+
+    const char* respClassName = "org/fisco/bcos/sdk/jni/common/Response";
+    bcos_sdk_c_find_jclass(env, respClassName);
 
     bcos_rpc_get_group_info_list(rpc, on_receive_rpc_response, context);
 }
@@ -983,6 +1046,9 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getGroupNodeInfo(
     cb_context* context = new cb_context();
     context->jcallback = env->NewGlobalRef(callback);
     context->jvm = jvm;
+
+    const char* respClassName = "org/fisco/bcos/sdk/jni/common/Response";
+    bcos_sdk_c_find_jclass(env, respClassName);
 
     bcos_rpc_get_group_node_info(rpc, group, node, on_receive_rpc_response, context);
 

@@ -48,14 +48,12 @@ jobs:
         run: sudo apt install -y git curl openssl build-essential clang cmake ccache
       - name: configure
         if: runner.os == 'macOS'
-        run: export SDKROOT=$(xcrun --sdk macosx --show-sdk-path) && CC=/usr/bin/clang CXX=/usr/bin/clang++ mkdir build && cd build && cmake ../ -DTESTS=ON
+        run: export SDKROOT=$(xcrun --sdk macosx --show-sdk-path) && CC=/usr/bin/clang CXX=/usr/bin/clang++ bash scripts/compile_jni_lib.sh
       - name: configure
         if: runner.os == 'Linux'
-        run: CC=/usr/bin/clang CXX=/usr/bin/clang++ cd src/main/c/ && mkdir build && cd build && cmake ../ -DTESTS=ON
+        run: CC=/usr/bin/clang CXX=/usr/bin/clang++ bash scripts/compile_jni_lib.sh
       - name: compile
-        run: cd cd src/main/c/build && make -j2
-      - name: run test
-        run: CTEST_OUTPUT_ON_FAILURE=TRUE make test
+        run: bash scripts/compile_jni_lib.sh
   build_with_gcc:
     name: build_with_gcc
     runs-on: ${{ matrix.os }}
@@ -86,12 +84,8 @@ jobs:
             cache-gcc-v2-notest-${{ runner.temp }}-
       - name: install Ubuntu dependencies
         run: sudo apt install -y git curl openssl build-essential cmake ccache
-      - name: configure
-        run: cd src/main/c/ && mkdir -p build && cd build && cmake ../
       - name: compile
-        run: cd cd src/main/c/build && make -j2
-      - name: run test
-        run: CTEST_OUTPUT_ON_FAILURE=TRUE make test
+        run: bash scripts/compile_jni_lib.sh
   ubuntu16_04_build_with_gcc:
     name: ubuntu16_04_build_with_gcc
     runs-on: ${{ matrix.os }}
@@ -124,14 +118,10 @@ jobs:
             ccache-ubuntu-v2-notest-${{ runner.temp }}-
       - name: install Ubuntu dependencies
         run: sudo apt-get install -y software-properties-common python-software-properties && sudo add-apt-repository ppa:ubuntu-toolchain-r/test && sudo apt-get update && sudo apt install -y git curl openssl build-essential cmake ccache gcc-7 g++-7 lcov&& sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 60 --slave /usr/bin/g++ g++ /usr/bin/g++-7 && sudo update-alternatives --config gcc
-      - name: configure
-        run: cd src/main/c/ && mkdir -p build && cd build && cmake ../ -DTESTS=ON -DCOVERAGE=ON
       - name: compile
-        run: cd src/main/c/ && cd build && make -j2
-      - name: run test
-        run: CTEST_OUTPUT_ON_FAILURE=TRUE make test
-      - name: generate coverage
-        run: cd build && make test && make rpc-coverage
+        run: bash scripts/compile_jni_lib.sh
+      #- name: generate coverage
+      #  run: cd src/main/c/build && make test && make rpc-coverage
       - name: upload code coverage to Codecov
         uses: codecov/codecov-action@v1
         with:
@@ -176,7 +166,4 @@ jobs:
       - name: configure and compile
         run: |
           source /opt/rh/devtoolset-7/enable
-          cd src/main/c/ && mkdir -p build && cd build
-          cmake3 .. -DTESTS=ON -DHUNTER_STATUS_DEBUG=ON
-          make -j2
-          CTEST_OUTPUT_ON_FAILURE=TRUE make test
+          bash scripts/compile_jni_lib.sh

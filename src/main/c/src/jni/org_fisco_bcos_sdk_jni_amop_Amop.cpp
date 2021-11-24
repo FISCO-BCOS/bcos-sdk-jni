@@ -69,7 +69,7 @@ static void on_receive_amop_response(struct bcos_sdk_c_struct_response* resp)
     JNIEnv* env;
     jvm->AttachCurrentThread((void**)&env, NULL);
 
-    std::string className = "org/fisco/bcos/sdk/jni/amop/AmopResponseCallback";
+    std::string amopClassName = "org/fisco/bcos/sdk/jni/amop/AmopResponseCallback";
 
     jclass cbClass = env->GetObjectClass(jcallback);
     // void onResponse(Response)
@@ -78,13 +78,15 @@ static void on_receive_amop_response(struct bcos_sdk_c_struct_response* resp)
     if (onReqMethodID == NULL)
     {
         env->FatalError(
-            ("No such method in the class, className: " + className + " ,method: onResponse")
+            ("No such method in the class, className: " + amopClassName + " ,method: onResponse")
                 .c_str());
     }
 
 
     int error = resp->error;
     char* desc = resp->desc ? resp->desc : (char*)"";
+
+    std::string className = "org/fisco/bcos/sdk/jni/common/Response";
 
     jclass responseClass = bcos_sdk_c_find_jclass(env, className.c_str());
 

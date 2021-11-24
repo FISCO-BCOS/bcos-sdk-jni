@@ -182,6 +182,7 @@ public final class JniLibLoader {
       loadLibrary(tempFilePath.getAbsolutePath(), true);
     } finally {
       tempFilePath.delete();
+      logger.debug("remove temp file, {}", tempPath);
     }
   }
 }

@@ -177,10 +177,11 @@ public final class JniLibLoader {
     } catch (NullPointerException e) {
       throw new FileNotFoundException("Cannot found " + resource + " inside the JAR.");
     }
+
     try {
       loadLibrary(tempFilePath.getAbsolutePath(), true);
     } finally {
-      tempFilePath.deleteOnExit();
+      tempFilePath.delete();
     }
   }
 }

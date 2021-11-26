@@ -12,8 +12,7 @@ extern "C" {
 void bcos_event_sub_subscribe_event(void* event, const char* group, const char* params,
     bcos_sdk_c_struct_response_cb callback, void* context);
 
-void bcos_event_sub_unsubscribe_event(
-    void* event, const char* event_sub_id, bcos_sdk_c_struct_response_cb callback, void* context);
+void bcos_event_sub_unsubscribe_event(void* event, const char* event_sub_id);
 
 // ------------------------------event interface end -------------------------
 

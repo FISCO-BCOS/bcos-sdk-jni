@@ -86,7 +86,7 @@ public class EventSubscribe {
 
   public native void subscribeEvent(String group, String params, EventSubscribeCallback callback);
 
-  public native void unsubscribeEvent(String eventID, EventSubscribeCallback callback);
+  public native void unsubscribeEvent(String eventID);
 
   public native Set<String> getAllSubscribedEvents();
 

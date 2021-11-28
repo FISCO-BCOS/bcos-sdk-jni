@@ -1,7 +1,11 @@
 #include "bcos_sdk_c_common.h"
-#include <bcos-framework/interfaces/protocol/CommonError.h>
-#include <bcos-framework/libutilities/Common.h>
-#include <bcos-framework/libutilities/Error.h>
+#include <bcos-boostssl/utilities/Common.h>
+#include <bcos-boostssl/utilities/Error.h>
+
+using namespace bcos;
+using namespace bcos::boostssl;
+using namespace bcos::boostssl::utilities;
+using namespace bcos::boostssl::utilities::protocol;
 
 struct bcos_sdk_c_config* bcos_sdk_c_config_create_empty()
 {
@@ -121,8 +125,8 @@ void bcos_sdk_c_handle_response(
     auto resp = &temp_resp;
     resp->context = context;
 
-    auto errorPtr = (bcos::Error*)error;
-    if (errorPtr && errorPtr->errorCode() != bcos::protocol::CommonError::SUCCESS)
+    auto errorPtr = (Error*)error;
+    if (errorPtr && errorPtr->errorCode() != CommonError::SUCCESS)
     {
         resp->error = errorPtr->errorCode();
         resp->desc = (char*)errorPtr->errorMessage().c_str();
@@ -131,9 +135,9 @@ void bcos_sdk_c_handle_response(
     }
     else
     {
-        resp->error = bcos::protocol::CommonError::SUCCESS;
+        resp->error = CommonError::SUCCESS;
         resp->desc = NULL;
-        resp->data = data ? (bcos::byte*)data : NULL;
+        resp->data = data ? (byte*)data : NULL;
         resp->size = size;
     }
 

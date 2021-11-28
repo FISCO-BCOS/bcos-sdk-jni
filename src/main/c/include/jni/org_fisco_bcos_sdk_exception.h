@@ -1,5 +1,5 @@
 
-#include <bcos-framework/libutilities/Exceptions.h>
+#include <bcos-boostssl/utilities/Exceptions.h>
 #include <jni.h>
 #include <string>
 /* Header for class common */
@@ -9,11 +9,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-namespace bcos
-{
-DERIVE_BCOS_EXCEPTION(BcosJniException);
-}
 
 #define THROW_JNI_EXCEPTION(_ENV_, _INFO_) ThrowJNIException(_ENV_, __FILE__, __LINE__, _INFO_);
 

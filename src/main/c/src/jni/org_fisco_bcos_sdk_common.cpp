@@ -8,6 +8,10 @@
 #include <cstdio>
 #include <vector>
 
+using namespace bcos;
+using namespace bcos::boostssl;
+using namespace bcos::boostssl::utilities;
+
 void* get_obj_native_member(JNIEnv* env, jobject self)
 {
     jclass cls = env->GetObjectClass(self);
@@ -53,8 +57,8 @@ static bcos_sdk_c_cert_config* create_bcos_sdk_c_cert_config(
     jstring jCaCert = (jstring)env->GetObjectField(jCertConfig, caCertField);
     if (!jCaCert)
     {
-        BOOST_THROW_EXCEPTION(bcos::BcosJniException() << bcos::errinfo_comment(
-                                  "caCert has not been initialized, please set it"));
+        BOOST_THROW_EXCEPTION(InvalidParameter()
+                              << errinfo_comment("caCert has not been initialized, please set it"));
     }
 
     const char* caCert = env->GetStringUTFChars(jCaCert, NULL);
@@ -70,7 +74,7 @@ static bcos_sdk_c_cert_config* create_bcos_sdk_c_cert_config(
     jstring jNodeKey = (jstring)env->GetObjectField(jCertConfig, nodeKeyField);
     if (!jNodeKey)
     {
-        BOOST_THROW_EXCEPTION(bcos::BcosJniException() << bcos::errinfo_comment(
+        BOOST_THROW_EXCEPTION(InvalidParameter() << errinfo_comment(
                                   "node key(nodeKey) has not been initialized, please set it"));
     }
 
@@ -87,7 +91,7 @@ static bcos_sdk_c_cert_config* create_bcos_sdk_c_cert_config(
     jstring jNodeCert = (jstring)env->GetObjectField(jCertConfig, nodeCertField);
     if (!jNodeKey)
     {
-        BOOST_THROW_EXCEPTION(bcos::BcosJniException() << bcos::errinfo_comment(
+        BOOST_THROW_EXCEPTION(InvalidParameter() << errinfo_comment(
                                   "node cert(nodeCert) has not been initialized, please set it"));
     }
 
@@ -143,8 +147,8 @@ static bcos_sdk_c_sm_cert_config* create_bcos_sdk_c_sm_cert_config(
     jstring jCaCert = (jstring)env->GetObjectField(jSmCertConfig, caCertField);
     if (!jCaCert)
     {
-        BOOST_THROW_EXCEPTION(bcos::BcosJniException() << bcos::errinfo_comment(
-                                  "caCert has not been initialized, please set it"));
+        BOOST_THROW_EXCEPTION(InvalidParameter()
+                              << errinfo_comment("caCert has not been initialized, please set it"));
     }
 
     const char* caCert = env->GetStringUTFChars(jCaCert, NULL);
@@ -160,7 +164,7 @@ static bcos_sdk_c_sm_cert_config* create_bcos_sdk_c_sm_cert_config(
     jstring jNodeCert = (jstring)env->GetObjectField(jSmCertConfig, nodeCertField);
     if (!jNodeCert)
     {
-        BOOST_THROW_EXCEPTION(bcos::BcosJniException() << bcos::errinfo_comment(
+        BOOST_THROW_EXCEPTION(InvalidParameter() << errinfo_comment(
                                   "nodeCert has not been initialized, please set it"));
     }
 
@@ -177,7 +181,7 @@ static bcos_sdk_c_sm_cert_config* create_bcos_sdk_c_sm_cert_config(
     jstring jNodeKey = (jstring)env->GetObjectField(jSmCertConfig, nodeKeyField);
     if (!jNodeKey)
     {
-        BOOST_THROW_EXCEPTION(bcos::BcosJniException() << bcos::errinfo_comment(
+        BOOST_THROW_EXCEPTION(InvalidParameter() << errinfo_comment(
                                   "nodeKey has not been initialized, please set it"));
     }
 
@@ -196,7 +200,7 @@ static bcos_sdk_c_sm_cert_config* create_bcos_sdk_c_sm_cert_config(
     if (!jEnNodeCert)
     {
         BOOST_THROW_EXCEPTION(
-            bcos::BcosJniException() << bcos::errinfo_comment(
+            InvalidParameter() << errinfo_comment(
                 "encrypt node cert(enNodeCrt) has not been initialized, please set it"));
     }
 
@@ -214,7 +218,7 @@ static bcos_sdk_c_sm_cert_config* create_bcos_sdk_c_sm_cert_config(
     if (!jEnNodeKey)
     {
         BOOST_THROW_EXCEPTION(
-            bcos::BcosJniException() << bcos::errinfo_comment(
+            InvalidParameter() << errinfo_comment(
                 "encrypt node key(enNodeKey) has not been initialized, please set it"));
     }
 
@@ -268,7 +272,7 @@ struct bcos_sdk_c_config* create_bcos_sdk_c_config_from_java_obj(JNIEnv* env, jo
     jobject jpeersOjbect = env->GetObjectField(jconfig, peersFieldID);
     if (jpeersOjbect == NULL)
     {
-        BOOST_THROW_EXCEPTION(bcos::BcosJniException() << bcos::errinfo_comment(
+        BOOST_THROW_EXCEPTION(InvalidParameter() << errinfo_comment(
                                   "the connected peers has not been initialized , please set it"));
     }
 
@@ -307,7 +311,7 @@ struct bcos_sdk_c_config* create_bcos_sdk_c_config_from_java_obj(JNIEnv* env, jo
         if (!jpeer)
         {
             BOOST_THROW_EXCEPTION(
-                bcos::BcosJniException() << bcos::errinfo_comment(
+                InvalidParameter() << errinfo_comment(
                     "this connected peer is null value, it should be in ip:port string format"));
         }
 
@@ -316,7 +320,7 @@ struct bcos_sdk_c_config* create_bcos_sdk_c_config_from_java_obj(JNIEnv* env, jo
         if (!bcos::boostssl::ws::WsTools::stringToEndPoint(peer ? peer : "", endPoint))
         {
             BOOST_THROW_EXCEPTION(
-                bcos::BcosJniException() << bcos::errinfo_comment(
+                InvalidParameter() << errinfo_comment(
                     ("the connected peer should be in ip:port string format, invalid value: " +
                         std::string(peer))
                         .c_str()));
@@ -359,7 +363,7 @@ struct bcos_sdk_c_config* create_bcos_sdk_c_config_from_java_obj(JNIEnv* env, jo
         if (!jsslType)
         {
             BOOST_THROW_EXCEPTION(
-                bcos::BcosJniException() << bcos::errinfo_comment(
+                InvalidParameter() << errinfo_comment(
                     "sslType has not been initialized, it should be \"ssl\" or \"sm_ssl\""));
         }
 
@@ -381,10 +385,10 @@ struct bcos_sdk_c_config* create_bcos_sdk_c_config_from_java_obj(JNIEnv* env, jo
             jobject jcertConfig = env->GetObjectField(jconfig, certConfigField);
             if (!jcertConfig)
             {
-                BOOST_THROW_EXCEPTION(bcos::BcosJniException() << bcos::errinfo_comment(
-                                          "cert config has not been initialized, it "
-                                          "is used for ssl connection, please "
-                                          "set it"));
+                BOOST_THROW_EXCEPTION(InvalidParameter()
+                                      << errinfo_comment("cert config has not been initialized, it "
+                                                         "is used for ssl connection, please "
+                                                         "set it"));
             }
 
             jclass certConfigClass = env->GetObjectClass(jcertConfig);
@@ -404,7 +408,7 @@ struct bcos_sdk_c_config* create_bcos_sdk_c_config_from_java_obj(JNIEnv* env, jo
             jobject jSmCertConfig = env->GetObjectField(jconfig, smCertConfigField);
             if (!jSmCertConfig)
             {
-                BOOST_THROW_EXCEPTION(bcos::BcosJniException() << bcos::errinfo_comment(
+                BOOST_THROW_EXCEPTION(InvalidParameter() << errinfo_comment(
                                           "sm cert config has not been initialized, it "
                                           "is used for ssl connection, please "
                                           "set it"));

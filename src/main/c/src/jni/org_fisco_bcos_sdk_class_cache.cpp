@@ -1,6 +1,6 @@
 
 #include "jni/org_fisco_bcos_sdk_class_cache.h"
-#include <bcos-framework/libutilities/Log.h>
+#include <bcos-boostssl/utilities/BoostLog.h>
 #include <iostream>
 
 jclass JClassCache::findClass(JNIEnv* _env, const std::string& _fullClassName)

@@ -1,19 +1,13 @@
-hunter_config(bcos-boostssl
+ hunter_config(bcos-boostssl
 	VERSION 3.0.0-local
-	URL https://${URL_BASE}/FISCO-BCOS/bcos-boostssl/archive/05d550979fb00b68eeaef79c205c7882aeeeaafa.tar.gz
-	SHA1 583bc9a047dd0fcadbc94af8139c0237a90a7004
+	URL https://${URL_BASE}/FISCO-BCOS/bcos-boostssl/archive/f65c4e07e57423b5e6005437ca562e2e7ccdbf6b.tar.gz
+	SHA1 2fb1f7921316441a129cb780777e9c5f2cf0729a
 )
 
 hunter_config(bcos-cpp-sdk
 	VERSION 3.0.0-local
-	URL https://${URL_BASE}/FISCO-BCOS/bcos-cpp-sdk/archive/62441b5a140862157bbaf6577300a2cc9e481aae.tar.gz
-	SHA1 a69fbbd439bb7fa3407825ee5e33d341e38b9496
-)
-
-hunter_config(bcos-framework VERSION 3.0.0-local
-	URL https://${URL_BASE}/FISCO-BCOS/bcos-framework/archive/403509babb28e648390dcc5f77576f35e7ba0b7a.tar.gz
-    SHA1 f34447aba04532cee17b519a8ce47f3c0e6d1ec1
-	CMAKE_ARGS HUNTER_PACKAGE_LOG_BUILD=ON HUNTER_PACKAGE_LOG_INSTALL=ON
+	URL https://${URL_BASE}/FISCO-BCOS/bcos-cpp-sdk/archive/dad9a72d24cccc6c8438caf4a5782b19ba5b6abf.tar.gz
+	SHA1 f2739100f30d45353b95741613d4325232f11a0b
 )
 
 # Do not remove this

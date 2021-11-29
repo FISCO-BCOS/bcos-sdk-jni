@@ -20,10 +20,10 @@ public class EventSub {
   public static void usage() {
     System.out.println("\tUsage: ");
     System.out.println(
-        "\t\tjava -cp \"conf/:lib/*:apps/*\"  org.fisco.bcos.sdk.jni.test.event.EventSub ip:port group fromBlk toBlk");
+        "\t\tjava -cp \"conf/:lib/*:apps/*\"  org.fisco.bcos.sdk.jni.test.eventsub.EventSub ip:port group fromBlk toBlk");
     System.out.println("\tExample:");
     System.out.println(
-        "\t\tjava -cp \"conf/:lib/*:apps/*\"  org.fisco.bcos.sdk.jni.test.event.EventSub 127.0.0.1:20201 group -1 -1");
+        "\t\tjava -cp \"conf/:lib/*:apps/*\"  org.fisco.bcos.sdk.jni.test.eventsub.EventSub 127.0.0.1:20201 group -1 -1");
     System.exit(0);
   }
 

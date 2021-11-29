@@ -28,7 +28,7 @@ static void on_receive_rpc_response(struct bcos_sdk_c_struct_response* resp)
     jvm->AttachCurrentThread((void**)&env, NULL);
 
     std::string className = "org/fisco/bcos/sdk/jni/common/Response";
-    std::string onRespSig = "(Lorg/fisco/bcos/sdk/jni/common/Response)V";
+    std::string onRespSig = "(Lorg/fisco/bcos/sdk/jni/common/Response;)V";
 
     jclass cbClass = env->GetObjectClass(jcallback);
     // void onResponse(Response)

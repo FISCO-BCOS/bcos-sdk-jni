@@ -12,7 +12,7 @@ static void on_receive_event_sub_response(struct bcos_sdk_c_struct_response* res
     jobject jcallback = context->jcallback;
     JavaVM* jvm = context->jvm;
     // Note: delete cb_context
-    delete context;
+    // delete context;
 
     JNIEnv* env;
     jvm->AttachCurrentThread((void**)&env, NULL);
@@ -20,7 +20,7 @@ static void on_receive_event_sub_response(struct bcos_sdk_c_struct_response* res
     jclass cbClass = env->GetObjectClass(jcallback);
 
     std::string className = "org/fisco/bcos/sdk/jni/common/Response";
-    std::string onRespSig = "(Lorg/fisco/bcos/sdk/jni/common/Response)V";
+    std::string onRespSig = "(Lorg/fisco/bcos/sdk/jni/common/Response;)V";
     // void onResponse(Response)
     jmethodID onRespMethodID = env->GetMethodID(cbClass, "onResponse", onRespSig.c_str());
     if (onRespMethodID == NULL)

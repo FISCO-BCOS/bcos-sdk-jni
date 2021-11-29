@@ -62,11 +62,11 @@ public class EventSub {
         objectMapper.writeValueAsString(params),
         new EventSubscribeCallback() {
           @Override
-          public void onReceiveLog(Response response) {
+          public void onResponse(Response response) {
             System.out.println("subscribeEvent ==>>> " + response.getErrorCode());
             System.out.println("\t errorCode: " + response.getErrorCode());
             System.out.println("\t errorMessage: " + response.getErrorMessage());
-            System.out.println("\t data: " + response.getData());
+            System.out.println("\t data: " + new String(response.getData()));
           }
         });
 

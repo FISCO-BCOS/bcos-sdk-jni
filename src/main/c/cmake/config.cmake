@@ -6,8 +6,8 @@
 
 hunter_config(bcos-cpp-sdk
 	VERSION 3.0.0-local
-	URL https://${URL_BASE}/FISCO-BCOS/bcos-cpp-sdk/archive/dad9a72d24cccc6c8438caf4a5782b19ba5b6abf.tar.gz
-	SHA1 f2739100f30d45353b95741613d4325232f11a0b
+	URL https://${URL_BASE}/FISCO-BCOS/bcos-cpp-sdk/archive/f9edb77347d8f6556a0101287cc46540b2a7b993.tar.gz
+	SHA1 468dc15fe60593509690e2c201665ce69bfe127a
 )
 
 # Do not remove this

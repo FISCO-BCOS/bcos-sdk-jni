@@ -26,5 +26,5 @@ public interface EventSubscribeCallback {
    *
    * @param response
    */
-  void onReceiveLog(Response response);
+  void onResponse(Response response);
 }

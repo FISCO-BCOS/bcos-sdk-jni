@@ -16,7 +16,6 @@
 package org.fisco.bcos.sdk.jni.event;
 
 import java.util.Set;
-import org.fisco.bcos.sdk.jni.amop.Amop;
 import org.fisco.bcos.sdk.jni.common.JniConfig;
 import org.fisco.bcos.sdk.jni.common.JniException;
 import org.fisco.bcos.sdk.jni.common.JniLibLoader;
@@ -25,7 +24,7 @@ import org.slf4j.LoggerFactory;
 
 public class EventSubscribe {
 
-  private static final Logger logger = LoggerFactory.getLogger(Amop.class);
+  private static final Logger logger = LoggerFactory.getLogger(EventSubscribe.class);
 
   static {
     JniLibLoader.loadJniLibrary();
@@ -86,7 +85,7 @@ public class EventSubscribe {
 
   public native void subscribeEvent(String group, String params, EventSubscribeCallback callback);
 
-  public native void unsubscribeEvent(String eventID, EventSubscribeCallback callback);
+  public native void unsubscribeEvent(String eventID);
 
   public native Set<String> getAllSubscribedEvents();
 

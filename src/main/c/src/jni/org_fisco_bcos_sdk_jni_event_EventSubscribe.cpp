@@ -12,7 +12,7 @@ static void on_receive_event_sub_response(struct bcos_sdk_c_struct_response* res
     jobject jcallback = context->jcallback;
     JavaVM* jvm = context->jvm;
     // Note: delete cb_context
-    delete context;
+    // delete context;
 
     JNIEnv* env;
     jvm->AttachCurrentThread((void**)&env, NULL);
@@ -20,7 +20,7 @@ static void on_receive_event_sub_response(struct bcos_sdk_c_struct_response* res
     jclass cbClass = env->GetObjectClass(jcallback);
 
     std::string className = "org/fisco/bcos/sdk/jni/common/Response";
-    std::string onRespSig = "(Lorg/fisco/bcos/sdk/jni/common/Response)V";
+    std::string onRespSig = "(Lorg/fisco/bcos/sdk/jni/common/Response;)V";
     // void onResponse(Response)
     jmethodID onRespMethodID = env->GetMethodID(cbClass, "onResponse", onRespSig.c_str());
     if (onRespMethodID == NULL)
@@ -179,31 +179,18 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_event_EventSubscribe_subscrib
 /*
  * Class:     org_fisco_bcos_sdk_jni_event_EventSubscribe
  * Method:    unsubscribeEvent
- * Signature: (Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/event/EventSubscribeCallback;)V
+ * Signature: (Ljava/lang/String;)V
  */
 JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_event_EventSubscribe_unsubscribeEvent(
-    JNIEnv* env, jobject self, jstring jeventid, jobject jcallback)
+    JNIEnv* env, jobject self, jstring jeventId)
 {
     void* event = get_obj_native_member(env, self);
-    const char* eventid = env->GetStringUTFChars(jeventid, 0);
+    const char* eventid = env->GetStringUTFChars(jeventId, 0);
 
-    // Note: The JNIEnv pointer, passed as the first argument to every native method, can only be
-    // used in the thread with which it is associated. It is wrong to cache the JNIEnv interface
-    // pointer obtained from one thread, and use that pointer in another thread.
-    JavaVM* jvm;
-    env->GetJavaVM(&jvm);
-
-    cb_context* context = new cb_context();
-    context->jcallback = env->NewGlobalRef(jcallback);
-    context->jvm = jvm;
-
-    std::string className = "org/fisco/bcos/sdk/jni/common/Response";
-    bcos_sdk_c_find_jclass(env, className.c_str());
-
-    bcos_event_sub_unsubscribe_event(event, eventid, on_receive_event_sub_response, context);
+    bcos_event_sub_unsubscribe_event(event, eventid);
 
     // release params
-    env->ReleaseStringUTFChars(jeventid, eventid);
+    env->ReleaseStringUTFChars(jeventId, eventid);
 }
 
 /*

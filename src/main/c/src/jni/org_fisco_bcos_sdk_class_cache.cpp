@@ -1,6 +1,6 @@
 
 #include "jni/org_fisco_bcos_sdk_class_cache.h"
-#include <bcos-framework/libutilities/Log.h>
+#include <bcos-boostssl/utilities/BoostLog.h>
 #include <iostream>
 
 jclass JClassCache::findClass(JNIEnv* _env, const std::string& _fullClassName)
@@ -12,8 +12,6 @@ jclass JClassCache::findClass(JNIEnv* _env, const std::string& _fullClassName)
         auto it = m_classCache.find(_fullClassName);
         if (it != m_classCache.end())
         {
-            BCOS_LOG(DEBUG) << LOG_BADGE("findClass") << LOG_DESC("hit cache")
-                            << LOG_KV("fullClassName", _fullClassName);
             classId = it->second;
             return classId;
         }

@@ -1,12 +1,16 @@
 #include "bcos_sdk_c_amop.h"
 #include "bcos_sdk_c_common.h"
+#include <bcos-boostssl/utilities/Common.h>
 #include <bcos-cpp-sdk/amop/AMOP.h>
-#include <bcos-framework/interfaces/protocol/CommonError.h>
-#include <bcos-framework/libutilities/Common.h>
 #include <set>
 #include <string>
 
 // ------------------------------amop interface begin ----------------------
+
+using namespace bcos;
+using namespace bcos::boostssl;
+using namespace bcos::boostssl::utilities;
+using namespace bcos::boostssl::utilities::protocol;
 
 void bcos_amop_subscribe_topic(void* amop, char** topics, size_t topic_count)
 {
@@ -36,20 +40,20 @@ void bcos_amop_subscribe_topic_with_cb(
 
     auto amopPointer = (bcos::cppsdk::amop::AMOPInterface*)amop;
     amopPointer->subscribe(std::string(topic),
-        [context, cb](bcos::Error::Ptr error, const std::string& endpoint, const std::string& seq,
-            bcos::bytesConstRef data, std::shared_ptr<bcos::boostssl::ws::WsSession> session) {
+        [context, cb](Error::Ptr error, const std::string& endpoint, const std::string& seq,
+            bytesConstRef data, std::shared_ptr<bcos::boostssl::ws::WsSession> session) {
             std::ignore = session;
             // create resp obj
             bcos_sdk_c_struct_response resp;
             resp.context = context;
-            if (error && error->errorCode() != bcos::protocol::CommonError::SUCCESS)
+            if (error && error->errorCode() != CommonError::SUCCESS)
             {
                 resp.error = error->errorCode();
                 resp.desc = (char*)error->errorMessage().data();
             }
             else
             {
-                resp.error = bcos::protocol::CommonError::SUCCESS;
+                resp.error = CommonError::SUCCESS;
                 resp.data = (void*)data.data();
                 resp.size = data.size();
             }
@@ -86,8 +90,8 @@ void bcos_amop_publish(void* amop, const char* topic, void* data, size_t size, u
     }
 
     auto amopPointer = (bcos::cppsdk::amop::AMOPInterface*)amop;
-    amopPointer->publish(std::string(topic), bcos::bytesConstRef((bcos::byte*)data, size), timeout,
-        [cb, context](bcos::Error::Ptr error, std::shared_ptr<bcos::boostssl::ws::WsMessage> msg,
+    amopPointer->publish(std::string(topic), bytesConstRef((byte*)data, size), timeout,
+        [cb, context](Error::Ptr error, std::shared_ptr<bcos::boostssl::ws::WsMessage> msg,
             std::shared_ptr<bcos::boostssl::ws::WsSession> session) {
             std::ignore = session;
 
@@ -106,7 +110,7 @@ void bcos_amop_broadcast(void* amop, const char* topic, void* data, size_t size)
     }
 
     auto amopPointer = (bcos::cppsdk::amop::AMOPInterface*)amop;
-    amopPointer->broadcast(std::string(topic), bcos::bytesConstRef((bcos::byte*)data, size));
+    amopPointer->broadcast(std::string(topic), bytesConstRef((byte*)data, size));
 }
 
 void bcos_amop_set_subscribe_topic_cb(void* amop, bcos_sdk_c_amop_subscribe_cb cb, void* context)
@@ -118,20 +122,20 @@ void bcos_amop_set_subscribe_topic_cb(void* amop, bcos_sdk_c_amop_subscribe_cb c
 
     auto amopPointer = (bcos::cppsdk::amop::AMOPInterface*)amop;
     amopPointer->setSubCallback(
-        [context, cb](bcos::Error::Ptr error, const std::string& endpoint, const std::string& seq,
-            bcos::bytesConstRef data, std::shared_ptr<bcos::boostssl::ws::WsSession> session) {
+        [context, cb](Error::Ptr error, const std::string& endpoint, const std::string& seq,
+            bytesConstRef data, std::shared_ptr<bcos::boostssl::ws::WsSession> session) {
             std::ignore = session;
             // create resp obj
             bcos_sdk_c_struct_response resp;
             resp.context = context;
-            if (error && error->errorCode() != bcos::protocol::CommonError::SUCCESS)
+            if (error && error->errorCode() != CommonError::SUCCESS)
             {
                 resp.error = error->errorCode();
                 resp.desc = (char*)error->errorMessage().data();
             }
             else
             {
-                resp.error = bcos::protocol::CommonError::SUCCESS;
+                resp.error = CommonError::SUCCESS;
                 resp.data = (void*)data.data();
                 resp.size = data.size();
             }
@@ -150,7 +154,7 @@ void bcos_amop_send_response(void* amop, const char* peer, const char* seq, void
 
     auto amopPointer = (bcos::cppsdk::amop::AMOPInterface*)amop;
     amopPointer->sendResponse(
-        std::string(peer), std::string(seq), bcos::bytesConstRef((bcos::byte*)data, size));
+        std::string(peer), std::string(seq), bytesConstRef((byte*)data, size));
 }
 
 void* bcos_amop_get_ws(void* amop)

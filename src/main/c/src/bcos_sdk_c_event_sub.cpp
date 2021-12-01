@@ -12,15 +12,16 @@ using namespace bcos::boostssl::utilities::protocol;
 
 // ------------------------------event interface begin ----------------------
 
-void bcos_event_sub_subscribe_event(void* event, const char* group, const char* params,
+const char* bcos_event_sub_subscribe_event(void* event, const char* group, const char* params,
     bcos_sdk_c_struct_response_cb callback, void* context)
 {
     auto eventPointer = (bcos::cppsdk::event::EventSubInterface*)event;
-    eventPointer->subscribeEvent(
+    auto eventSubId = eventPointer->subscribeEvent(
         group, params, [callback, context](Error::Ptr error, const std::string& resp) {
             bcos_sdk_c_handle_response(
                 error ? error.get() : NULL, (void*)resp.data(), resp.size(), callback, context);
         });
+    return strdup(eventSubId.c_str());
 }
 
 void bcos_event_sub_unsubscribe_event(void* event, const char* event_sub_id)

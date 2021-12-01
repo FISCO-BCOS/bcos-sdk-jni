@@ -37,7 +37,7 @@ void* bcos_event_sub_get_ws(void* event)
     if (event)
     {
         auto eventPointer = (bcos::cppsdk::event::EventSub*)event;
-        auto ws = eventPointer->wsService();
+        auto ws = eventPointer->service();
         return ws ? ws.get() : NULL;
     }
 

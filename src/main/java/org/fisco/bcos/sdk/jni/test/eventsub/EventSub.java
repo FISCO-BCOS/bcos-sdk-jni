@@ -57,7 +57,7 @@ public class EventSub {
     System.out.println("\t params: " + strParams);
 
     eventSubscribe.start();
-    eventSubscribe.subscribeEvent(
+    String eventSubId = eventSubscribe.subscribeEvent(
         group,
         objectMapper.writeValueAsString(params),
         new EventSubscribeCallback() {
@@ -69,6 +69,8 @@ public class EventSub {
             System.out.println("\t data: " + new String(response.getData()));
           }
         });
+
+    System.out.println("EventSubId = " + eventSubId);
 
     while (true) {
       Thread.sleep(10000);

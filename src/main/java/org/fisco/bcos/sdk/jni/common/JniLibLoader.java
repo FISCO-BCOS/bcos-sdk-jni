@@ -94,6 +94,10 @@ public final class JniLibLoader {
     } else if (osName.contains(LINUX)) {
       return "lib" + libName + ".so";
     } else if (osName.contains(MAC)) {
+      String arch = getArch();
+      if ("arm".equals(arch)) {
+        return "lib" + libName + "-aarch64" + ".dylib";
+      }
       return "lib" + libName + ".dylib";
     } else {
       throw new RuntimeException("unrecognized OS: " + osName);

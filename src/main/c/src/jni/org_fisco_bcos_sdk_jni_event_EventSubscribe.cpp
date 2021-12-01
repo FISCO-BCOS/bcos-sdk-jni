@@ -148,7 +148,7 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_event_EventSubscribe_stop(
  * Signature:
  * (Ljava/lang/String;Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/event/EventSubscribeCallback;)V
  */
-JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_event_EventSubscribe_subscribeEvent(
+JNIEXPORT jstring JNICALL Java_org_fisco_bcos_sdk_jni_event_EventSubscribe_subscribeEvent(
     JNIEnv* env, jobject self, jstring jgroup, jstring jparams, jobject jcallback)
 {
     void* event = get_obj_native_member(env, self);
@@ -168,12 +168,17 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_event_EventSubscribe_subscrib
     std::string className = "org/fisco/bcos/sdk/jni/common/Response";
     bcos_sdk_c_find_jclass(env, className.c_str());
 
-    bcos_event_sub_subscribe_event(event, group, params, on_receive_event_sub_response, context);
+    const char* eventSubId = bcos_event_sub_subscribe_event(
+        event, group, params, on_receive_event_sub_response, context);
 
     // release params
     env->ReleaseStringUTFChars(jparams, params);
     // release group
     env->ReleaseStringUTFChars(jgroup, group);
+
+    jstring result = env->NewStringUTF(eventSubId);
+    free((void*)eventSubId);
+    return result;
 }
 
 /*

@@ -83,7 +83,7 @@ public class EventSubscribe {
 
   public native void stop();
 
-  public native void subscribeEvent(String group, String params, EventSubscribeCallback callback);
+  public native String subscribeEvent(String group, String params, EventSubscribeCallback callback);
 
   public native void unsubscribeEvent(String eventID);
 

@@ -3,7 +3,7 @@ package org.fisco.bcos.sdk.jni.event;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EventSubscribleParams {
+public class EventSubParams {
   private long fromBlock;
   private long toBlock;
   private List<String> addresses = new ArrayList<>();

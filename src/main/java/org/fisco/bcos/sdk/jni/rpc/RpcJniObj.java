@@ -15,66 +15,29 @@
 
 package org.fisco.bcos.sdk.jni.rpc;
 
-import org.fisco.bcos.sdk.jni.common.JniConfig;
-import org.fisco.bcos.sdk.jni.common.JniException;
-import org.fisco.bcos.sdk.jni.common.JniLibLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Rpc {
-  private static final Logger logger = LoggerFactory.getLogger(Rpc.class);
+public class RpcJniObj {
+  private static final Logger logger = LoggerFactory.getLogger(RpcJniObj.class);
 
-  static {
-    JniLibLoader.loadJniLibrary();
-  }
-
-  /**
-   * call native c api to create rpc object
-   *
-   * @param config
-   * @return
-   */
-  private static native long newNativeObj(JniConfig config) throws JniException;
-
-  /**
-   * @param jniConfig
-   * @return
-   */
-  public static Rpc build(JniConfig jniConfig) throws JniException {
-    long nativeObj = newNativeObj(jniConfig);
-    logger.info(" nativeObj: {}", nativeObj);
-    Rpc rpc = new Rpc();
-    rpc.setNativeObj(nativeObj);
+  public static RpcJniObj build(long nativePointer) {
+    RpcJniObj rpc = new RpcJniObj();
+    rpc.setNativePointer(nativePointer);
+    logger.info(" nativeObj: {}", nativePointer);
     return rpc;
   }
 
-  public static Rpc build(long nativeObj) {
-    logger.info(" nativeObj: {}", nativeObj);
-    Rpc rpc = new Rpc();
-    rpc.setNativeObj(nativeObj);
-    return rpc;
+  private RpcJniObj() {}
+
+  private long nativePointer;
+
+  public long getNativePointer() {
+    return nativePointer;
   }
 
-  private Rpc() {}
-
-  private long nativeObj;
-  private JniConfig jniConfig;
-  private String group;
-
-  public JniConfig getJniConfig() {
-    return jniConfig;
-  }
-
-  private void setJniConfig(JniConfig jniConfig) {
-    this.jniConfig = jniConfig;
-  }
-
-  public long getNativeObj() {
-    return nativeObj;
-  }
-
-  private void setNativeObj(long nativeObj) {
-    this.nativeObj = nativeObj;
+  private void setNativePointer(long nativePointer) {
+    this.nativePointer = nativePointer;
   }
 
   // ----------------------------- RPC interface begin --------------------------------------

@@ -1,4 +1,4 @@
-#include "jni/org_fisco_bcos_sdk_jni_rpc_Rpc.h"
+#include "jni/org_fisco_bcos_sdk_jni_rpc_RpcJniObj.h"
 #include "bcos_sdk_c.h"
 #include "bcos_sdk_c_common.h"
 #include "bcos_sdk_c_error.h"
@@ -32,8 +32,7 @@ static void on_receive_rpc_response(struct bcos_sdk_c_struct_response* resp)
 
     jclass cbClass = env->GetObjectClass(jcallback);
     // void onResponse(Response)
-    jmethodID onRespMethodID =
-        env->GetMethodID(cbClass, "onResponse", onRespSig.c_str());
+    jmethodID onRespMethodID = env->GetMethodID(cbClass, "onResponse", onRespSig.c_str());
     if (onRespMethodID == NULL)
     {
         env->FatalError(
@@ -99,40 +98,14 @@ static void on_receive_rpc_response(struct bcos_sdk_c_struct_response* resp)
 }
 
 /*
- * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
- * Method:    newNativeObj
- * Signature: (Lorg/fisco/bcos/sdk/jni/common/JniConfig;)J
- */
-JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_newNativeObj(
-    JNIEnv* env, jclass, jobject jconfig)
-{
-    // config
-    struct bcos_sdk_c_config* config = create_bcos_sdk_c_config_from_java_obj(env, jconfig);
-    // create rpc obj
-    void* rpc = bcos_sdk_create_rpc_by_config(config);
-    // destroy config
-    bcos_sdk_c_config_destroy(config);
-
-    if (bcos_sdk_get_last_error() == 0)
-    {
-        return reinterpret_cast<jlong>(rpc);
-    }
-
-    // throw exception in java
-    THROW_JNI_EXCEPTION(env, bcos_sdk_get_last_error_msg());
-
-    return 0;
-}
-
-/*
- * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
+ * Class:     org_fisco_bcos_sdk_jni_rpc_RpcJniObj
  * Method:    start
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_start(JNIEnv* env, jobject self)
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_RpcJniObj_start(JNIEnv* env, jobject self)
 {
-    void* rpc = get_obj_native_member(env, self);
-    bcos_sdk_start_rpc(rpc);
+    void* sdk = bcos_sdk_get_native_pointer(env, self);
+    bcos_sdk_start(sdk);
     if (bcos_sdk_get_last_error() != 0)
     {
         // throw exception in java
@@ -141,31 +114,31 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_start(JNIEnv* env, jo
 }
 
 /*
- * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
+ * Class:     org_fisco_bcos_sdk_jni_rpc_RpcJniObj
  * Method:    stop
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_stop(JNIEnv* env, jobject self)
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_RpcJniObj_stop(JNIEnv* env, jobject self)
 {
-    void* rpc = get_obj_native_member(env, self);
+    void* rpc = bcos_sdk_get_native_pointer(env, self);
     if (rpc)
     {
-        bcos_sdk_stop_rpc(rpc);
+        bcos_sdk_stop(rpc);
     }
 }
 
 
 /*
- * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
+ * Class:     org_fisco_bcos_sdk_jni_rpc_RpcJniObj
  * Method:    genericMethod
  * Signature: (Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
  */
 JNIEXPORT void JNICALL
-Java_org_fisco_bcos_sdk_jni_rpc_Rpc_genericMethod__Ljava_lang_String_2Lorg_fisco_bcos_sdk_jni_rpc_RpcCallback_2(
+Java_org_fisco_bcos_sdk_jni_rpc_RpcJniObj_genericMethod__Ljava_lang_String_2Lorg_fisco_bcos_sdk_jni_rpc_RpcJniObjCallback_2(
     JNIEnv* env, jobject self, jstring jdata, jobject jcallback)
 {
     // rpc obj handler
-    void* rpc = get_obj_native_member(env, self);
+    void* rpc = bcos_sdk_get_native_pointer(env, self);
 
     // Note: The JNIEnv pointer, passed as the first argument to every native method, can only be
     // used in the thread with which it is associated. It is wrong to cache the JNIEnv interface
@@ -188,16 +161,16 @@ Java_org_fisco_bcos_sdk_jni_rpc_Rpc_genericMethod__Ljava_lang_String_2Lorg_fisco
 }
 
 /*
- * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
+ * Class:     org_fisco_bcos_sdk_jni_rpc_RpcJniObj
  * Method:    genericMethod
  * Signature: (Ljava/lang/String;Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
  */
 JNIEXPORT void JNICALL
-Java_org_fisco_bcos_sdk_jni_rpc_Rpc_genericMethod__Ljava_lang_String_2Ljava_lang_String_2Lorg_fisco_bcos_sdk_jni_rpc_RpcCallback_2(
+Java_org_fisco_bcos_sdk_jni_rpc_RpcJniObj_genericMethod__Ljava_lang_String_2Ljava_lang_String_2Lorg_fisco_bcos_sdk_jni_rpc_RpcJniObjCallback_2(
     JNIEnv* env, jobject self, jstring jgroup, jstring jdata, jobject jcallback)
 {
     // rpc obj handler
-    void* rpc = get_obj_native_member(env, self);
+    void* rpc = bcos_sdk_get_native_pointer(env, self);
 
     // Note: The JNIEnv pointer, passed as the first argument to every native method, can only be
     // used in the thread with which it is associated. It is wrong to cache the JNIEnv interface
@@ -224,17 +197,17 @@ Java_org_fisco_bcos_sdk_jni_rpc_Rpc_genericMethod__Ljava_lang_String_2Ljava_lang
 }
 
 /*
- * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
+ * Class:     org_fisco_bcos_sdk_jni_rpc_RpcJniObj
  * Method:    genericMethod
  * Signature:
  * (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
  */
 JNIEXPORT void JNICALL
-Java_org_fisco_bcos_sdk_jni_rpc_Rpc_genericMethod__Ljava_lang_String_2Ljava_lang_String_2Ljava_lang_String_2Lorg_fisco_bcos_sdk_jni_rpc_RpcCallback_2(
+Java_org_fisco_bcos_sdk_jni_rpc_RpcJniObj_genericMethod__Ljava_lang_String_2Ljava_lang_String_2Ljava_lang_String_2Lorg_fisco_bcos_sdk_jni_rpc_RpcJniObjCallback_2(
     JNIEnv* env, jobject self, jstring jgroup, jstring jnode, jstring jdata, jobject jcallback)
 {
     // rpc obj handler
-    void* rpc = get_obj_native_member(env, self);
+    void* rpc = bcos_sdk_get_native_pointer(env, self);
 
     // Note: The JNIEnv pointer, passed as the first argument to every native method, can only be
     // used in the thread with which it is associated. It is wrong to cache the JNIEnv interface
@@ -265,16 +238,16 @@ Java_org_fisco_bcos_sdk_jni_rpc_Rpc_genericMethod__Ljava_lang_String_2Ljava_lang
 }
 
 /*
- * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
+ * Class:     org_fisco_bcos_sdk_jni_rpc_RpcJniObj
  * Method:    call
  * Signature:
  * (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
  */
-JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_call(JNIEnv* env, jobject self,
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_RpcJniObj_call(JNIEnv* env, jobject self,
     jstring jgroup, jstring jnode, jstring jto, jstring jdata, jobject callback)
 {
     // rpc obj handler
-    void* rpc = get_obj_native_member(env, self);
+    void* rpc = bcos_sdk_get_native_pointer(env, self);
     // group
     const char* group = env->GetStringUTFChars(jgroup, NULL);
     // node
@@ -306,16 +279,16 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_call(JNIEnv* env, job
 }
 
 /*
- * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
+ * Class:     org_fisco_bcos_sdk_jni_rpc_RpcJniObj
  * Method:    sendTransaction
  * Signature:
  * (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZLorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
  */
-JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_sendTransaction(JNIEnv* env,
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_RpcJniObj_sendTransaction(JNIEnv* env,
     jobject self, jstring jgroup, jstring jnode, jstring jdata, jboolean jproof, jobject callback)
 {
     // rpc obj handler
-    void* rpc = get_obj_native_member(env, self);
+    void* rpc = bcos_sdk_get_native_pointer(env, self);
     // group
     const char* group = env->GetStringUTFChars(jgroup, NULL);
     // node
@@ -346,16 +319,17 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_sendTransaction(JNIEn
 }
 
 /*
- * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
+ * Class:     org_fisco_bcos_sdk_jni_rpc_RpcJniObj
  * Method:    getTransaction
  * Signature:
  * (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZLorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
  */
-JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getTransaction(JNIEnv* env, jobject self,
-    jstring jgroup, jstring jnode, jstring jtx_hash, jboolean jproof, jobject callback)
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_RpcJniObj_getTransaction(JNIEnv* env,
+    jobject self, jstring jgroup, jstring jnode, jstring jtx_hash, jboolean jproof,
+    jobject callback)
 {
     // rpc obj handler
-    void* rpc = get_obj_native_member(env, self);
+    void* rpc = bcos_sdk_get_native_pointer(env, self);
     // group
     const char* group = env->GetStringUTFChars(jgroup, NULL);
     // node
@@ -386,17 +360,17 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getTransaction(JNIEnv
 }
 
 /*
- * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
+ * Class:     org_fisco_bcos_sdk_jni_rpc_RpcJniObj
  * Method:    getTransactionReceipt
  * Signature:
  * (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZLorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
  */
-JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getTransactionReceipt(JNIEnv* env,
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_RpcJniObj_getTransactionReceipt(JNIEnv* env,
     jobject self, jstring jgroup, jstring jnode, jstring jtx_hash, jboolean jproof,
     jobject callback)
 {
     // rpc obj handler
-    void* rpc = get_obj_native_member(env, self);
+    void* rpc = bcos_sdk_get_native_pointer(env, self);
     // group
     const char* group = env->GetStringUTFChars(jgroup, NULL);
     // node
@@ -428,17 +402,17 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getTransactionReceipt
 }
 
 /*
- * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
+ * Class:     org_fisco_bcos_sdk_jni_rpc_RpcJniObj
  * Method:    getBlockByHash
  * Signature:
  * (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZZLorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
  */
-JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getBlockByHash(JNIEnv* env, jobject self,
-    jstring jgroup, jstring jnode, jstring jblock_hash, jboolean jonly_header,
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_RpcJniObj_getBlockByHash(JNIEnv* env,
+    jobject self, jstring jgroup, jstring jnode, jstring jblock_hash, jboolean jonly_header,
     jboolean jonly_txhash, jobject callback)
 {
     // rpc obj handler
-    void* rpc = get_obj_native_member(env, self);
+    void* rpc = bcos_sdk_get_native_pointer(env, self);
     // group
     const char* group = env->GetStringUTFChars(jgroup, NULL);
     // node
@@ -472,16 +446,16 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getBlockByHash(JNIEnv
 }
 
 /*
- * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
+ * Class:     org_fisco_bcos_sdk_jni_rpc_RpcJniObj
  * Method:    getBlockByNumber
  * Signature: (Ljava/lang/String;Ljava/lang/String;JZZLorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
  */
-JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getBlockByNumber(JNIEnv* env,
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_RpcJniObj_getBlockByNumber(JNIEnv* env,
     jobject self, jstring jgroup, jstring jnode, jlong jnumber, jboolean jonly_header,
     jboolean jonly_txhash, jobject callback)
 {
     // rpc obj handler
-    void* rpc = get_obj_native_member(env, self);
+    void* rpc = bcos_sdk_get_native_pointer(env, self);
     // group
     const char* group = env->GetStringUTFChars(jgroup, NULL);
     // node
@@ -514,15 +488,15 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getBlockByNumber(JNIE
 }
 
 /*
- * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
+ * Class:     org_fisco_bcos_sdk_jni_rpc_RpcJniObj
  * Method:    getBlockHashByNumber
  * Signature: (Ljava/lang/String;Ljava/lang/String;JLorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
  */
-JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getBlockHashByNumber(
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_RpcJniObj_getBlockHashByNumber(
     JNIEnv* env, jobject self, jstring jgroup, jstring jnode, jlong jnumber, jobject callback)
 {
     // rpc obj handler
-    void* rpc = get_obj_native_member(env, self);
+    void* rpc = bcos_sdk_get_native_pointer(env, self);
     // group
     const char* group = env->GetStringUTFChars(jgroup, NULL);
     // node
@@ -551,15 +525,15 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getBlockHashByNumber(
 }
 
 /*
- * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
+ * Class:     org_fisco_bcos_sdk_jni_rpc_RpcJniObj
  * Method:    getBlockLimit
  * Signature: (Ljava/lang/String;)J
  */
-JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getBlockLimit(
+JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_rpc_RpcJniObj_getBlockLimit(
     JNIEnv* env, jobject self, jstring jgroup)
 {
     // rpc obj handler
-    void* rpc = get_obj_native_member(env, self);
+    void* rpc = bcos_sdk_get_native_pointer(env, self);
     // group
     const char* group = env->GetStringUTFChars(jgroup, NULL);
 
@@ -569,15 +543,15 @@ JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getBlockLimit(
 }
 
 /*
- * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
+ * Class:     org_fisco_bcos_sdk_jni_rpc_RpcJniObj
  * Method:    getBlockNumber
  * Signature: (Ljava/lang/String;Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
  */
-JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getBlockNumber(
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_RpcJniObj_getBlockNumber(
     JNIEnv* env, jobject self, jstring jgroup, jstring jnode, jobject callback)
 {
     // rpc obj handler
-    void* rpc = get_obj_native_member(env, self);
+    void* rpc = bcos_sdk_get_native_pointer(env, self);
     // group
     const char* group = env->GetStringUTFChars(jgroup, NULL);
     // node
@@ -603,16 +577,16 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getBlockNumber(
 }
 
 /*
- * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
+ * Class:     org_fisco_bcos_sdk_jni_rpc_RpcJniObj
  * Method:    getCode
  * Signature:
  * (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
  */
-JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getCode(
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_RpcJniObj_getCode(
     JNIEnv* env, jobject self, jstring jgroup, jstring jnode, jstring jaddress, jobject callback)
 {
     // rpc obj handler
-    void* rpc = get_obj_native_member(env, self);
+    void* rpc = bcos_sdk_get_native_pointer(env, self);
     // group
     const char* group = env->GetStringUTFChars(jgroup, NULL);
     // node
@@ -641,15 +615,15 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getCode(
 }
 
 /*
- * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
+ * Class:     org_fisco_bcos_sdk_jni_rpc_RpcJniObj
  * Method:    getSealerList
  * Signature: (Ljava/lang/String;Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
  */
-JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getSealerList(
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_RpcJniObj_getSealerList(
     JNIEnv* env, jobject self, jstring jgroup, jstring jnode, jobject callback)
 {
     // rpc obj handler
-    void* rpc = get_obj_native_member(env, self);
+    void* rpc = bcos_sdk_get_native_pointer(env, self);
     // group
     const char* group = env->GetStringUTFChars(jgroup, NULL);
     // node
@@ -675,15 +649,15 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getSealerList(
 }
 
 /*
- * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
+ * Class:     org_fisco_bcos_sdk_jni_rpc_RpcJniObj
  * Method:    getObserverList
  * Signature: (Ljava/lang/String;Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
  */
-JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getObserverList(
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_RpcJniObj_getObserverList(
     JNIEnv* env, jobject self, jstring jgroup, jstring jnode, jobject callback)
 {
     // rpc obj handler
-    void* rpc = get_obj_native_member(env, self);
+    void* rpc = bcos_sdk_get_native_pointer(env, self);
     // group
     const char* group = env->GetStringUTFChars(jgroup, NULL);
     // node
@@ -709,15 +683,15 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getObserverList(
 }
 
 /*
- * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
+ * Class:     org_fisco_bcos_sdk_jni_rpc_RpcJniObj
  * Method:    getPendingTxSize
  * Signature: (Ljava/lang/String;Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
  */
-JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getPbftView(
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_RpcJniObj_getPbftView(
     JNIEnv* env, jobject self, jstring jgroup, jstring jnode, jobject callback)
 {
     // rpc obj handler
-    void* rpc = get_obj_native_member(env, self);
+    void* rpc = bcos_sdk_get_native_pointer(env, self);
     // group
     const char* group = env->GetStringUTFChars(jgroup, NULL);
     // node
@@ -742,15 +716,15 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getPbftView(
 }
 
 /*
- * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
+ * Class:     org_fisco_bcos_sdk_jni_rpc_RpcJniObj
  * Method:    getPendingTxSize
  * Signature: (Ljava/lang/String;Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
  */
-JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getPendingTxSize(
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_RpcJniObj_getPendingTxSize(
     JNIEnv* env, jobject self, jstring jgroup, jstring jnode, jobject callback)
 {
     // rpc obj handler
-    void* rpc = get_obj_native_member(env, self);
+    void* rpc = bcos_sdk_get_native_pointer(env, self);
     // group
     const char* group = env->GetStringUTFChars(jgroup, NULL);
     // node
@@ -776,15 +750,15 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getPendingTxSize(
 }
 
 /*
- * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
+ * Class:     org_fisco_bcos_sdk_jni_rpc_RpcJniObj
  * Method:    getSyncStatus
  * Signature: (Ljava/lang/String;Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
  */
-JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getSyncStatus(
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_RpcJniObj_getSyncStatus(
     JNIEnv* env, jobject self, jstring jgroup, jstring jnode, jobject callback)
 {
     // rpc obj handler
-    void* rpc = get_obj_native_member(env, self);
+    void* rpc = bcos_sdk_get_native_pointer(env, self);
     // group
     const char* group = env->GetStringUTFChars(jgroup, NULL);
     // node
@@ -809,16 +783,16 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getSyncStatus(
 }
 
 /*
- * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
+ * Class:     org_fisco_bcos_sdk_jni_rpc_RpcJniObj
  * Method:    getSystemConfigByKey
  * Signature:
  * (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
  */
-JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getSystemConfigByKey(
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_RpcJniObj_getSystemConfigByKey(
     JNIEnv* env, jobject self, jstring jgroup, jstring jnode, jstring jkey, jobject callback)
 {
     // rpc obj handler
-    void* rpc = get_obj_native_member(env, self);
+    void* rpc = bcos_sdk_get_native_pointer(env, self);
     // group
     const char* group = env->GetStringUTFChars(jgroup, NULL);
     // node
@@ -847,15 +821,15 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getSystemConfigByKey(
 }
 
 /*
- * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
+ * Class:     org_fisco_bcos_sdk_jni_rpc_RpcJniObj
  * Method:    getTotalTransactionCount
  * Signature: (Ljava/lang/String;Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
  */
-JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getTotalTransactionCount(
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_RpcJniObj_getTotalTransactionCount(
     JNIEnv* env, jobject self, jstring jgroup, jstring jnode, jobject callback)
 {
     // rpc obj handler
-    void* rpc = get_obj_native_member(env, self);
+    void* rpc = bcos_sdk_get_native_pointer(env, self);
     // group
     const char* group = env->GetStringUTFChars(jgroup, NULL);
     // node
@@ -881,15 +855,15 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getTotalTransactionCo
 }
 
 /*
- * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
+ * Class:     org_fisco_bcos_sdk_jni_rpc_RpcJniObj
  * Method:    getGroupPeers
  * Signature: (Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
  */
-JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getGroupPeers(
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_RpcJniObj_getGroupPeers(
     JNIEnv* env, jobject self, jstring jgroup, jobject callback)
 {
     // rpc obj handler
-    void* rpc = get_obj_native_member(env, self);
+    void* rpc = bcos_sdk_get_native_pointer(env, self);
     // group
     const char* group = env->GetStringUTFChars(jgroup, NULL);
 
@@ -912,15 +886,15 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getGroupPeers(
 }
 
 /*
- * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
+ * Class:     org_fisco_bcos_sdk_jni_rpc_RpcJniObj
  * Method:    getPeers
  * Signature: (Lorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
  */
-JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getPeers(
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_RpcJniObj_getPeers(
     JNIEnv* env, jobject self, jobject callback)
 {
     // rpc obj handler
-    void* rpc = get_obj_native_member(env, self);
+    void* rpc = bcos_sdk_get_native_pointer(env, self);
 
     // Note: The JNIEnv pointer, passed as the first argument to every native method, can only be
     // used in the thread with which it is associated. It is wrong to cache the JNIEnv interface
@@ -939,15 +913,15 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getPeers(
 }
 
 /*
- * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
+ * Class:     org_fisco_bcos_sdk_jni_rpc_RpcJniObj
  * Method:    getGroupList
  * Signature: (Lorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
  */
-JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getGroupList(
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_RpcJniObj_getGroupList(
     JNIEnv* env, jobject self, jobject callback)
 {
     // rpc obj handler
-    void* rpc = get_obj_native_member(env, self);
+    void* rpc = bcos_sdk_get_native_pointer(env, self);
 
     // Note: The JNIEnv pointer, passed as the first argument to every native method, can only be
     // used in the thread with which it is associated. It is wrong to cache the JNIEnv interface
@@ -966,15 +940,15 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getGroupList(
 }
 
 /*
- * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
+ * Class:     org_fisco_bcos_sdk_jni_rpc_RpcJniObj
  * Method:    getGroupInfo
  * Signature: (Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
  */
-JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getGroupInfo(
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_RpcJniObj_getGroupInfo(
     JNIEnv* env, jobject self, jstring jgroup, jobject callback)
 {
     // rpc obj handler
-    void* rpc = get_obj_native_member(env, self);
+    void* rpc = bcos_sdk_get_native_pointer(env, self);
     // group
     const char* group = env->GetStringUTFChars(jgroup, NULL);
 
@@ -997,15 +971,15 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getGroupInfo(
 }
 
 /*
- * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
+ * Class:     org_fisco_bcos_sdk_jni_rpc_RpcJniObj
  * Method:    getGroupInfoList
  * Signature: (Lorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
  */
-JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getGroupInfoList(
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_RpcJniObj_getGroupInfoList(
     JNIEnv* env, jobject self, jobject callback)
 {
     // rpc obj handler
-    void* rpc = get_obj_native_member(env, self);
+    void* rpc = bcos_sdk_get_native_pointer(env, self);
 
     // Note: The JNIEnv pointer, passed as the first argument to every native method, can only be
     // used in the thread with which it is associated. It is wrong to cache the JNIEnv interface
@@ -1024,15 +998,15 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getGroupInfoList(
 }
 
 /*
- * Class:     org_fisco_bcos_sdk_jni_rpc_Rpc
+ * Class:     org_fisco_bcos_sdk_jni_rpc_RpcJniObj
  * Method:    getGroupNodeInfo
  * Signature: (Ljava/lang/String;Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
  */
-JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_Rpc_getGroupNodeInfo(
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_RpcJniObj_getGroupNodeInfo(
     JNIEnv* env, jobject self, jstring jgroup, jstring jnode, jobject callback)
 {
     // rpc obj handler
-    void* rpc = get_obj_native_member(env, self);
+    void* rpc = bcos_sdk_get_native_pointer(env, self);
     // group
     const char* group = env->GetStringUTFChars(jgroup, NULL);
     // node

@@ -19,53 +19,46 @@ import org.fisco.bcos.sdk.jni.common.JniLibLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class BcosSDK {
+public class BcosSDKJniObj {
 
-  private static final Logger logger = LoggerFactory.getLogger(BcosSDK.class);
+  private static final Logger logger = LoggerFactory.getLogger(BcosSDKJniObj.class);
 
   static {
     JniLibLoader.loadJniLibrary();
   }
 
-  private BcosSDK() {}
+  private BcosSDKJniObj() {}
 
   /**
    * @param jniConfig
    * @return
    */
-  public static BcosSDK build(JniConfig jniConfig) throws JniException {
-    long nativeObj = newNativeObj(jniConfig);
+  public static BcosSDKJniObj build(JniConfig jniConfig) throws JniException {
+    long nativeObj = create(jniConfig);
+    BcosSDKJniObj bcosSDKJniObj = new BcosSDKJniObj();
+    bcosSDKJniObj.setNativePointer(nativeObj);
     logger.info("newNativeObj, nativeObj: {}, jniConfig: {}", nativeObj, jniConfig);
-    BcosSDK sdk = new BcosSDK();
-    sdk.setNativeObj(nativeObj);
-    return sdk;
+    return bcosSDKJniObj;
   }
 
-  private long nativeObj;
+  private long nativePointer;
 
-  public long getNativeObj() {
-    return nativeObj;
+  public long getNativePointer() {
+    return nativePointer;
   }
 
-  private void setNativeObj(long nativeObj) {
-    this.nativeObj = nativeObj;
+  private void setNativePointer(long nativePointer) {
+    this.nativePointer = nativePointer;
   }
 
-  // ---------------------------------------------------------------------------------------
-  /**
-   * call native c api to create rpc object
-   *
-   * @param config
-   * @return
-   */
-  public static native long newNativeObj(JniConfig config) throws JniException;
+  // ------------------------native method list-------------------------------------------
 
-  public native long getRpcNativeObj();
+  public static native long create(JniConfig config);
 
-  public native long getAmopNative();
+  public native void start();
 
-  public native long getEventSubNative();
+  public native void stop();
 
   public native void destroy();
-  // -----------------------------------------------------------------------------------------
+  // -------------------------native method end-------------------------------------------
 }

@@ -18,7 +18,7 @@ package org.fisco.bcos.sdk.jni.event;
 import org.fisco.bcos.sdk.jni.common.Response;
 
 /** Event callback */
-public interface EventSubscribeCallback {
+public interface EventSubCallback {
 
   /**
    * onReceiveLog called when sdk receive any response of the target subscription. logs will be

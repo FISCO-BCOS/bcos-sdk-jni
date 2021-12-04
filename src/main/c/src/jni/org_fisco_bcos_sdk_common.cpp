@@ -12,7 +12,7 @@ using namespace bcos;
 using namespace bcos::boostssl;
 using namespace bcos::boostssl::utilities;
 
-void* get_obj_native_member(JNIEnv* env, jobject self)
+void* bcos_sdk_get_native_pointer(JNIEnv* env, jobject self)
 {
     jclass cls = env->GetObjectClass(self);
     if (cls == NULL)
@@ -251,7 +251,7 @@ static bcos_sdk_c_sm_cert_config* create_bcos_sdk_c_sm_cert_config(
     return config;
 }
 
-struct bcos_sdk_c_config* create_bcos_sdk_c_config_from_java_obj(JNIEnv* env, jobject jconfig)
+struct bcos_sdk_c_config* create_config_from_java_obj(JNIEnv* env, jobject jconfig)
 {
     std::string className = "org/fisco/bcos/sdk/jni/common/JniConfig";
     jclass configClass = env->GetObjectClass(jconfig);

@@ -1,4 +1,4 @@
-#include "jni/org_fisco_bcos_sdk_jni_amop_Amop.h"
+#include "jni/org_fisco_bcos_sdk_jni_amop_AmopJniObj.h"
 #include "bcos_sdk_c.h"
 #include "bcos_sdk_c_amop.h"
 #include "bcos_sdk_c_common.h"
@@ -137,42 +137,17 @@ static void on_receive_amop_response(struct bcos_sdk_c_struct_response* resp)
     // env->DeleteGlobalRef(jcallback);
 }
 
-/*
- * Class:     org_fisco_bcos_sdk_jni_amop_Amop
- * Method:    newNativeObj
- * Signature: (Lorg/fisco/bcos/sdk/jni/common/JniConfig;)J
- */
-JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_amop_Amop_newNativeObj(
-    JNIEnv* env, jclass, jobject jconfig)
-{
-    // config
-    struct bcos_sdk_c_config* config = create_bcos_sdk_c_config_from_java_obj(env, jconfig);
-    // create amop obj
-    void* amop = bcos_sdk_create_amop_by_config(config);
-    // destroy config
-    bcos_sdk_c_config_destroy(config);
-
-    if (bcos_sdk_get_last_error() == 0)
-    {
-        return reinterpret_cast<jlong>(amop);
-    }
-
-    // throw exception in java
-    THROW_JNI_EXCEPTION(env, bcos_sdk_get_last_error_msg());
-
-    return 0;
-}
 
 /*
- * Class:     org_fisco_bcos_sdk_jni_amop_Amop
+ * Class:     org_fisco_bcos_sdk_jni_amop_AmopJniObj
  * Method:    start
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_Amop_start(JNIEnv* env, jobject self)
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_AmopJniObj_start(JNIEnv* env, jobject self)
 {
-    void* amop = get_obj_native_member(env, self);
+    void* sdk = bcos_sdk_get_native_pointer(env, self);
 
-    bcos_sdk_start_amop(amop);
+    bcos_sdk_start(sdk);
     if (bcos_sdk_get_last_error() != 0)
     {
         // throw exception in java
@@ -181,28 +156,60 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_Amop_start(JNIEnv* env, 
 }
 
 /*
- * Class:     org_fisco_bcos_sdk_jni_amop_Amop
+ * Class:     org_fisco_bcos_sdk_jni_amop_AmopJniObj
  * Method:    stop
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_Amop_stop(JNIEnv* env, jobject self)
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_AmopJniObj_stop(JNIEnv* env, jobject self)
 {
-    void* amop = get_obj_native_member(env, self);
+    void* amop = bcos_sdk_get_native_pointer(env, self);
     if (amop)
     {
-        bcos_sdk_stop_amop(amop);
+        bcos_sdk_stop(amop);
     }
 }
 
 /*
- * Class:     org_fisco_bcos_sdk_jni_amop_Amop
+ * Class:     org_fisco_bcos_sdk_jni_amop_AmopJniObj
+ * Method:    subscribeTopic
+ * Signature: (Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/amop/AmopRequestCallback;)V
+ */
+JNIEXPORT void JNICALL
+Java_org_fisco_bcos_sdk_jni_amop_AmopJniObj_subscribeTopic__Ljava_lang_String_2Lorg_fisco_bcos_sdk_jni_amop_AmopRequestCallback_2(
+    JNIEnv* env, jobject self, jstring jtopic, jobject jcallback)
+{
+    void* sdk = bcos_sdk_get_native_pointer(env, self);
+
+    const char* topic = env->GetStringUTFChars(jtopic, 0);
+
+    // Note: The JNIEnv pointer, passed as the first argument to every native method, can only be
+    // used in the thread with which it is associated. It is wrong to cache the JNIEnv interface
+    // pointer obtained from one thread, and use that pointer in another thread.
+    JavaVM* jvm;
+    env->GetJavaVM(&jvm);
+
+    cb_context* context = new cb_context();
+    context->jcallback = env->NewGlobalRef(jcallback);
+    context->jvm = jvm;
+
+    std::string className = "org/fisco/bcos/sdk/jni/amop/AmopRequestCallback";
+    bcos_sdk_c_find_jclass(env, className.c_str());
+
+    bcos_amop_subscribe_topic_with_cb(sdk, topic, on_receive_amop_request, context);
+
+    // release topic
+    env->ReleaseStringUTFChars(jtopic, topic);
+}
+
+/*
+ * Class:     org_fisco_bcos_sdk_jni_amop_AmopJniObj
  * Method:    subscribeTopic
  * Signature: (Ljava/util/Set;)V
  */
-JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_Amop_subscribeTopic__Ljava_util_Set_2(
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_AmopJniObj_subscribeTopic__Ljava_util_Set_2(
     JNIEnv* env, jobject self, jobject jtopics)
 {
-    void* amop = get_obj_native_member(env, self);
+    void* amop = bcos_sdk_get_native_pointer(env, self);
 
     jclass setClass = env->GetObjectClass(jtopics);
 
@@ -243,15 +250,15 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_Amop_subscribeTopic__Lja
 }
 
 /*
- * Class:     org_fisco_bcos_sdk_jni_amop_Amop
+ * Class:     org_fisco_bcos_sdk_jni_amop_AmopJniObj
  * Method:    subscribeTopic
  * Signature: (Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/amop/AmopRequestCallback;)V
  */
 JNIEXPORT void JNICALL
-Java_org_fisco_bcos_sdk_jni_amop_Amop_subscribeTopic__Ljava_lang_String_2Lorg_fisco_bcos_sdk_jni_amop_AmopRequestCallback_2(
+Java_org_fisco_bcos_sdk_jni_amop_AmopJniObj_subscribeTopic__Ljava_lang_String_2Lorg_fisco_bcos_sdk_jni_amop_AmopJniObjRequestCallback_2(
     JNIEnv* env, jobject self, jstring jtopic, jobject jcallback)
 {
-    void* amop = get_obj_native_member(env, self);
+    void* amop = bcos_sdk_get_native_pointer(env, self);
 
     const char* topic = env->GetStringUTFChars(jtopic, 0);
 
@@ -275,14 +282,14 @@ Java_org_fisco_bcos_sdk_jni_amop_Amop_subscribeTopic__Ljava_lang_String_2Lorg_fi
 }
 
 /*
- * Class:     org_fisco_bcos_sdk_jni_amop_Amop
+ * Class:     org_fisco_bcos_sdk_jni_amop_AmopJniObj
  * Method:    unsubscribeTopic
  * Signature: (Ljava/util/Set;)V
  */
-JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_Amop_unsubscribeTopic(
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_AmopJniObj_unsubscribeTopic(
     JNIEnv* env, jobject self, jobject jtopics)
 {
-    void* amop = get_obj_native_member(env, self);
+    void* amop = bcos_sdk_get_native_pointer(env, self);
 
     jclass setClass = env->GetObjectClass(jtopics);
 
@@ -320,14 +327,14 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_Amop_unsubscribeTopic(
 }
 
 /*
- * Class:     org_fisco_bcos_sdk_jni_amop_Amop
+ * Class:     org_fisco_bcos_sdk_jni_amop_AmopJniObj
  * Method:    setCallback
  * Signature: (Lorg/fisco/bcos/sdk/jni/amop/AmopCallback;)V
  */
-JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_Amop_setCallback(
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_AmopJniObj_setCallback(
     JNIEnv* env, jobject self, jobject jcallback)
 {
-    void* amop = get_obj_native_member(env, self);
+    void* amop = bcos_sdk_get_native_pointer(env, self);
 
     // Note: The JNIEnv pointer, passed as the first argument to every native method, can only be
     // used in the thread with which it is associated. It is wrong to cache the JNIEnv interface
@@ -346,14 +353,14 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_Amop_setCallback(
 }
 
 /*
- * Class:     org_fisco_bcos_sdk_jni_amop_Amop
+ * Class:     org_fisco_bcos_sdk_jni_amop_AmopJniObj
  * Method:    sendAmopMsg
  * Signature: (Ljava/lang/String;[BILorg/fisco/bcos/sdk/jni/amop/AmopResponseCallback;)V
  */
-JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_Amop_sendAmopMsg(
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_AmopJniObj_sendAmopMsg(
     JNIEnv* env, jobject self, jstring jtopic, jbyteArray jdata, jint jtimeout, jobject jcallback)
 {
-    void* amop = get_obj_native_member(env, self);
+    void* amop = bcos_sdk_get_native_pointer(env, self);
 
     // Note: The JNIEnv pointer, passed as the first argument to every native method, can only be
     // used in the thread with which it is associated. It is wrong to cache the JNIEnv interface
@@ -382,14 +389,14 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_Amop_sendAmopMsg(
 }
 
 /*
- * Class:     org_fisco_bcos_sdk_jni_amop_Amop
+ * Class:     org_fisco_bcos_sdk_jni_amop_AmopJniObj
  * Method:    broadcastAmopMsg
  * Signature: (Ljava/lang/String;[B)V
  */
-JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_Amop_broadcastAmopMsg(
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_AmopJniObj_broadcastAmopMsg(
     JNIEnv* env, jobject self, jstring jtopic, jbyteArray jdata)
 {
-    void* amop = get_obj_native_member(env, self);
+    void* amop = bcos_sdk_get_native_pointer(env, self);
 
     const char* topic = env->GetStringUTFChars(jtopic, 0);
     jsize len = env->GetArrayLength(jdata);
@@ -402,14 +409,14 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_Amop_broadcastAmopMsg(
 }
 
 /*
- * Class:     org_fisco_bcos_sdk_jni_amop_Amop
+ * Class:     org_fisco_bcos_sdk_jni_amop_AmopJniObj
  * Method:    sendResponse
  * Signature: (Ljava/lang/String;Ljava/lang/String;[B)V
  */
-JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_Amop_sendResponse(
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_AmopJniObj_sendResponse(
     JNIEnv* env, jobject self, jstring jendpoint, jstring jseq, jbyteArray jdata)
 {
-    void* amop = get_obj_native_member(env, self);
+    void* amop = bcos_sdk_get_native_pointer(env, self);
 
     const char* endpoint = env->GetStringUTFChars(jendpoint, 0);
     const char* seq = env->GetStringUTFChars(jseq, 0);
@@ -426,11 +433,11 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_Amop_sendResponse(
 }
 
 /*
- * Class:     org_fisco_bcos_sdk_jni_amop_Amop
+ * Class:     org_fisco_bcos_sdk_jni_amop_AmopJniObj
  * Method:    getSubTopics
  * Signature: ()Ljava/util/Set;
  */
-JNIEXPORT jobject JNICALL Java_org_fisco_bcos_sdk_jni_amop_Amop_getSubTopics(
+JNIEXPORT jobject JNICALL Java_org_fisco_bcos_sdk_jni_amop_AmopJniObj_getSubTopics(
     JNIEnv* env, jobject self)
 {
     // TODO:

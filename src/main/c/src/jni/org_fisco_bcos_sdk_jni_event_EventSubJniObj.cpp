@@ -1,4 +1,4 @@
-#include "jni/org_fisco_bcos_sdk_jni_event_EventSubscribe.h"
+#include "jni/org_fisco_bcos_sdk_jni_event_EventSubJniObj.h"
 #include "bcos_sdk_c.h"
 #include "bcos_sdk_c_error.h"
 #include "bcos_sdk_c_event_sub.h"
@@ -85,41 +85,16 @@ static void on_receive_event_sub_response(struct bcos_sdk_c_struct_response* res
 }
 
 /*
- * Class:     org_fisco_bcos_sdk_jni_event_EventSubscribe
- * Method:    newNativeObj
- * Signature: (Lorg/fisco/bcos/sdk/jni/common/JniConfig;)J
- */
-JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_event_EventSubscribe_newNativeObj(
-    JNIEnv* env, jclass, jobject jconfig)
-{
-    // config
-    struct bcos_sdk_c_config* config = create_bcos_sdk_c_config_from_java_obj(env, jconfig);
-    // create event sub obj
-    void* event = bcos_sdk_create_event_sub_by_config(config);
-    // destroy config
-    bcos_sdk_c_config_destroy(config);
-
-    if (bcos_sdk_get_last_error() == 0)
-    {
-        return reinterpret_cast<jlong>(event);
-    }
-
-    // throw exception in java
-    THROW_JNI_EXCEPTION(env, bcos_sdk_get_last_error_msg());
-    return 0;
-}
-
-/*
- * Class:     org_fisco_bcos_sdk_jni_event_EventSubscribe
+ * Class:     org_fisco_bcos_sdk_jni_event_EventSubJniObj
  * Method:    start
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_event_EventSubscribe_start(
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_event_EventSubJniObj_start(
     JNIEnv* env, jobject self)
 {
-    void* event = get_obj_native_member(env, self);
+    void* sdk = bcos_sdk_get_native_pointer(env, self);
 
-    bcos_sdk_start_event_sub(event);
+    bcos_sdk_start(sdk);
     if (bcos_sdk_get_last_error() != 0)
     {
         // throw exception in java
@@ -128,30 +103,30 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_event_EventSubscribe_start(
 }
 
 /*
- * Class:     org_fisco_bcos_sdk_jni_event_EventSubscribe
+ * Class:     org_fisco_bcos_sdk_jni_event_EventSubJniObj
  * Method:    stop
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_event_EventSubscribe_stop(
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_event_EventSubJniObj_stop(
     JNIEnv* env, jobject self)
 {
-    void* event = get_obj_native_member(env, self);
+    void* event = bcos_sdk_get_native_pointer(env, self);
     if (event)
     {
-        bcos_sdk_stop_event_sub(event);
+        bcos_sdk_stop(event);
     }
 }
 
 /*
- * Class:     org_fisco_bcos_sdk_jni_event_EventSubscribe
+ * Class:     org_fisco_bcos_sdk_jni_event_EventSubJniObj
  * Method:    subscribeEvent
  * Signature:
  * (Ljava/lang/String;Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/event/EventSubscribeCallback;)V
  */
-JNIEXPORT jstring JNICALL Java_org_fisco_bcos_sdk_jni_event_EventSubscribe_subscribeEvent(
+JNIEXPORT jstring JNICALL Java_org_fisco_bcos_sdk_jni_event_EventSubJniObj_subscribeEvent(
     JNIEnv* env, jobject self, jstring jgroup, jstring jparams, jobject jcallback)
 {
-    void* event = get_obj_native_member(env, self);
+    void* event = bcos_sdk_get_native_pointer(env, self);
     const char* group = env->GetStringUTFChars(jgroup, 0);
     const char* params = env->GetStringUTFChars(jparams, 0);
 
@@ -182,14 +157,14 @@ JNIEXPORT jstring JNICALL Java_org_fisco_bcos_sdk_jni_event_EventSubscribe_subsc
 }
 
 /*
- * Class:     org_fisco_bcos_sdk_jni_event_EventSubscribe
+ * Class:     org_fisco_bcos_sdk_jni_event_EventSubJniObj
  * Method:    unsubscribeEvent
  * Signature: (Ljava/lang/String;)V
  */
-JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_event_EventSubscribe_unsubscribeEvent(
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_event_EventSubJniObj_unsubscribeEvent(
     JNIEnv* env, jobject self, jstring jeventId)
 {
-    void* event = get_obj_native_member(env, self);
+    void* event = bcos_sdk_get_native_pointer(env, self);
     const char* eventid = env->GetStringUTFChars(jeventId, 0);
 
     bcos_event_sub_unsubscribe_event(event, eventid);
@@ -199,11 +174,11 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_event_EventSubscribe_unsubscr
 }
 
 /*
- * Class:     org_fisco_bcos_sdk_jni_event_EventSubscribe
+ * Class:     org_fisco_bcos_sdk_jni_event_EventSubJniObj
  * Method:    getAllSubscribedEvents
  * Signature: ()Ljava/util/Set;
  */
-JNIEXPORT jobject JNICALL Java_org_fisco_bcos_sdk_jni_event_EventSubscribe_getAllSubscribedEvents(
+JNIEXPORT jobject JNICALL Java_org_fisco_bcos_sdk_jni_event_EventSubJniObj_getAllSubscribedEvents(
     JNIEnv*, jobject)
 {
     // TODO:

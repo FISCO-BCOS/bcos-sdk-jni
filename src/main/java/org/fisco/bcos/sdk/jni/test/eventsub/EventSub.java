@@ -3,12 +3,13 @@ package org.fisco.bcos.sdk.jni.test.eventsub;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Arrays;
+import org.fisco.bcos.sdk.jni.BcosSDKJniObj;
 import org.fisco.bcos.sdk.jni.common.JniConfig;
 import org.fisco.bcos.sdk.jni.common.JniException;
 import org.fisco.bcos.sdk.jni.common.Response;
-import org.fisco.bcos.sdk.jni.event.EventSubscribe;
-import org.fisco.bcos.sdk.jni.event.EventSubscribeCallback;
-import org.fisco.bcos.sdk.jni.event.EventSubscribleParams;
+import org.fisco.bcos.sdk.jni.event.EventSubCallback;
+import org.fisco.bcos.sdk.jni.event.EventSubJniObj;
+import org.fisco.bcos.sdk.jni.event.EventSubParams;
 import org.fisco.bcos.sdk.jni.test.Utility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,9 +46,10 @@ public class EventSub {
 
     JniConfig jniConfig = Utility.newJniConfig(Arrays.asList(peer));
     jniConfig.setDisableSsl(true);
-    EventSubscribe eventSubscribe = EventSubscribe.build(jniConfig);
+    BcosSDKJniObj bcosSDKJni = BcosSDKJniObj.build(jniConfig);
+    EventSubJniObj eventSubscribe = EventSubJniObj.build(bcosSDKJni.getNativePointer());
 
-    EventSubscribleParams params = new EventSubscribleParams();
+    EventSubParams params = new EventSubParams();
     params.setFromBlock(fromBlk);
     params.setToBlock(toBlk);
 
@@ -57,18 +59,19 @@ public class EventSub {
     System.out.println("\t params: " + strParams);
 
     eventSubscribe.start();
-    String eventSubId = eventSubscribe.subscribeEvent(
-        group,
-        objectMapper.writeValueAsString(params),
-        new EventSubscribeCallback() {
-          @Override
-          public void onResponse(Response response) {
-            System.out.println("subscribeEvent ==>>> " + response.getErrorCode());
-            System.out.println("\t errorCode: " + response.getErrorCode());
-            System.out.println("\t errorMessage: " + response.getErrorMessage());
-            System.out.println("\t data: " + new String(response.getData()));
-          }
-        });
+    String eventSubId =
+        eventSubscribe.subscribeEvent(
+            group,
+            objectMapper.writeValueAsString(params),
+            new EventSubCallback() {
+              @Override
+              public void onResponse(Response response) {
+                System.out.println("subscribeEvent ==>>> " + response.getErrorCode());
+                System.out.println("\t errorCode: " + response.getErrorCode());
+                System.out.println("\t errorMessage: " + response.getErrorMessage());
+                System.out.println("\t data: " + new String(response.getData()));
+              }
+            });
 
     System.out.println("EventSubId = " + eventSubId);
 

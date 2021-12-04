@@ -16,56 +16,28 @@
 package org.fisco.bcos.sdk.jni.event;
 
 import java.util.Set;
-import org.fisco.bcos.sdk.jni.common.JniConfig;
 import org.fisco.bcos.sdk.jni.common.JniException;
-import org.fisco.bcos.sdk.jni.common.JniLibLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class EventSubscribe {
+public class EventSubJniObj {
 
-  private static final Logger logger = LoggerFactory.getLogger(EventSubscribe.class);
-
-  static {
-    JniLibLoader.loadJniLibrary();
-  }
-
-  /**
-   * call native c api to create amop object
-   *
-   * @param config
-   * @return
-   */
-  private static native long newNativeObj(JniConfig config) throws JniException;
-
-  /**
-   * @param jniConfig
-   * @return
-   */
-  public static EventSubscribe build(JniConfig jniConfig) throws JniException {
-    long nativeObj = newNativeObj(jniConfig);
-
-    EventSubscribe subscribe = new EventSubscribe();
-    subscribe.setNativeObj(nativeObj);
-
-    logger.info(" nativeObj: {}，jniConfig: {}", nativeObj, jniConfig);
-    return subscribe;
-  }
+  private static final Logger logger = LoggerFactory.getLogger(EventSubJniObj.class);
 
   /**
    * @param nativeObj
    * @return
    * @throws JniException
    */
-  public static EventSubscribe build(long nativeObj) throws JniException {
-    EventSubscribe subscribe = new EventSubscribe();
+  public static EventSubJniObj build(long nativeObj) throws JniException {
+    EventSubJniObj subscribe = new EventSubJniObj();
     subscribe.setNativeObj(nativeObj);
 
     logger.info(" nativeObj: {}", nativeObj);
     return subscribe;
   }
 
-  private EventSubscribe() {}
+  private EventSubJniObj() {}
 
   private long nativeObj;
 
@@ -83,7 +55,7 @@ public class EventSubscribe {
 
   public native void stop();
 
-  public native String subscribeEvent(String group, String params, EventSubscribeCallback callback);
+  public native String subscribeEvent(String group, String params, EventSubCallback callback);
 
   public native void unsubscribeEvent(String eventID);
 

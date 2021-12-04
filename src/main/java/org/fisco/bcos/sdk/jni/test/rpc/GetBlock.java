@@ -1,12 +1,12 @@
 package org.fisco.bcos.sdk.jni.test.rpc;
 
 import java.util.Arrays;
-import org.fisco.bcos.sdk.jni.BcosSDK;
+import org.fisco.bcos.sdk.jni.BcosSDKJniObj;
 import org.fisco.bcos.sdk.jni.common.JniConfig;
 import org.fisco.bcos.sdk.jni.common.JniException;
 import org.fisco.bcos.sdk.jni.common.Response;
-import org.fisco.bcos.sdk.jni.rpc.Rpc;
 import org.fisco.bcos.sdk.jni.rpc.RpcCallback;
+import org.fisco.bcos.sdk.jni.rpc.RpcJniObj;
 import org.fisco.bcos.sdk.jni.test.Utility;
 
 public class GetBlock {
@@ -32,11 +32,8 @@ public class GetBlock {
     String node = "";
     JniConfig jniConfig = Utility.newJniConfig(Arrays.asList(endpoint));
     jniConfig.setDisableSsl(true);
-
-    BcosSDK bcosSDK = BcosSDK.build(jniConfig);
-    System.out.println("BcosSDK build");
-    long rpcNativeObj = bcosSDK.getRpcNativeObj();
-    Rpc rpc = Rpc.build(rpcNativeObj);
+    BcosSDKJniObj bcosSDKJni = BcosSDKJniObj.build(jniConfig);
+    RpcJniObj rpc = RpcJniObj.build(bcosSDKJni.getNativePointer());
     System.out.println("build Rpc");
     rpc.start();
 

@@ -17,63 +17,41 @@ package org.fisco.bcos.sdk.jni.amop;
 
 import java.util.HashSet;
 import java.util.Set;
-import org.fisco.bcos.sdk.jni.common.JniConfig;
 import org.fisco.bcos.sdk.jni.common.JniException;
 import org.fisco.bcos.sdk.jni.common.JniLibLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Amop {
-  private static final Logger logger = LoggerFactory.getLogger(Amop.class);
+public class AmopJniObj {
+  private static final Logger logger = LoggerFactory.getLogger(AmopJniObj.class);
 
   static {
     JniLibLoader.loadJniLibrary();
   }
 
   /**
-   * call native c api to create amop object
-   *
-   * @param config
-   * @return
-   */
-  private static native long newNativeObj(JniConfig config) throws JniException;
-
-  /**
-   * @param jniConfig
-   * @return
-   */
-  public static Amop build(JniConfig jniConfig) throws JniException {
-    long nativeObj = newNativeObj(jniConfig);
-    Amop amop = new Amop();
-    amop.setNativeObj(nativeObj);
-
-    logger.info(" nativeObj: {}, jniConfig: {}", nativeObj, jniConfig);
-    return amop;
-  }
-
-  /**
-   * @param nativeObj
+   * @param nativePointer
    * @return
    * @throws JniException
    */
-  public static Amop build(long nativeObj) {
-    Amop amop = new Amop();
-    amop.setNativeObj(nativeObj);
+  public static AmopJniObj build(long nativePointer) {
+    AmopJniObj amop = new AmopJniObj();
+    amop.setNativePointer(nativePointer);
 
-    logger.info(" nativeObj: {}", nativeObj);
+    logger.info(" nativeObj: {}", nativePointer);
     return amop;
   }
 
-  private Amop() {}
+  private AmopJniObj() {}
 
-  private long nativeObj;
+  private long nativePointer;
 
-  public long getNativeObj() {
-    return nativeObj;
+  public long getNativePointer() {
+    return nativePointer;
   }
 
-  private void setNativeObj(long nativeObj) {
-    this.nativeObj = nativeObj;
+  private void setNativePointer(long nativePointer) {
+    this.nativePointer = nativePointer;
   }
 
   // ----------------------------- Amop interface begin --------------------------------------

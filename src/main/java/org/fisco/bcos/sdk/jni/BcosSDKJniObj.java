@@ -27,21 +27,34 @@ public class BcosSDKJniObj {
     JniLibLoader.loadJniLibrary();
   }
 
-  private BcosSDKJniObj() {}
+  protected BcosSDKJniObj() {}
 
   /**
    * @param jniConfig
    * @return
    */
   public static BcosSDKJniObj build(JniConfig jniConfig) throws JniException {
-    long nativeObj = create(jniConfig);
+    long nativePointer = create(jniConfig);
     BcosSDKJniObj bcosSDKJniObj = new BcosSDKJniObj();
-    bcosSDKJniObj.setNativePointer(nativeObj);
-    logger.info("newNativeObj, nativeObj: {}, jniConfig: {}", nativeObj, jniConfig);
+    bcosSDKJniObj.setNativePointer(nativePointer);
+    logger.info("newNativePointer, nativePointer: {}, jniConfig: {}", nativePointer, jniConfig);
     return bcosSDKJniObj;
   }
 
-  private long nativePointer;
+  /**
+   * desctroy interface
+   *
+   * @param nativePointer
+   */
+  public static void destroy(long nativePointer) {
+    if (nativePointer != 0L) {
+      BcosSDKJniObj bcosSDKJniObj = new BcosSDKJniObj();
+      bcosSDKJniObj.setNativePointer(nativePointer);
+      bcosSDKJniObj.destroy();
+    }
+  }
+
+  private long nativePointer = 0L;
 
   public long getNativePointer() {
     return nativePointer;

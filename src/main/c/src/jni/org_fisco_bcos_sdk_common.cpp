@@ -20,14 +20,14 @@ void* bcos_sdk_get_native_pointer(JNIEnv* env, jobject self)
         env->FatalError("No such class, object class is null in acquire native class");
     }
 
-    jfieldID nativeFieldID = env->GetFieldID(cls, "nativeObj", "J");
+    jfieldID nativeFieldID = env->GetFieldID(cls, "nativePointer", "J");
     if (nativeFieldID == NULL)
     {
         env->FatalError("No such field, native field is null in acquire native field");
     }
 
-    jlong nativeObj = env->GetLongField(self, nativeFieldID);
-    void* native = reinterpret_cast<void*>(nativeObj);
+    jlong nativePointer = env->GetLongField(self, nativeFieldID);
+    void* native = reinterpret_cast<void*>(nativePointer);
     if (native == NULL)
     {  // Note: native obj can be NULL when it is not initialized ???
         env->FatalError("No such long field, object obj is null in acquire native obj");

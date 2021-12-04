@@ -32,6 +32,7 @@ public class Sub {
     String topic = args[1];
 
     JniConfig jniConfig = Utility.newJniConfig(Arrays.asList(peer));
+    jniConfig.setDisableSsl(true);
     BcosSDKJniObj bcosSDKJni = BcosSDKJniObj.build(jniConfig);
     System.out.println("BcosSDK build");
     AmopJniObj amop = AmopJniObj.build(bcosSDKJni.getNativePointer());

@@ -33,12 +33,12 @@ public class GetBlock {
     JniConfig jniConfig = Utility.newJniConfig(Arrays.asList(endpoint));
     jniConfig.setDisableSsl(true);
     BcosSDKJniObj bcosSDKJni = BcosSDKJniObj.build(jniConfig);
-    RpcJniObj rpc = RpcJniObj.build(bcosSDKJni.getNativePointer());
+    RpcJniObj rpcJniObj = RpcJniObj.build(bcosSDKJni.getNativePointer());
     System.out.println("build Rpc");
-    rpc.start();
+    rpcJniObj.start();
 
     while (true) {
-      rpc.getBlockNumber(
+      rpcJniObj.getBlockNumber(
           group,
           node,
           new RpcCallback() {
@@ -48,7 +48,7 @@ public class GetBlock {
             }
           });
 
-      rpc.getGroupInfo(
+      rpcJniObj.getGroupInfo(
           group,
           new RpcCallback() {
             @Override

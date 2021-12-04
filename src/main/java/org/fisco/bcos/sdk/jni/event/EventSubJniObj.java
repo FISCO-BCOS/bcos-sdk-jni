@@ -25,28 +25,28 @@ public class EventSubJniObj {
   private static final Logger logger = LoggerFactory.getLogger(EventSubJniObj.class);
 
   /**
-   * @param nativeObj
+   * @param nativePointer
    * @return
    * @throws JniException
    */
-  public static EventSubJniObj build(long nativeObj) throws JniException {
+  public static EventSubJniObj build(long nativePointer) throws JniException {
     EventSubJniObj subscribe = new EventSubJniObj();
-    subscribe.setNativeObj(nativeObj);
+    subscribe.setNativePointer(nativePointer);
 
-    logger.info(" nativeObj: {}", nativeObj);
+    logger.info("nativePointer: {}", nativePointer);
     return subscribe;
   }
 
   private EventSubJniObj() {}
 
-  private long nativeObj;
+  private long nativePointer = 0L;
 
-  public long getNativeObj() {
-    return nativeObj;
+  public long getNativePointer() {
+    return nativePointer;
   }
 
-  private void setNativeObj(long nativeObj) {
-    this.nativeObj = nativeObj;
+  private void setNativePointer(long nativePointer) {
+    this.nativePointer = nativePointer;
   }
 
   // ----------------------------- EventSub interface begin --------------------------------------

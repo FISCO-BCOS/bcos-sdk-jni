@@ -30,6 +30,7 @@ public class Broadcast {
 
     JniConfig jniConfig = Utility.newJniConfig(Arrays.asList(peer));
     jniConfig.setDisableSsl(true);
+
     BcosSDKJniObj bcosSDKJni = BcosSDKJniObj.build(jniConfig);
     AmopJniObj amop = AmopJniObj.build(bcosSDKJni.getNativePointer());
     amop.start();

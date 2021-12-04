@@ -15,19 +15,13 @@
 
 package org.fisco.bcos.sdk.jni.amop;
 
-import java.util.HashSet;
 import java.util.Set;
 import org.fisco.bcos.sdk.jni.common.JniException;
-import org.fisco.bcos.sdk.jni.common.JniLibLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class AmopJniObj {
   private static final Logger logger = LoggerFactory.getLogger(AmopJniObj.class);
-
-  static {
-    JniLibLoader.loadJniLibrary();
-  }
 
   /**
    * @param nativePointer
@@ -38,13 +32,13 @@ public class AmopJniObj {
     AmopJniObj amop = new AmopJniObj();
     amop.setNativePointer(nativePointer);
 
-    logger.info(" nativeObj: {}", nativePointer);
+    logger.info(" nativePointer: {}", nativePointer);
     return amop;
   }
 
   private AmopJniObj() {}
 
-  private long nativePointer;
+  private long nativePointer = 0L;
 
   public long getNativePointer() {
     return nativePointer;
@@ -63,12 +57,6 @@ public class AmopJniObj {
   public native void subscribeTopic(Set<String> topicsName);
 
   public native void subscribeTopic(String topicName, AmopRequestCallback callback);
-
-  public void unsubscribeTopic(String topicName) {
-    Set<String> topicsName = new HashSet<>();
-    topicsName.add(topicName);
-    unsubscribeTopic(topicsName);
-  }
 
   public native void unsubscribeTopic(Set<String> topicsName);
 

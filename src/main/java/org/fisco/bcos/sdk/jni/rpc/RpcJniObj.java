@@ -24,13 +24,13 @@ public class RpcJniObj {
   public static RpcJniObj build(long nativePointer) {
     RpcJniObj rpc = new RpcJniObj();
     rpc.setNativePointer(nativePointer);
-    logger.info(" nativeObj: {}", nativePointer);
+    logger.info("nativePointer: {}", nativePointer);
     return rpc;
   }
 
   private RpcJniObj() {}
 
-  private long nativePointer;
+  private long nativePointer = 0L;
 
   public long getNativePointer() {
     return nativePointer;

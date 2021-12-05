@@ -1,8 +1,8 @@
 package org.fisco.bcos.sdk.jni.test.amop;
 
 import java.util.Arrays;
-import org.fisco.bcos.sdk.jni.BcosSDK;
-import org.fisco.bcos.sdk.jni.amop.Amop;
+import org.fisco.bcos.sdk.jni.BcosSDKJniObj;
+import org.fisco.bcos.sdk.jni.amop.AmopJniObj;
 import org.fisco.bcos.sdk.jni.common.JniConfig;
 import org.fisco.bcos.sdk.jni.common.JniException;
 import org.fisco.bcos.sdk.jni.test.Utility;
@@ -32,9 +32,10 @@ public class Sub {
     String topic = args[1];
 
     JniConfig jniConfig = Utility.newJniConfig(Arrays.asList(peer));
-    BcosSDK bcosSDK = BcosSDK.build(jniConfig);
+    jniConfig.setDisableSsl(true);
+    BcosSDKJniObj bcosSDKJni = BcosSDKJniObj.build(jniConfig);
     System.out.println("BcosSDK build");
-    Amop amop = Amop.build(bcosSDK.getAmopNative());
+    AmopJniObj amop = AmopJniObj.build(bcosSDKJni.getNativePointer());
     amop.start();
 
     amop.subscribeTopic(

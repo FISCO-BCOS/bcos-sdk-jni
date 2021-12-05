@@ -29,7 +29,7 @@ function convert_java_to_jni() {
 # }
 # convert_java_to_jni ${JAVA_SOURCE_PATH}
 
-classes="rpc.Rpc amop.Amop event.EventSubscribe BcosSDK"
+classes="rpc.RpcJniObj amop.AmopJniObj event.EventSubJniObj BcosSDKJniObj"
 # classes="sample.WsToolJNI"
 
 for class in ${classes}

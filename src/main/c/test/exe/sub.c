@@ -1,7 +1,6 @@
 #include "bcos_sdk_c.h"
 #include "bcos_sdk_c_amop.h"
 #include "bcos_sdk_c_rpc.h"
-#include "bcos_sdk_c_ws.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -55,17 +54,9 @@ int main(int argc, char** argv)
 
     printf("start sdk service.\n");
 
-    void* amop = bcos_sdk_get_amop(sdk);
-    if (!amop)
-    {
-        printf("bcos_sdk_get_amop failed.\n");
-        return 0;
-    }
-    bcos_sdk_start_amop(amop);
-
     printf(" ==> subscribe topic topic: %s\n", topic);
 
-    bcos_amop_subscribe_topic_with_cb(amop, topic, sub_cb, amop);
+    bcos_amop_subscribe_topic_with_cb(sdk, topic, sub_cb, sdk);
 
     while (1)
     {

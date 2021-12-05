@@ -1,6 +1,7 @@
 #include "bcos_sdk_c_amop.h"
 #include "bcos_sdk_c_common.h"
 #include <bcos-boostssl/utilities/Common.h>
+#include <bcos-cpp-sdk/Sdk.h>
 #include <bcos-cpp-sdk/amop/AMOP.h>
 #include <set>
 #include <string>
@@ -12,14 +13,15 @@ using namespace bcos::boostssl;
 using namespace bcos::boostssl::utilities;
 using namespace bcos::boostssl::utilities::protocol;
 
-void bcos_amop_subscribe_topic(void* amop, char** topics, size_t topic_count)
+void bcos_amop_subscribe_topic(void* sdk, char** topics, size_t topic_count)
 {
     if (!topics || !topic_count)
     {
         return;
     }
 
-    auto amopPointer = (bcos::cppsdk::amop::AMOPInterface*)amop;
+    auto sdkPointer = (bcos::cppsdk::Sdk*)sdk;
+    auto amop = sdkPointer->amop();
 
     std::set<std::string> setTopics;
     for (size_t i = 0; i < topic_count; i++)
@@ -27,19 +29,20 @@ void bcos_amop_subscribe_topic(void* amop, char** topics, size_t topic_count)
         setTopics.insert(std::string(topics[i]));
     }
 
-    amopPointer->subscribe(setTopics);
+    amop->subscribe(setTopics);
 }
 
 void bcos_amop_subscribe_topic_with_cb(
-    void* amop, const char* topic, bcos_sdk_c_amop_subscribe_cb cb, void* context)
+    void* sdk, const char* topic, bcos_sdk_c_amop_subscribe_cb cb, void* context)
 {
     if (!topic || !context || !cb)
     {
         return;
     }
 
-    auto amopPointer = (bcos::cppsdk::amop::AMOPInterface*)amop;
-    amopPointer->subscribe(std::string(topic),
+    auto sdkPointer = (bcos::cppsdk::Sdk*)sdk;
+    auto amop = sdkPointer->amop();
+    amop->subscribe(std::string(topic),
         [context, cb](Error::Ptr error, const std::string& endpoint, const std::string& seq,
             bytesConstRef data, std::shared_ptr<bcos::boostssl::ws::WsSession> session) {
             std::ignore = session;
@@ -63,14 +66,15 @@ void bcos_amop_subscribe_topic_with_cb(
         });
 }
 
-void bcos_amop_unsubscribe_topic(void* amop, char** topics, size_t topic_count)
+void bcos_amop_unsubscribe_topic(void* sdk, char** topics, size_t topic_count)
 {
     if (!topics || !topic_count)
     {
         return;
     }
 
-    auto amopPointer = (bcos::cppsdk::amop::AMOPInterface*)amop;
+    auto sdkPointer = (bcos::cppsdk::Sdk*)sdk;
+    auto amop = sdkPointer->amop();
 
     std::set<std::string> setTopics;
     for (size_t i = 0; i < topic_count; i++)
@@ -78,10 +82,10 @@ void bcos_amop_unsubscribe_topic(void* amop, char** topics, size_t topic_count)
         setTopics.insert(std::string(topics[i]));
     }
 
-    amopPointer->unsubscribe(setTopics);
+    amop->unsubscribe(setTopics);
 }
 
-void bcos_amop_publish(void* amop, const char* topic, void* data, size_t size, uint32_t timeout,
+void bcos_amop_publish(void* sdk, const char* topic, void* data, size_t size, uint32_t timeout,
     bcos_sdk_c_amop_publish_cb cb, void* context)
 {
     if (!data || !size || !cb)
@@ -89,8 +93,9 @@ void bcos_amop_publish(void* amop, const char* topic, void* data, size_t size, u
         return;
     }
 
-    auto amopPointer = (bcos::cppsdk::amop::AMOPInterface*)amop;
-    amopPointer->publish(std::string(topic), bytesConstRef((byte*)data, size), timeout,
+    auto sdkPointer = (bcos::cppsdk::Sdk*)sdk;
+    auto amop = sdkPointer->amop();
+    amop->publish(std::string(topic), bytesConstRef((byte*)data, size), timeout,
         [cb, context](Error::Ptr error, std::shared_ptr<bcos::boostssl::ws::WsMessage> msg,
             std::shared_ptr<bcos::boostssl::ws::WsSession> session) {
             std::ignore = session;
@@ -102,26 +107,28 @@ void bcos_amop_publish(void* amop, const char* topic, void* data, size_t size, u
         });
 }
 
-void bcos_amop_broadcast(void* amop, const char* topic, void* data, size_t size)
+void bcos_amop_broadcast(void* sdk, const char* topic, void* data, size_t size)
 {
     if (!topic || !data || !size)
     {
         return;
     }
 
-    auto amopPointer = (bcos::cppsdk::amop::AMOPInterface*)amop;
-    amopPointer->broadcast(std::string(topic), bytesConstRef((byte*)data, size));
+    auto sdkPointer = (bcos::cppsdk::Sdk*)sdk;
+    auto amop = sdkPointer->amop();
+    amop->broadcast(std::string(topic), bytesConstRef((byte*)data, size));
 }
 
-void bcos_amop_set_subscribe_topic_cb(void* amop, bcos_sdk_c_amop_subscribe_cb cb, void* context)
+void bcos_amop_set_subscribe_topic_cb(void* sdk, bcos_sdk_c_amop_subscribe_cb cb, void* context)
 {
     if (!context || !cb)
     {
         return;
     }
 
-    auto amopPointer = (bcos::cppsdk::amop::AMOPInterface*)amop;
-    amopPointer->setSubCallback(
+    auto sdkPointer = (bcos::cppsdk::Sdk*)sdk;
+    auto amop = sdkPointer->amop();
+    amop->setSubCallback(
         [context, cb](Error::Ptr error, const std::string& endpoint, const std::string& seq,
             bytesConstRef data, std::shared_ptr<bcos::boostssl::ws::WsSession> session) {
             std::ignore = session;
@@ -145,27 +152,16 @@ void bcos_amop_set_subscribe_topic_cb(void* amop, bcos_sdk_c_amop_subscribe_cb c
         });
 }
 
-void bcos_amop_send_response(void* amop, const char* peer, const char* seq, void* data, size_t size)
+void bcos_amop_send_response(void* sdk, const char* peer, const char* seq, void* data, size_t size)
 {
     if (!seq || !peer || !data || !size)
     {
         return;
     }
 
-    auto amopPointer = (bcos::cppsdk::amop::AMOPInterface*)amop;
-    amopPointer->sendResponse(
-        std::string(peer), std::string(seq), bytesConstRef((byte*)data, size));
-}
-
-void* bcos_amop_get_ws(void* amop)
-{
-    if (amop)
-    {
-        auto amopPointer = (bcos::cppsdk::amop::AMOP*)amop;
-        auto ws = amopPointer->service();
-        return ws ? ws.get() : NULL;
-    }
-    return NULL;
+    auto sdkPointer = (bcos::cppsdk::Sdk*)sdk;
+    auto amop = sdkPointer->amop();
+    amop->sendResponse(std::string(peer), std::string(seq), bytesConstRef((byte*)data, size));
 }
 
 // ------------------------------amop interface end -------------------------

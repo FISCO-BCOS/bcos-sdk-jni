@@ -12,7 +12,7 @@ using namespace bcos;
 using namespace bcos::boostssl;
 using namespace bcos::boostssl::utilities;
 
-void* get_obj_native_member(JNIEnv* env, jobject self)
+void* bcos_sdk_get_native_pointer(JNIEnv* env, jobject self)
 {
     jclass cls = env->GetObjectClass(self);
     if (cls == NULL)
@@ -20,14 +20,14 @@ void* get_obj_native_member(JNIEnv* env, jobject self)
         env->FatalError("No such class, object class is null in acquire native class");
     }
 
-    jfieldID nativeFieldID = env->GetFieldID(cls, "nativeObj", "J");
+    jfieldID nativeFieldID = env->GetFieldID(cls, "nativePointer", "J");
     if (nativeFieldID == NULL)
     {
         env->FatalError("No such field, native field is null in acquire native field");
     }
 
-    jlong nativeObj = env->GetLongField(self, nativeFieldID);
-    void* native = reinterpret_cast<void*>(nativeObj);
+    jlong nativePointer = env->GetLongField(self, nativeFieldID);
+    void* native = reinterpret_cast<void*>(nativePointer);
     if (native == NULL)
     {  // Note: native obj can be NULL when it is not initialized ???
         env->FatalError("No such long field, object obj is null in acquire native obj");
@@ -251,7 +251,7 @@ static bcos_sdk_c_sm_cert_config* create_bcos_sdk_c_sm_cert_config(
     return config;
 }
 
-struct bcos_sdk_c_config* create_bcos_sdk_c_config_from_java_obj(JNIEnv* env, jobject jconfig)
+struct bcos_sdk_c_config* create_config_from_java_obj(JNIEnv* env, jobject jconfig)
 {
     std::string className = "org/fisco/bcos/sdk/jni/common/JniConfig";
     jclass configClass = env->GetObjectClass(jconfig);

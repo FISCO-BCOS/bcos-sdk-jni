@@ -1,6 +1,5 @@
 #include "bcos_sdk_c.h"
 #include "bcos_sdk_c_rpc.h"
-#include "bcos_sdk_c_ws.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -56,30 +55,15 @@ int main(int argc, char** argv)
         return 0;
     }
 
+    bcos_sdk_start(sdk);
+
     printf("create sdk service.\n");
-
-    void* rpc = bcos_sdk_get_rpc(sdk);
-    if (!rpc)
-    {
-        printf("bcos_sdk_get_rpc failed.\n");
-        return 0;
-    }
-
-    void* ws = bcos_rpc_get_ws(rpc);
-    if (!ws)
-    {
-        printf("bcos_rpc_get_ws failed.\n");
-        return 0;
-    }
-
     const char* group = "group";
 
     while (1)
     {
         sleep(5);
-        int con_count = bcos_ws_connection_count(ws);
-        printf(" ==> websockets connection count: %d\n", con_count);
-        bcos_rpc_get_block_number(rpc, group, node, callback, rpc);
+        bcos_rpc_get_block_number(sdk, group, node, callback, sdk);
     }
 
     return 0;

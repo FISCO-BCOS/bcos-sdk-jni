@@ -17,8 +17,9 @@ jclass JClassCache::findClass(JNIEnv* _env, const std::string& _fullClassName)
         }
     }
 
-    BCOS_LOG(DEBUG) << LOG_BADGE("findClass") << LOG_DESC("load class")
-                    << LOG_KV("fullClassName", _fullClassName);
+    // BCOS_LOG(DEBUG) << LOG_BADGE("findClass") << LOG_DESC("load class")
+    //                 << LOG_KV("fullClassName", _fullClassName);
+
     // find class
     jclass classId = _env->FindClass(_fullClassName.c_str());
     if (classId == NULL)
@@ -38,8 +39,8 @@ jclass JClassCache::findClass(JNIEnv* _env, const std::string& _fullClassName)
         m_classCache[_fullClassName] = classId;
     }
 
-    BCOS_LOG(DEBUG) << LOG_BADGE("findClass") << LOG_DESC("add class to cache")
-                    << LOG_KV("fullClassName", _fullClassName);
+    BCOS_LOG(INFO) << LOG_BADGE("findClass") << LOG_DESC("add class to cache")
+                   << LOG_KV("fullClassName", _fullClassName);
 
     return classId;
 }

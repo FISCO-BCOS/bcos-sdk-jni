@@ -134,7 +134,7 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_RpcJniObj_stop(JNIEnv* en
  * Signature: (Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
  */
 JNIEXPORT void JNICALL
-Java_org_fisco_bcos_sdk_jni_rpc_RpcJniObj_genericMethod__Ljava_lang_String_2Lorg_fisco_bcos_sdk_jni_rpc_RpcJniObjCallback_2(
+Java_org_fisco_bcos_sdk_jni_rpc_RpcJniObj_genericMethod__Ljava_lang_String_2Lorg_fisco_bcos_sdk_jni_rpc_RpcCallback_2(
     JNIEnv* env, jobject self, jstring jdata, jobject jcallback)
 {
     // rpc obj handler
@@ -166,7 +166,7 @@ Java_org_fisco_bcos_sdk_jni_rpc_RpcJniObj_genericMethod__Ljava_lang_String_2Lorg
  * Signature: (Ljava/lang/String;Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
  */
 JNIEXPORT void JNICALL
-Java_org_fisco_bcos_sdk_jni_rpc_RpcJniObj_genericMethod__Ljava_lang_String_2Ljava_lang_String_2Lorg_fisco_bcos_sdk_jni_rpc_RpcJniObjCallback_2(
+Java_org_fisco_bcos_sdk_jni_rpc_RpcJniObj_genericMethod__Ljava_lang_String_2Ljava_lang_String_2Lorg_fisco_bcos_sdk_jni_rpc_RpcCallback_2(
     JNIEnv* env, jobject self, jstring jgroup, jstring jdata, jobject jcallback)
 {
     // rpc obj handler
@@ -203,7 +203,7 @@ Java_org_fisco_bcos_sdk_jni_rpc_RpcJniObj_genericMethod__Ljava_lang_String_2Ljav
  * (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/rpc/RpcCallback;)V
  */
 JNIEXPORT void JNICALL
-Java_org_fisco_bcos_sdk_jni_rpc_RpcJniObj_genericMethod__Ljava_lang_String_2Ljava_lang_String_2Ljava_lang_String_2Lorg_fisco_bcos_sdk_jni_rpc_RpcJniObjCallback_2(
+Java_org_fisco_bcos_sdk_jni_rpc_RpcJniObj_genericMethod__Ljava_lang_String_2Ljava_lang_String_2Ljava_lang_String_2Lorg_fisco_bcos_sdk_jni_rpc_RpcCallback_2(
     JNIEnv* env, jobject self, jstring jgroup, jstring jnode, jstring jdata, jobject jcallback)
 {
     // rpc obj handler

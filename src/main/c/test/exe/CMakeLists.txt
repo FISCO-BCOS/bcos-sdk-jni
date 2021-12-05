@@ -14,3 +14,6 @@ target_link_libraries(broadcast PRIVATE ${FISCO_BCOS_JNI_STATIC_TARGET})
 
 add_executable(sub sub.c)
 target_link_libraries(sub PRIVATE ${FISCO_BCOS_JNI_STATIC_TARGET})
+
+add_executable(sdk-start sdk-start.c)
+target_link_libraries(sdk-start PRIVATE ${FISCO_BCOS_JNI_STATIC_TARGET})

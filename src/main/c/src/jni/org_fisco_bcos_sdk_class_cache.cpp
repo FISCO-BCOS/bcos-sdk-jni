@@ -8,7 +8,7 @@ jclass JClassCache::findClass(JNIEnv* _env, const std::string& _fullClassName)
     // try to fetch jclass from cache
     {
         jclass classId = NULL;
-        std::shared_lock lock(x_classCache);
+        boost::shared_lock<boost::shared_mutex> lock(x_classCache);
         auto it = m_classCache.find(_fullClassName);
         if (it != m_classCache.end())
         {
@@ -35,7 +35,7 @@ jclass JClassCache::findClass(JNIEnv* _env, const std::string& _fullClassName)
 
     // add jclass to cache
     {
-        std::unique_lock lock(x_classCache);
+        boost::unique_lock<boost::shared_mutex> lock(x_classCache);
         m_classCache[_fullClassName] = classId;
     }
 

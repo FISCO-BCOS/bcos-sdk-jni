@@ -8,7 +8,6 @@
 #include "jni/org_fisco_bcos_sdk_exception.h"
 #include <stdint.h>
 #include <stdio.h>
-#include <unistd.h>
 #include <cstddef>
 #include <cstdio>
 #include <memory>
@@ -461,7 +460,7 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_RpcJniObj_getBlockByNumbe
     // node
     const char* node = env->GetStringUTFChars(jnode, NULL);
     // block number
-    long block_number = reinterpret_cast<long>(jnumber);
+    long block_number = static_cast<long>(jnumber);
     // only_header
     int only_header = (jonly_header == JNI_TRUE ? 1 : 0);
     // only_txhash
@@ -516,7 +515,7 @@ JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_rpc_RpcJniObj_getBlockHashByN
     bcos_sdk_c_find_jclass(env, respClassName);
 
     // block number
-    long block_number = reinterpret_cast<long>(jnumber);
+    long block_number = static_cast<long>(jnumber);
     bcos_rpc_get_block_hash_by_number(
         rpc, group, node, block_number, on_receive_rpc_response, context);
 

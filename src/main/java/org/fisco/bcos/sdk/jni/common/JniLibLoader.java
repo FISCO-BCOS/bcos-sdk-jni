@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import org.slf4j.Logger;
@@ -81,24 +82,22 @@ public final class JniLibLoader {
     }
   }
 
-  public static String getLibName(String libName) {
+  public static String getLibName(String baseName) {
     String osName = OS_NAME;
     String archName = ARCH_NAME;
 
-    if (logger.isTraceEnabled()) {
-      logger.trace("osName: {}, archName: {}", osName, archName);
-    }
+    logger.debug("osName: {}, archName: {}", osName, archName);
 
     if (osName.contains(WIN)) {
-      return "lib" + libName + ".dll";
+      return "lib" + baseName + ".dll";
     } else if (osName.contains(LINUX)) {
-      return "lib" + libName + ".so";
+      return "lib" + baseName + ".so";
     } else if (osName.contains(MAC)) {
       String arch = getArch();
       if ("arm".equals(arch)) {
-        return "lib" + libName + "-aarch64" + ".dylib";
+        return "lib" + baseName + "-aarch64" + ".dylib";
       }
-      return "lib" + libName + ".dylib";
+      return "lib" + baseName + ".dylib";
     } else {
       throw new RuntimeException("unrecognized OS: " + osName);
     }
@@ -154,39 +153,67 @@ public final class JniLibLoader {
     }
   }
 
+  public static void addLibraryDir(String libraryPath)
+      throws NoSuchFieldException, IllegalAccessException {
+    Field userPathsField = ClassLoader.class.getDeclaredField("usr_paths");
+    userPathsField.setAccessible(true);
+    String[] paths = (String[]) userPathsField.get(null);
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < paths.length; i++) {
+      if (libraryPath.equals(paths[i])) {
+        continue;
+      }
+      sb.append(paths[i]).append(File.pathSeparator);
+    }
+    sb.append(libraryPath);
+    System.setProperty("java.library.path", sb.toString());
+    logger.info("modify, java.library.path: " + sb.toString());
+    final Field sysPathsField = ClassLoader.class.getDeclaredField("sys_paths");
+    sysPathsField.setAccessible(true);
+    sysPathsField.set(null, null);
+  }
+
   public static void loadLibraryFromFs(String dir, String libName, boolean absolute) {
     String resource = dir + "/" + getLibName(libName);
     loadLibrary(resource, absolute);
   }
 
-  public static void loadLibraryFromJar(String libName) throws IOException {
-    long suffix = System.nanoTime();
-    String tempPath = libName + "_" + suffix;
-    File tempFilePath = new File(WORKDIR, tempPath);
+  public static void loadLibraryFromJar(String baseName)
+      throws IOException, NoSuchFieldException, IllegalAccessException {
+    String libName = getLibName(baseName);
+    File tempDir = new File(WORKDIR, String.valueOf(System.nanoTime()));
+    // create temp dir
+    tempDir.mkdirs();
+    File tempFile = new File(tempDir, libName);
+    logger.info("tempDir: {}, tempFile: {}", tempDir, tempFile);
 
-    if (logger.isDebugEnabled()) {
-      logger.debug("tempPath: {}", tempPath);
-    }
-
-    String resource = NATIVE_RESOURCE_HOME + "/" + getLibName(libName);
+    String resource = NATIVE_RESOURCE_HOME + "/" + libName;
     try (InputStream is = JniLibLoader.class.getResourceAsStream(resource)) {
-      Files.copy(is, tempFilePath.toPath(), StandardCopyOption.REPLACE_EXISTING);
+      Files.copy(is, tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
     } catch (IOException e) {
       try {
-        tempFilePath.delete();
+        tempFile.delete();
       } catch (Exception e0) {
         logger.debug("delete temp file error, e: ", e0);
       }
+      logger.error("copy dynamic lib from jar failed, resource: {}, e: ", resource, e);
       throw e;
     } catch (NullPointerException e) {
       throw new FileNotFoundException("Cannot found " + resource + " inside the JAR.");
     }
 
     try {
-      loadLibrary(tempFilePath.getAbsolutePath(), true);
+      loadLibrary(tempFile.getAbsolutePath(), true);
+    } catch (Exception e) {
+      logger.error("loadLibrary error, resource: {}, e: ", resource, e);
+      throw e;
     } finally {
-      tempFilePath.delete();
-      logger.debug("remove temp file, {}", tempPath);
+      try {
+        tempFile.delete();
+        tempDir.delete();
+        logger.debug("remove temp dir and temp file, {}", tempDir, tempFile);
+      } catch (Exception e) {
+      }
     }
   }
 }

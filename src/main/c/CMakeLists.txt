@@ -113,7 +113,9 @@ target_link_libraries(${FISCO_BCOS_JNI_STATIC_TARGET} PUBLIC bcos-cpp-sdk::bcos-
 #    add_subdirectory(test)
 # endif()
 
-add_subdirectory(test/exe)
+if (BUILD_EXE_TEST)
+    add_subdirectory(test/exe)
+endif()
 
 # SET(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 install(

@@ -1,10 +1,8 @@
 #include "bcos_sdk_c.h"
 #include "bcos_sdk_c_amop.h"
 #include "bcos_sdk_c_rpc.h"
-#include "bcos_sdk_c_ws.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 
 void usage()
 {
@@ -14,7 +12,7 @@ void usage()
     exit(0);
 }
 
-void sub_cb(const char* endpoint, const char* seq, struct bcos_sdk_struct_response* resp)
+void sub_cb(const char* endpoint, const char* seq, struct bcos_sdk_c_struct_response* resp)
 {
     printf(" ==> receive request, status: %d, data: %s\n", resp->error, (char*)resp->data);
     bcos_amop_send_response(resp->context, endpoint, seq, resp->data, resp->size);
@@ -54,18 +52,10 @@ int main(int argc, char** argv)
     }
 
     printf("start sdk service.\n");
-    bcos_sdk_start(sdk);
-
-    void* amop = bcos_sdk_get_amop(sdk);
-    if (!amop)
-    {
-        printf("bcos_sdk_get_amop failed.\n");
-        return 0;
-    }
 
     printf(" ==> subscribe topic topic: %s\n", topic);
 
-    bcos_amop_subscribe_topic_with_cb(amop, topic, sub_cb, amop);
+    bcos_amop_subscribe_topic_with_cb(sdk, topic, sub_cb, sdk);
 
     while (1)
     {

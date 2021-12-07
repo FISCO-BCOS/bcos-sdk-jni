@@ -1,11 +1,9 @@
 #include "bcos_sdk_c.h"
 #include "bcos_sdk_c_amop.h"
 #include "bcos_sdk_c_rpc.h"
-#include "bcos_sdk_c_ws.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 
 void usage()
 {
@@ -49,21 +47,13 @@ int main(int argc, char** argv)
         return 0;
     }
 
-    printf("start sdk service.\n");
     bcos_sdk_start(sdk);
-
-    void* amop = bcos_sdk_get_amop(sdk);
-    if (!amop)
-    {
-        printf("bcos_sdk_get_amop failed.\n");
-        return 0;
-    }
 
     while (1)
     {
         sleep(5);
         printf("==> broadcast, topic: %s, message: %s\n", topic, msg);
-        bcos_amop_broadcast(amop, topic, (void*)msg, strlen(msg));
+        bcos_amop_broadcast(sdk, topic, (void*)msg, strlen(msg));
     }
 
     return 0;

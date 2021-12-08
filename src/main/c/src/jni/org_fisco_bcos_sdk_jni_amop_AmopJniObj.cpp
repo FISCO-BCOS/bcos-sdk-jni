@@ -54,6 +54,7 @@ static void on_receive_amop_request(
     // Note: the callback should not be unreference, it is not
     // once used
 
+    env->DeleteLocalRef(byteArrayObj);
     // env->DeleteGlobalRef(jcallback);
 }
 
@@ -132,6 +133,7 @@ static void on_receive_amop_response(struct bcos_sdk_c_struct_response* resp)
 
     env->CallObjectMethod(jcallback, onReqMethodID, responseObj);
 
+    env->DeleteLocalRef(byteArrayObj);
     //  Note: the callback should not be unreference, it is not
     // once used
     // env->DeleteGlobalRef(jcallback);

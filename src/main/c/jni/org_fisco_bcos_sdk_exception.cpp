@@ -1,4 +1,4 @@
-#include "jni/org_fisco_bcos_sdk_exception.h"
+#include "org_fisco_bcos_sdk_exception.h"
 #include <iostream>
 #include <string>
 

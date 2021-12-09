@@ -1,5 +1,5 @@
 
-#include "bcos_sdk_c_common.h"
+#include "bcos-c-sdk/bcos_sdk_c_common.h"
 #include "org_fisco_bcos_sdk_exception.h"
 /* Header for class common */
 

@@ -1,7 +1,7 @@
 #include "jni/org_fisco_bcos_sdk_common.h"
-#include "bcos_sdk_c_common.h"
-#include "jni/org_fisco_bcos_sdk_class_cache.h"
-#include "jni/org_fisco_bcos_sdk_exception.h"
+#include "bcos-c-sdk/bcos_sdk_c_common.h"
+#include "org_fisco_bcos_sdk_class_cache.h"
+#include "org_fisco_bcos_sdk_exception.h"
 #include <bcos-boostssl/websocket/WsTools.h>
 #include <stdlib.h>
 #include <string.h>

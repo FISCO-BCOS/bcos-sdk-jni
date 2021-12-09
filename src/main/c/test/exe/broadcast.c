@@ -1,9 +1,10 @@
-#include "bcos_sdk_c.h"
-#include "bcos_sdk_c_amop.h"
-#include "bcos_sdk_c_rpc.h"
+#include "bcos-c-sdk/bcos_sdk_c.h"
+#include "bcos-c-sdk/bcos_sdk_c_amop.h"
+#include "bcos-c-sdk/bcos_sdk_c_rpc.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 void usage()
 {

@@ -1,5 +1,5 @@
 
-#include "jni/org_fisco_bcos_sdk_class_cache.h"
+#include "org_fisco_bcos_sdk_class_cache.h"
 #include <bcos-boostssl/utilities/BoostLog.h>
 #include <iostream>
 

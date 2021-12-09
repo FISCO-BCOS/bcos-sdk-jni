@@ -157,8 +157,16 @@ publishing {
                     }
                 }
                 scm {
-                    connection = 'https://github.com/FISCO-BCOS/web3sdk.git'
-                    url = 'https://github.com/FISCO-BCOS/web3sdk.git'
+                    connection = 'https://github.com/FISCO-BCOS/bcos-sdk-jni.git'
+                    url = 'https://github.com/FISCO-BCOS/bcos-sdk-jni.git'
+                }
+
+                developers {
+                    developer {
+                        id = 'zhangsan'
+                        name = 'zhangsan'
+                        email = 'zhangsan@example.com'
+                    }
                 }
             }
         }

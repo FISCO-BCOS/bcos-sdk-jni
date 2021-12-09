@@ -4,8 +4,7 @@
 
 # bcos-sdk-jni
 
-bcos-sdk-jni是[FISCO BCOS 3.0](https://github.com/FISCO-BCOS/FISCO-BCOS)的jni接口的实现，封装bcos-c-sdk的基础接口，给java-sdk使用。
-
+bcos-sdk-jni是[FISCO BCOS 3.0](https://github.com/FISCO-BCOS/FISCO-BCOS) JNI接口的实现，对bcos-c-sdk接口封装，提供给java-sdk调用。
 
 ## 文档
 

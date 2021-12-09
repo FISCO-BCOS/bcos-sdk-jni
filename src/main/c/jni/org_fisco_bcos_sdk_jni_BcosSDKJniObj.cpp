@@ -1,7 +1,7 @@
 
 #include "jni/org_fisco_bcos_sdk_jni_BcosSDKJniObj.h"
-#include "bcos_sdk_c.h"
-#include "bcos_sdk_c_error.h"
+#include "bcos-c-sdk/bcos_sdk_c.h"
+#include "bcos-c-sdk/bcos_sdk_c_error.h"
 #include "jni/org_fisco_bcos_sdk_common.h"
 #include <tuple>
 

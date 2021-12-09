@@ -84,6 +84,10 @@ find_package(bcos-boostssl CONFIG REQUIRED)
 hunter_add_package(bcos-cpp-sdk)
 find_package(bcos-cpp-sdk REQUIRED)
 
+# find bcos-c-sdk
+hunter_add_package(bcos-c-sdk)
+find_package(bcos-c-sdk REQUIRED)
+
 # basic settings
 include(Options)
 configure_project()
@@ -92,19 +96,16 @@ include(InstallConfig)
 # install the include files for hash
 include(InstallInclude)
 
-# install bcos-framework
-# include(InstallBcosFrameworkDependencies)
-
-# build dynamic target
-file(GLOB_RECURSE SOURCES "include/*.h" "src/*.cpp" "src/*.c")
+# source
+file(GLOB_RECURSE SOURCES "jni/*.h" "jni/*.cpp" "jni/*.c")
 
 set(FISCO_BCOS_JNI_TARGET "bcos-sdk-jni")
 add_library(${FISCO_BCOS_JNI_TARGET} SHARED ${SOURCES})
-target_link_libraries(${FISCO_BCOS_JNI_TARGET} PUBLIC bcos-cpp-sdk::bcos-sdk)
+target_link_libraries(${FISCO_BCOS_JNI_TARGET} PUBLIC bcos-cpp-sdk::cpp-sdk bcos-c-sdk::c-sdk)
 
 set(FISCO_BCOS_JNI_STATIC_TARGET "bcos-sdk-jni-static")
 add_library(${FISCO_BCOS_JNI_STATIC_TARGET} ${SOURCES})
-target_link_libraries(${FISCO_BCOS_JNI_STATIC_TARGET} PUBLIC bcos-cpp-sdk::bcos-sdk)
+target_link_libraries(${FISCO_BCOS_JNI_STATIC_TARGET} PUBLIC bcos-cpp-sdk::cpp-sdk bcos-c-sdk::c-sdk)
 
 # ut and binary exe
 # if (TESTS)
@@ -113,7 +114,7 @@ target_link_libraries(${FISCO_BCOS_JNI_STATIC_TARGET} PUBLIC bcos-cpp-sdk::bcos-
 #    add_subdirectory(test)
 # endif()
 
-if (BUILD_EXE_TEST)
+if (BUILD_EXEC_TEST)
     add_subdirectory(test/exe)
 endif()
 

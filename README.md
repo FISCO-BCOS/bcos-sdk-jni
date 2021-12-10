@@ -7,7 +7,7 @@ bcos-sdk-jni is an implementation of the JNI interface of [FISCO BCOS 3.0](https
 
 ## Documentation
 
-- [FISCO BCOS 3.0 documentation](https://fisco-bcos-documentation-3x.readthedocs.io/zh/latest/index.html)
+- [FISCO BCOS 3.x documentation](https://fisco-bcos-doc.readthedocs.io/)
 
 ## Code contribution
 

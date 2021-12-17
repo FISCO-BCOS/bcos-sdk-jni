@@ -428,6 +428,7 @@ struct bcos_sdk_c_config* create_config_from_java_obj(JNIEnv* env, jobject jconf
     config->thread_pool_size = threadPoolSize;
     config->peers_count = listSize;
     config->disable_ssl = disableSsl;
+    config->is_cert_path = 0;
     config->peers = ep;
     config->ssl_type = strdup(strSslType.c_str());
     config->cert_config = cert_config;

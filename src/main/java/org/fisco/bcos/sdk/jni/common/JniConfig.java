@@ -222,17 +222,14 @@ public class JniConfig {
         + heartbeatPeriodMs
         + ", messageTimeoutMs="
         + messageTimeoutMs
-        + ", peers="
-        + peers
         + ", disableSsl="
         + disableSsl
         + ", sslType='"
         + sslType
         + '\''
-        + ", certConfig="
-        + certConfig
-        + ", smCertConfig="
-        + smCertConfig
+        + ", peers='"
+        + peers
+        + '\''
         + '}';
   }
 }

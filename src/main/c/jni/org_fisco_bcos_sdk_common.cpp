@@ -427,7 +427,7 @@ struct bcos_sdk_c_config* create_config_from_java_obj(JNIEnv* env, jobject jconf
     config->message_timeout_ms = messageTimeoutMs;
     config->thread_pool_size = threadPoolSize;
     config->peers_count = listSize;
-    config->disableSsl = disableSsl;
+    config->disable_ssl = disableSsl;
     config->peers = ep;
     config->ssl_type = strdup(strSslType.c_str());
     config->cert_config = cert_config;

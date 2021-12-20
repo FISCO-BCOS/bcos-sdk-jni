@@ -27,7 +27,7 @@ export CXXFLAGS="${CXXFLAGS} -fPIC"
 
 CMAKE_COMMAND='cmake'
 
-check if cmake3 install
+# check if cmake3 install
 type cmake3
 if [ $? -eq 0 ]; then
     CMAKE_COMMAND='cmake3' 

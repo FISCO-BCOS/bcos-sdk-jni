@@ -73,5 +73,14 @@ public class BcosSDKJniObj {
   public native void stop();
 
   public native void destroy();
+
   // -------------------------native method end-------------------------------------------
+
+  // ------------------------ block notifier begin----------------------------------------
+
+  public static native void registerBlockNotifier(BlockNotifierCallback callback);
+
+  public static native void registerBlockNotifier(String group, BlockNotifierCallback callback);
+
+  // ------------------------ block notifier end------------------------------------------
 }

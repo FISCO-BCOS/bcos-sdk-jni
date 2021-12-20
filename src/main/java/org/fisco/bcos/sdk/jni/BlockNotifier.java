@@ -2,7 +2,7 @@ package org.fisco.bcos.sdk.jni;
 
 import java.math.BigInteger;
 
-public interface BlockNotifierCallback {
+public interface BlockNotifier {
   /**
    * receive block notifier
    *

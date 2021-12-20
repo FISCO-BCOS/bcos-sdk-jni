@@ -58,7 +58,7 @@ jobs:
         if: runner.os == 'Linux'
         run: CC=/usr/bin/clang CXX=/usr/bin/clang++ bash scripts/compile_jni_lib.sh
       - name: compile
-        run: bash scripts/compile_jni_lib.sh
+        run: java -version && bash scripts/compile_jni_lib.sh
       - name: tar lib for mac
         run: tar -cvzf libbcos-sdk-jni.dylib.tar.gz src/main/resources/META-INF/native/libbcos-sdk-jni.dylib
       - uses: actions/upload-artifact@v2
@@ -102,7 +102,8 @@ jobs:
       - name: install Ubuntu dependencies
         run: sudo apt install -y git curl openssl build-essential cmake ccache
       - name: compile
-        run: bash scripts/compile_jni_lib.sh
+        run: 
+          java -version && bash scripts/compile_jni_lib.sh
   build_with_centos:
     name: build_with_centos
     runs-on: ubuntu-latest
@@ -137,12 +138,13 @@ jobs:
       - name: install CentOS dependencies
         run: |
           yum install -y epel-release centos-release-scl
-          yum install -y git make gcc gcc-c++ glibc-static glibc-devel openssl cmake3 ccache devtoolset-7 libzstd-devel zlib-devel flex bison python-devel python3-devel && source /opt/rh/devtoolset-7/enable
-          alias cmake='cmake3'
+          yum install -y java-11-openjdk-devel git make gcc gcc-c++ glibc-static glibc-devel openssl cmake3 ccache devtoolset-7 libzstd-devel zlib-devel flex bison python-devel python3-devel && source /opt/rh/devtoolset-7/enable
       - name: configure and compile
         run: |
           source /opt/rh/devtoolset-7/enable
-          export alias cmake='cmake3'
+          alias cmake='cmake3'
+          java -version
+          cmake --version
           bash scripts/compile_jni_lib.sh
       - name: tar lib for centos
         run: tar -cvzf libbcos-sdk-jni.so.tar.gz src/main/resources/META-INF/native/libbcos-sdk-jni.so

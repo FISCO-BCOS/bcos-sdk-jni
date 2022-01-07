@@ -1,5 +1,5 @@
 
-#include <bcos-boostssl/utilities/Exceptions.h>
+#include <bcos-utilities/Exceptions.h>
 #include <jni.h>
 #include <string>
 /* Header for class common */

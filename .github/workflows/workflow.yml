@@ -59,12 +59,10 @@ jobs:
         run: CC=/usr/bin/clang CXX=/usr/bin/clang++ bash scripts/compile_jni_lib.sh
       - name: compile
         run: java -version && bash scripts/compile_jni_lib.sh
-      - name: tar lib for mac
-        run: tar -cvzf libbcos-sdk-jni.dylib.tar.gz src/main/resources/META-INF/native/libbcos-sdk-jni.dylib
       - uses: actions/upload-artifact@v2
         with:
           name: libbcos-sdk-jni.dylib.tar.gz
-          path: libbcos-sdk-jni.dylib.tar.gz
+          path: src/main/resources/META-INF/native/libbcos-sdk-jni.dylib
   build_with_gcc:
     name: build_with_gcc
     runs-on: ${{ matrix.os }}
@@ -146,12 +144,10 @@ jobs:
           java -version
           cmake --version
           bash scripts/compile_jni_lib.sh
-      - name: tar lib for centos
-        run: tar -cvzf libbcos-sdk-jni.so.tar.gz src/main/resources/META-INF/native/libbcos-sdk-jni.so
       - uses: actions/upload-artifact@v2
         with:
           name: libbcos-sdk-jni.so.tar.gz
-          path: libbcos-sdk-jni.so.tar.gz
+          path: src/main/resources/META-INF/native/libbcos-sdk-jni.so
   build_with_windows:
       name: build_with_windows
       runs-on: ${{ matrix.os }}

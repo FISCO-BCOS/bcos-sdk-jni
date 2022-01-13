@@ -185,5 +185,9 @@ jobs:
           run: cd src/main/c/ && MSBuild bcos-sdk-jni.sln /p:Configuration=Release /p:Platform=x64
         - uses: actions/upload-artifact@v2
           with:
+            name: bcos-sdk-jni.lib.zip
+            path: D:\a\bcos-sdk-jni\bcos-sdk-jni\src\main\c\Release\bcos-sdk-jni.lib
+        - uses: actions/upload-artifact@v2
+          with:
             name: bcos-sdk-jni.dll.zip
             path: D:\a\bcos-sdk-jni\bcos-sdk-jni\src\main\c\Release\bcos-sdk-jni.dll

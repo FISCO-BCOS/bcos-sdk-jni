@@ -42,8 +42,8 @@ list(APPEND CMAKE_MODULE_PATH ${JAVA_SDK_JNI_CMAKE_DIR})
 # include hunter
 include(HunterGate)
 HunterGate(
-    URL "https://${URL_BASE}/FISCO-BCOS/hunter/archive/9bb4c2aa139cfa53af5779105cd0d5570c31fbf5.tar.gz"
-    SHA1 "02165406cd653bedfe88538926453ede8eca84ba"
+    URL "https://${URL_BASE}/FISCO-BCOS/hunter/archive/f1eaf0b9e1fc5e33b10fcc0166dbd107a34c1fbb.tar.gz"
+    SHA1 "b879745ced060797f4b27514abc9a1f7c512e487"
     FILEPATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/config.cmake"
 )
 
@@ -66,12 +66,17 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 find_package(JNI REQUIRED)
 include_directories(${JNI_INCLUDE_DIRS})
 
+#JsonCpp
 hunter_add_package(jsoncpp)
 find_package(jsoncpp CONFIG REQUIRED)
 
 # find OpenSSL
 hunter_add_package(OpenSSL)
 find_package(OpenSSL REQUIRED)
+
+# wedpr-crypto
+hunter_add_package(wedpr-crypto)
+find_package(wedpr-crypto CONFIG REQUIRED)
 
 hunter_add_package(Boost COMPONENTS all)
 find_package(Boost CONFIG REQUIRED log chrono system filesystem thread iostreams)
@@ -105,11 +110,11 @@ file(GLOB_RECURSE SOURCES "jni/*.h" "jni/*.cpp" "jni/*.c")
 
 set(FISCO_BCOS_JNI_TARGET "bcos-sdk-jni")
 add_library(${FISCO_BCOS_JNI_TARGET} SHARED ${SOURCES})
-target_link_libraries(${FISCO_BCOS_JNI_TARGET} PUBLIC bcos-cpp-sdk::bcos-cpp-sdk bcos-c-sdk::bcos-c-sdk-static)
+target_link_libraries(${FISCO_BCOS_JNI_TARGET} PUBLIC wedpr-crypto::crypto wedpr-crypto::extend-crypto bcos-cpp-sdk::bcos-cpp-sdk bcos-c-sdk::bcos-c-sdk-static)
 
 set(FISCO_BCOS_JNI_STATIC_TARGET "bcos-sdk-jni-static")
 add_library(${FISCO_BCOS_JNI_STATIC_TARGET} ${SOURCES})
-target_link_libraries(${FISCO_BCOS_JNI_STATIC_TARGET} PUBLIC bcos-cpp-sdk::bcos-cpp-sdk bcos-c-sdk::bcos-c-sdk-static)
+target_link_libraries(${FISCO_BCOS_JNI_STATIC_TARGET} PUBLIC wedpr-crypto::crypto wedpr-crypto::extend-crypto bcos-cpp-sdk::bcos-cpp-sdk bcos-c-sdk::bcos-c-sdk-static)
 
 # ut and binary exe
 # if (TESTS)

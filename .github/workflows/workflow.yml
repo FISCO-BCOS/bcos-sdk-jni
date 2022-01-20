@@ -55,7 +55,7 @@ jobs:
         if: runner.os == 'macOS'
         run: export SDKROOT=$(xcrun --sdk macosx --show-sdk-path) && CC=/usr/bin/clang CXX=/usr/bin/clang++
       - name: compile
-        run: java -version && bash scripts/compile_jni_lib.sh
+        run: export SDKROOT=$(xcrun --sdk macosx --show-sdk-path) && java -version && bash scripts/compile_jni_lib.sh
       - uses: actions/upload-artifact@v2
         with:
           name: libbcos-sdk-jni.dylib.tar.gz
@@ -97,8 +97,7 @@ jobs:
       - name: install Ubuntu dependencies
         run: sudo apt install -y git curl openssl build-essential cmake ccache
       - name: compile
-        run: 
-          java -version && bash scripts/compile_jni_lib.sh
+        run: java -version && bash scripts/compile_jni_lib.sh
   build_with_centos:
     name: build_with_centos
     runs-on: ubuntu-latest

@@ -53,10 +53,7 @@ jobs:
         run: sudo apt install -y git curl openssl build-essential clang cmake ccache
       - name: configure
         if: runner.os == 'macOS'
-        run: export SDKROOT=$(xcrun --sdk macosx --show-sdk-path) && CC=/usr/bin/clang CXX=/usr/bin/clang++ bash scripts/compile_jni_lib.sh
-      - name: configure
-        if: runner.os == 'Linux'
-        run: CC=/usr/bin/clang CXX=/usr/bin/clang++ bash scripts/compile_jni_lib.sh
+        run: export SDKROOT=$(xcrun --sdk macosx --show-sdk-path) && CC=/usr/bin/clang CXX=/usr/bin/clang++
       - name: compile
         run: java -version && bash scripts/compile_jni_lib.sh
       - uses: actions/upload-artifact@v2

@@ -108,6 +108,13 @@ include(InstallInclude)
 # source
 file(GLOB_RECURSE SOURCES "jni/*.h" "jni/*.cpp" "jni/*.c")
 
+# rust static library linking requirements for macos
+if(APPLE)
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -framework Security -framework Foundation")
+else()
+   set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-as-needed -ldl")
+endif()
+
 set(FISCO_BCOS_JNI_TARGET "bcos-sdk-jni")
 add_library(${FISCO_BCOS_JNI_TARGET} SHARED ${SOURCES})
 target_link_libraries(${FISCO_BCOS_JNI_TARGET} PUBLIC wedpr-crypto::crypto wedpr-crypto::extend-crypto bcos-cpp-sdk::bcos-cpp-sdk bcos-c-sdk::bcos-c-sdk-static)

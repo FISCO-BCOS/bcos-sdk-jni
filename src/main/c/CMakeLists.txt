@@ -22,8 +22,8 @@ set(CMAKE_OSX_DEPLOYMENT_TARGET "11.3" CACHE STRING "Minimum OS X deployment ver
 # URL_BASE download domain name
 include(FetchContent)
 if (NOT DEFINED URL_BASE)
-    # set(URL_BASE "github.com")
-    set(URL_BASE "github.com.cnpmjs.org")
+    set(URL_BASE "github.com")
+    #set(URL_BASE "github.com.cnpmjs.org")
 endif()
 
 # download bcos-cmake-scripts

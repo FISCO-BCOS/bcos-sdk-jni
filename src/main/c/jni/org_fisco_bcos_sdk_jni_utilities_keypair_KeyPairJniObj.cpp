@@ -16,7 +16,7 @@ Java_org_fisco_bcos_sdk_jni_utilities_keypair_KeyPairJniObj_createJniKeyPair__I(
     int crypto_type = (int)jcrypto_type;
     void* keypair = bcos_sdk_create_keypair(crypto_type);
 
-    if (bcos_sdk_last_opr_failed())
+    if (!bcos_sdk_is_last_opr_success())
     {
         THROW_JNI_EXCEPTION(env, bcos_sdk_get_last_error_msg());
     }
@@ -38,7 +38,7 @@ Java_org_fisco_bcos_sdk_jni_utilities_keypair_KeyPairJniObj_createJniKeyPair__I_
     jsize len = env->GetArrayLength(jdata);
     void* keypair = bcos_sdk_create_keypair_by_prikey(crypto_type, (void*)data, len);
 
-    if (bcos_sdk_last_opr_failed())
+    if (!bcos_sdk_is_last_opr_success())
     {
         THROW_JNI_EXCEPTION(env, bcos_sdk_get_last_error_msg());
     }
@@ -58,7 +58,7 @@ Java_org_fisco_bcos_sdk_jni_utilities_keypair_KeyPairJniObj_getJniKeyPairAddress
     void* keypair = reinterpret_cast<void*>(jkeypair);
     const char* addr = bcos_sdk_get_keypair_address(keypair);
 
-    if (bcos_sdk_last_opr_failed())
+    if (!bcos_sdk_is_last_opr_success())
     {
         THROW_JNI_EXCEPTION(env, bcos_sdk_get_last_error_msg());
     }
@@ -80,7 +80,7 @@ Java_org_fisco_bcos_sdk_jni_utilities_keypair_KeyPairJniObj_getJniKeyPairPubKey(
     void* keypair = reinterpret_cast<void*>(jkeypair);
     const char* pub = bcos_sdk_get_keypair_public_key(keypair);
 
-    if (bcos_sdk_last_opr_failed())
+    if (!bcos_sdk_is_last_opr_success())
     {
         THROW_JNI_EXCEPTION(env, bcos_sdk_get_last_error_msg());
     }
@@ -102,7 +102,7 @@ Java_org_fisco_bcos_sdk_jni_utilities_keypair_KeyPairJniObj_getJniKeyPairPrivate
     void* keypair = reinterpret_cast<void*>(jkeypair);
     const char* pri = bcos_sdk_get_keypair_private_key(keypair);
 
-    if (bcos_sdk_last_opr_failed())
+    if (!bcos_sdk_is_last_opr_success())
     {
         THROW_JNI_EXCEPTION(env, bcos_sdk_get_last_error_msg());
     }
@@ -124,7 +124,7 @@ Java_org_fisco_bcos_sdk_jni_utilities_keypair_KeyPairJniObj_getJniKeyPairCryptoT
     void* key_pair = reinterpret_cast<void*>(jkeypair);
     int crypto_type = bcos_sdk_get_keypair_type(key_pair);
 
-    if (bcos_sdk_last_opr_failed())
+    if (!bcos_sdk_is_last_opr_success())
     {
         THROW_JNI_EXCEPTION(env, bcos_sdk_get_last_error_msg());
     }

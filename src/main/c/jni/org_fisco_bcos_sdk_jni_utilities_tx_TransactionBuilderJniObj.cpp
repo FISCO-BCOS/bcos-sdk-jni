@@ -5,17 +5,16 @@
 #include "org_fisco_bcos_sdk_exception.h"
 #include <tuple>
 
-
 /*
  * Class:     org_fisco_bcos_sdk_jni_utilities_tx_TransactionBuilderJniObj
  * Method:    createDeployContractSignedTransaction
  * Signature:
- * (JLjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;JLjava/lang/String;Ljava/lang/String;)V
+ * (JLjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;J)Lorg/fisco/bcos/sdk/jni/utilities/tx/TxPair;
  */
-JNIEXPORT void JNICALL
+JNIEXPORT jobject JNICALL
 Java_org_fisco_bcos_sdk_jni_utilities_tx_TransactionBuilderJniObj_createDeployContractSignedTransaction(
     JNIEnv* env, jclass, jlong jkeypair, jstring jgroup_id, jstring jchain_id, jstring jcode,
-    jstring jabi, jlong jblock_limit, jstring jtx_hash, jstring jsigned_tx)
+    jstring jabi, jlong jblock_limit)
 {
     // keypair
     void* keypair = reinterpret_cast<void*>(jkeypair);
@@ -39,30 +38,49 @@ Java_org_fisco_bcos_sdk_jni_utilities_tx_TransactionBuilderJniObj_createDeployCo
         THROW_JNI_EXCEPTION(env, bcos_sdk_get_last_error_msg());
     }
 
-    jstring jtx_hash_ret = env->NewStringUTF(tx_hash);
-    jstring jsigned_tx_ret = env->NewStringUTF(signed_tx);
+    jstring jtx_hash = env->NewStringUTF(tx_hash);
+    jstring jsigned_tx = env->NewStringUTF(signed_tx);
+
+    jclass jtxpair = env->FindClass("org/fisco/bcos/sdk/jni/utilities/tx/TxPair");
+    if (jtxpair == NULL)
+    {
+        env->FatalError(
+            "No such class, className: "
+            "org/fisco/bcos/sdk/jni/utilities/tx/TxPair");
+    }
+
+    jmethodID txpair_mtd =
+        env->GetMethodID(jtxpair, "<init>", "(Ljava/lang/String;Ljava/lang/String;)V");
+    if (txpair_mtd == NULL)
+    {
+        env->FatalError("No such constructor in TxPair, constructor(String, String)");
+    }
+
+    jobject txpair = env->NewObject(jtxpair, txpair_mtd, jtx_hash, jsigned_tx);
 
     // release resoure
     env->ReleaseStringUTFChars(jgroup_id, group_id);
     env->ReleaseStringUTFChars(jchain_id, chain_id);
     env->ReleaseStringUTFChars(jcode, code);
     env->ReleaseStringUTFChars(jabi, abi);
+
+    env->DeleteLocalRef(jtx_hash);
+    env->DeleteLocalRef(jsigned_tx);
     // TODO: free tx_hash、 signed_tx
 
-    jtx_hash = jtx_hash_ret;
-    jsigned_tx = jsigned_tx_ret;
+    return txpair;
 }
 
 /*
  * Class:     org_fisco_bcos_sdk_jni_utilities_tx_TransactionBuilderJniObj
  * Method:    createSignedTransaction
  * Signature:
- * (JLjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;JILjava/lang/String;Ljava/lang/String;)V
+ * (JLjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;JI)Lorg/fisco/bcos/sdk/jni/utilities/tx/TxPair;
  */
-JNIEXPORT void JNICALL
+JNIEXPORT jobject JNICALL
 Java_org_fisco_bcos_sdk_jni_utilities_tx_TransactionBuilderJniObj_createSignedTransaction(
     JNIEnv* env, jclass, jlong jkeypair, jstring jgroup_id, jstring jchain_id, jstring jto,
-    jstring jdata, jlong jblock_limit, jint jatti, jstring jtx_hash, jstring jsigned_tx)
+    jstring jdata, jlong jblock_limit, jint jatti)
 {
     // keypair
     void* keypair = reinterpret_cast<void*>(jkeypair);
@@ -88,8 +106,25 @@ Java_org_fisco_bcos_sdk_jni_utilities_tx_TransactionBuilderJniObj_createSignedTr
         THROW_JNI_EXCEPTION(env, bcos_sdk_get_last_error_msg());
     }
 
-    jstring jtx_hash_ret = env->NewStringUTF(tx_hash);
-    jstring jsigned_tx_ret = env->NewStringUTF(signed_tx);
+    jstring jtx_hash = env->NewStringUTF(tx_hash);
+    jstring jsigned_tx = env->NewStringUTF(signed_tx);
+
+    jclass jtxpair = env->FindClass("org/fisco/bcos/sdk/jni/utilities/tx/TxPair");
+    if (jtxpair == NULL)
+    {
+        env->FatalError(
+            "No such class, className: "
+            "org/fisco/bcos/sdk/jni/utilities/tx/TxPair");
+    }
+
+    jmethodID txpair_mtd =
+        env->GetMethodID(jtxpair, "<init>", "(Ljava/lang/String;Ljava/lang/String;)V");
+    if (txpair_mtd == NULL)
+    {
+        env->FatalError("No such constructor in TxPair, constructor(String, String)");
+    }
+
+    jobject txpair = env->NewObject(jtxpair, txpair_mtd, jtx_hash, jsigned_tx);
 
     // release resoure
     env->ReleaseStringUTFChars(jgroup_id, group_id);
@@ -98,6 +133,8 @@ Java_org_fisco_bcos_sdk_jni_utilities_tx_TransactionBuilderJniObj_createSignedTr
     env->ReleaseStringUTFChars(jdata, data);
     // TODO: free tx_hash、 signed_tx
 
-    jtx_hash = jtx_hash_ret;
-    jsigned_tx = jsigned_tx_ret;
+    env->DeleteLocalRef(jtx_hash);
+    env->DeleteLocalRef(jsigned_tx);
+
+    return txpair;
 }

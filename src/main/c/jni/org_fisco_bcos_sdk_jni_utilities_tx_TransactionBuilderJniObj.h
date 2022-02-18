@@ -11,21 +11,21 @@ extern "C" {
  * Class:     org_fisco_bcos_sdk_jni_utilities_tx_TransactionBuilderJniObj
  * Method:    createDeployContractSignedTransaction
  * Signature:
- * (JLjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;JLjava/lang/String;Ljava/lang/String;)V
+ * (JLjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;J)Lorg/fisco/bcos/sdk/jni/utilities/tx/TxPair;
  */
-JNIEXPORT void JNICALL
+JNIEXPORT jobject JNICALL
 Java_org_fisco_bcos_sdk_jni_utilities_tx_TransactionBuilderJniObj_createDeployContractSignedTransaction(
-    JNIEnv*, jclass, jlong, jstring, jstring, jstring, jstring, jlong, jstring, jstring);
+    JNIEnv*, jclass, jlong, jstring, jstring, jstring, jstring, jlong);
 
 /*
  * Class:     org_fisco_bcos_sdk_jni_utilities_tx_TransactionBuilderJniObj
  * Method:    createSignedTransaction
  * Signature:
- * (JLjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;JILjava/lang/String;Ljava/lang/String;)V
+ * (JLjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;JI)Lorg/fisco/bcos/sdk/jni/utilities/tx/TxPair;
  */
-JNIEXPORT void JNICALL
+JNIEXPORT jobject JNICALL
 Java_org_fisco_bcos_sdk_jni_utilities_tx_TransactionBuilderJniObj_createSignedTransaction(
-    JNIEnv*, jclass, jlong, jstring, jstring, jstring, jstring, jlong, jint, jstring, jstring);
+    JNIEnv*, jclass, jlong, jstring, jstring, jstring, jstring, jlong, jint);
 
 #ifdef __cplusplus
 }

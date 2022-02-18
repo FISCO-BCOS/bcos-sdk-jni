@@ -89,6 +89,10 @@ find_package(bcos-utilities CONFIG REQUIRED)
 hunter_add_package(bcos-boostssl)
 find_package(bcos-boostssl CONFIG REQUIRED)
 
+# find bcos-crypto
+hunter_add_package(bcos-crypto)
+find_package(bcos-crypto CONFIG REQUIRED)
+
 # find bcos-cpp-sdk
 hunter_add_package(bcos-cpp-sdk)
 find_package(bcos-cpp-sdk REQUIRED)

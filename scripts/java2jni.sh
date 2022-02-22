@@ -4,7 +4,7 @@ cd $dirpath/../
 
 # TODO: check if javah command available
 
-JNI_INCLUDE_PATH="src/main/c/include/jni"
+JNI_INCLUDE_PATH="src/main/c/jni"
 JAVA_SOURCE_PATH="src/main/java/"
 
 BASIC_PKG_PREFIX="org.fisco.bcos.sdk.jni"

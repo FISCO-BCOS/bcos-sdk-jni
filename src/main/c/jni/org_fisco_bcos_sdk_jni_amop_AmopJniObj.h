@@ -12,80 +12,79 @@ extern "C" {
  * Method:    start
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_AmopJniObj_start
-  (JNIEnv *, jobject);
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_AmopJniObj_start(JNIEnv*, jobject);
 
 /*
  * Class:     org_fisco_bcos_sdk_jni_amop_AmopJniObj
  * Method:    stop
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_AmopJniObj_stop
-  (JNIEnv *, jobject);
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_AmopJniObj_stop(JNIEnv*, jobject);
 
 /*
  * Class:     org_fisco_bcos_sdk_jni_amop_AmopJniObj
  * Method:    subscribeTopic
  * Signature: (Ljava/util/Set;)V
  */
-JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_AmopJniObj_subscribeTopic__Ljava_util_Set_2
-  (JNIEnv *, jobject, jobject);
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_AmopJniObj_subscribeTopic__Ljava_util_Set_2(
+    JNIEnv*, jobject, jobject);
 
 /*
  * Class:     org_fisco_bcos_sdk_jni_amop_AmopJniObj
  * Method:    subscribeTopic
  * Signature: (Ljava/lang/String;Lorg/fisco/bcos/sdk/jni/amop/AmopRequestCallback;)V
  */
-JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_AmopJniObj_subscribeTopic__Ljava_lang_String_2Lorg_fisco_bcos_sdk_jni_amop_AmopRequestCallback_2
-  (JNIEnv *, jobject, jstring, jobject);
+JNIEXPORT void JNICALL
+Java_org_fisco_bcos_sdk_jni_amop_AmopJniObj_subscribeTopic__Ljava_lang_String_2Lorg_fisco_bcos_sdk_jni_amop_AmopRequestCallback_2(
+    JNIEnv*, jobject, jstring, jobject);
 
 /*
  * Class:     org_fisco_bcos_sdk_jni_amop_AmopJniObj
  * Method:    unsubscribeTopic
  * Signature: (Ljava/util/Set;)V
  */
-JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_AmopJniObj_unsubscribeTopic
-  (JNIEnv *, jobject, jobject);
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_AmopJniObj_unsubscribeTopic(
+    JNIEnv*, jobject, jobject);
 
 /*
  * Class:     org_fisco_bcos_sdk_jni_amop_AmopJniObj
  * Method:    setCallback
  * Signature: (Lorg/fisco/bcos/sdk/jni/amop/AmopRequestCallback;)V
  */
-JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_AmopJniObj_setCallback
-  (JNIEnv *, jobject, jobject);
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_AmopJniObj_setCallback(
+    JNIEnv*, jobject, jobject);
 
 /*
  * Class:     org_fisco_bcos_sdk_jni_amop_AmopJniObj
  * Method:    sendAmopMsg
  * Signature: (Ljava/lang/String;[BILorg/fisco/bcos/sdk/jni/amop/AmopResponseCallback;)V
  */
-JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_AmopJniObj_sendAmopMsg
-  (JNIEnv *, jobject, jstring, jbyteArray, jint, jobject);
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_AmopJniObj_sendAmopMsg(
+    JNIEnv*, jobject, jstring, jbyteArray, jint, jobject);
 
 /*
  * Class:     org_fisco_bcos_sdk_jni_amop_AmopJniObj
  * Method:    broadcastAmopMsg
  * Signature: (Ljava/lang/String;[B)V
  */
-JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_AmopJniObj_broadcastAmopMsg
-  (JNIEnv *, jobject, jstring, jbyteArray);
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_AmopJniObj_broadcastAmopMsg(
+    JNIEnv*, jobject, jstring, jbyteArray);
 
 /*
  * Class:     org_fisco_bcos_sdk_jni_amop_AmopJniObj
  * Method:    sendResponse
  * Signature: (Ljava/lang/String;Ljava/lang/String;[B)V
  */
-JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_AmopJniObj_sendResponse
-  (JNIEnv *, jobject, jstring, jstring, jbyteArray);
+JNIEXPORT void JNICALL Java_org_fisco_bcos_sdk_jni_amop_AmopJniObj_sendResponse(
+    JNIEnv*, jobject, jstring, jstring, jbyteArray);
 
 /*
  * Class:     org_fisco_bcos_sdk_jni_amop_AmopJniObj
  * Method:    getSubTopics
  * Signature: ()Ljava/util/Set;
  */
-JNIEXPORT jobject JNICALL Java_org_fisco_bcos_sdk_jni_amop_AmopJniObj_getSubTopics
-  (JNIEnv *, jobject);
+JNIEXPORT jobject JNICALL Java_org_fisco_bcos_sdk_jni_amop_AmopJniObj_getSubTopics(
+    JNIEnv*, jobject);
 
 #ifdef __cplusplus
 }

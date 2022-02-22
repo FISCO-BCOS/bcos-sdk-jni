@@ -22,8 +22,8 @@ set(CMAKE_OSX_DEPLOYMENT_TARGET "11.3" CACHE STRING "Minimum OS X deployment ver
 # URL_BASE download domain name
 include(FetchContent)
 if (NOT DEFINED URL_BASE)
-    # set(URL_BASE "github.com")
-    set(URL_BASE "github.com.cnpmjs.org")
+    set(URL_BASE "github.com")
+    #set(URL_BASE "github.com.cnpmjs.org")
 endif()
 
 # download bcos-cmake-scripts
@@ -42,9 +42,9 @@ list(APPEND CMAKE_MODULE_PATH ${JAVA_SDK_JNI_CMAKE_DIR})
 # include hunter
 include(HunterGate)
 HunterGate(
-    URL https://${URL_BASE}/FISCO-BCOS/hunter/archive/858de38e7c4c654499f36171feb1057f59e88b71.tar.gz
-    SHA1 19eeb6de3c56397e7ed6b45bbc57f2b4000e5b97
-    FILEPATH "${CMAKE_SOURCE_DIR}/cmake/config.cmake"
+    URL "https://${URL_BASE}/FISCO-BCOS/hunter/archive/9bb4c2aa139cfa53af5779105cd0d5570c31fbf5.tar.gz"
+    SHA1 "02165406cd653bedfe88538926453ede8eca84ba"
+    FILEPATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/config.cmake"
 )
 
 # project name
@@ -52,7 +52,7 @@ project(bcos-sdk-jni VERSION "3.0.0")
 
 # Debug, Release, RelWithDebInfo, MinSizeRel
 set(CMAKE_BUILD_TYPE Release)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
 
 include_directories(${CMAKE_INSTALL_INCLUDEDIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
@@ -75,6 +75,10 @@ find_package(OpenSSL REQUIRED)
 
 hunter_add_package(Boost COMPONENTS all)
 find_package(Boost CONFIG REQUIRED log chrono system filesystem thread iostreams)
+
+# bcos-utilities
+hunter_add_package(bcos-utilities)
+find_package(bcos-utilities CONFIG REQUIRED)
 
 # find bcos-boostssl
 hunter_add_package(bcos-boostssl)
@@ -101,11 +105,11 @@ file(GLOB_RECURSE SOURCES "jni/*.h" "jni/*.cpp" "jni/*.c")
 
 set(FISCO_BCOS_JNI_TARGET "bcos-sdk-jni")
 add_library(${FISCO_BCOS_JNI_TARGET} SHARED ${SOURCES})
-target_link_libraries(${FISCO_BCOS_JNI_TARGET} PUBLIC bcos-cpp-sdk::cpp-sdk bcos-c-sdk::c-sdk)
+target_link_libraries(${FISCO_BCOS_JNI_TARGET} PUBLIC bcos-cpp-sdk::bcos-cpp-sdk bcos-c-sdk::bcos-c-sdk-static)
 
 set(FISCO_BCOS_JNI_STATIC_TARGET "bcos-sdk-jni-static")
 add_library(${FISCO_BCOS_JNI_STATIC_TARGET} ${SOURCES})
-target_link_libraries(${FISCO_BCOS_JNI_STATIC_TARGET} PUBLIC bcos-cpp-sdk::cpp-sdk bcos-c-sdk::c-sdk)
+target_link_libraries(${FISCO_BCOS_JNI_STATIC_TARGET} PUBLIC bcos-cpp-sdk::bcos-cpp-sdk bcos-c-sdk::bcos-c-sdk-static)
 
 # ut and binary exe
 # if (TESTS)

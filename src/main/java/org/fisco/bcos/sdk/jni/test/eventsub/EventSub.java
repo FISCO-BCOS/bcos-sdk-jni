@@ -2,8 +2,10 @@ package org.fisco.bcos.sdk.jni.test.eventsub;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.math.BigInteger;
 import java.util.Arrays;
 import org.fisco.bcos.sdk.jni.BcosSDKJniObj;
+import org.fisco.bcos.sdk.jni.BlockNotifier;
 import org.fisco.bcos.sdk.jni.common.JniConfig;
 import org.fisco.bcos.sdk.jni.common.JniException;
 import org.fisco.bcos.sdk.jni.common.Response;
@@ -47,6 +49,16 @@ public class EventSub {
     JniConfig jniConfig = Utility.newJniConfig(Arrays.asList(peer));
     jniConfig.setDisableSsl(true);
     BcosSDKJniObj bcosSDKJni = BcosSDKJniObj.build(jniConfig);
+    bcosSDKJni.registerBlockNotifier(
+        group,
+        new BlockNotifier() {
+          @Override
+          public void onResponse(String groupId, BigInteger blockNumber) {
+            System.out.println("BlockNotifier ==>>> ");
+            System.out.println("\t group: " + groupId);
+            System.out.println("\t blockNumber: " + blockNumber);
+          }
+        });
     EventSubJniObj eventSubscribe = EventSubJniObj.build(bcosSDKJni.getNativePointer());
 
     EventSubParams params = new EventSubParams();

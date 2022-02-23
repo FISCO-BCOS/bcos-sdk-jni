@@ -23,31 +23,29 @@ public class TransactionBuilderJniObj {
       throws JniException;
 
   /** @param transactionData */
-  public static native void destroyTransactionData(long transactionData)
-      throws JniException;
+  public static native void destroyTransactionData(long transactionData) throws JniException;
 
   /**
    * @param transactionData
    * @return
    */
-  public static native String encodeTransactionData(long transactionData)
-      throws JniException;
+  public static native String encodeTransactionData(long transactionData) throws JniException;
 
   /**
    * @param cryptoType
    * @param transactionData
    * @return
    */
-  public static native String calcTransactionDataHash(
-      int cryptoType, long transactionData) throws JniException;
+  public static native String calcTransactionDataHash(int cryptoType, long transactionData)
+      throws JniException;
 
   /**
    * @param keyPair
    * @param transactionDataHash
    * @return
    */
-  public static native String signTransactionDataHash(
-      long keyPair, String transactionDataHash) throws JniException;
+  public static native String signTransactionDataHash(long keyPair, String transactionDataHash)
+      throws JniException;
 
   /**
    * @param transactionData

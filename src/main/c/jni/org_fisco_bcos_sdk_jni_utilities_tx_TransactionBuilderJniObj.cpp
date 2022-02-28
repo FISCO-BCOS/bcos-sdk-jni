@@ -145,7 +145,7 @@ Java_org_fisco_bcos_sdk_jni_utilities_tx_TransactionBuilderJniObj_createSignedTr
     const char* transaction_data_hash = env->GetStringUTFChars(jtransaction_data_hash, NULL);
     int attr = jattr;
 
-    const char* signed_tx = bcos_sdk_create_signed_tx_with_signed_data(
+    const char* signed_tx = bcos_sdk_create_signed_transaction_with_signed_data(
         transaction_data, transaction_data_signed_data, transaction_data_hash, attr);
 
     if (!bcos_sdk_is_last_opr_success())
@@ -187,7 +187,7 @@ Java_org_fisco_bcos_sdk_jni_utilities_tx_TransactionBuilderJniObj_createSignedTr
 
     char* tx_hash = NULL;
     char* signed_tx = NULL;
-    bcos_sdk_create_signed_tx(
+    bcos_sdk_create_signed_transaction(
         keypair, group_id, chain_id, to, data, abi, block_limit, attr, &tx_hash, &signed_tx);
     if (!bcos_sdk_is_last_opr_success())
     {

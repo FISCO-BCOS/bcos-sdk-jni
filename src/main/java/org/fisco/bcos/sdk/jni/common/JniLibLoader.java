@@ -89,7 +89,7 @@ public final class JniLibLoader {
     logger.debug("osName: {}, archName: {}", osName, archName);
 
     if (osName.contains(WIN)) {
-      return "lib" + baseName + ".dll";
+      return baseName + ".dll";
     } else if (osName.contains(LINUX)) {
       return "lib" + baseName + ".so";
     } else if (osName.contains(MAC)) {

@@ -30,7 +30,7 @@ dependencies {
 
 archivesBaseName = 'bcos-sdk-jni'
 group = 'org.fisco-bcos'
-version = '3.0.0-rc2'
+version = '3.0.0-rc3'
 
 // Additional attribute definition
 ext {

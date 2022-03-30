@@ -10,29 +10,33 @@ hunter_config(
     CONFIG_MACRO=BOOST_UUID_RANDOM_PROVIDER_FORCE_POSIX
 )
 
-hunter_config(bcos-utilities VERSION 1.0.0-rc1-f12788a1 CMAKE_ARGS HUNTER_PACKAGE_LOG_BUILD=ON HUNTER_PACKAGE_LOG_INSTALL=ON)
 hunter_config(OpenSSL VERSION tassl_1.1.1b_v1.4-63b60292)
 
-hunter_config(bcos-crypto VERSION 3.0.0-local
-    URL https://${URL_BASE}/FISCO-BCOS/bcos-crypto/archive/eb042091bb6aef907aecfe84dfe365da006b2952.tar.gz
-    SHA1 dbfe8d9f79311fd62c8f69e0f870b1150077f4ed
+hunter_config(bcos-utilities VERSION 1.0.0-rc2-local
+    URL https://${URL_BASE}/FISCO-BCOS/bcos-utilities/archive/55d6bf357719aa030e3898b060b4a3ff2476434b.tar.gz
+	SHA1 d0aeb11cf064a5e9793c50dd7bb8487e2d251f02
+    CMAKE_ARGS HUNTER_PACKAGE_LOG_BUILD=ON HUNTER_PACKAGE_LOG_INSTALL=ON
+)
+
+hunter_config(bcos-crypto VERSION 1.0.0-rc2-local
+    URL https://${URL_BASE}/FISCO-BCOS/bcos-crypto/archive/86fdc960741bd26cea3c9f04e61f138f508c7add.tar.gz
+    SHA1 53dcac50016f5e1bd517ae8d595b586e358ad118
     CMAKE_ARGS HUNTER_PACKAGE_LOG_BUILD=ON HUNTER_PACKAGE_LOG_INSTALL=ON SM2_OPTIMIZE=ON
 )
 
-hunter_config(bcos-boostssl
-	VERSION 3.0.0-local
-	URL https://${URL_BASE}/FISCO-BCOS/bcos-boostssl/archive/4f36d2f7e947f880474b1c9850a5ba4ff63d3556.tar.gz
-	SHA1 521d74fc5aa75bcac9f405258736fce60d0f5715
+hunter_config(bcos-boostssl VERSION 1.0.0-rc3-local
+	URL https://${URL_BASE}/FISCO-BCOS/bcos-boostssl/archive/1c9cecf7ec9ed59d0bdaa9f390c618c8f4208cf2.tar.gz
+	SHA1 95774f3638b4bcb27a6708fca0a28389a7cfa9c3
 )
 
 hunter_config(bcos-cpp-sdk
-	VERSION 3.0.0-local
-	URL https://${URL_BASE}/FISCO-BCOS/bcos-cpp-sdk/archive/81ac101703944ac19c29a95293babdb5d33c39e8.tar.gz
-	SHA1 44983294393223363a869e4b27303c616d71c9dd
+	VERSION 3.0.0-rc3-local
+	URL https://${URL_BASE}/FISCO-BCOS/bcos-cpp-sdk/archive/3acd53306211bc6b851cc6c7ff778e216e361c9b.tar.gz
+	SHA1 0a6532a31da25e3e3af209401718ad8629423eca
 )
 
 hunter_config(bcos-c-sdk
-	VERSION 3.0.0-local
-	URL https://${URL_BASE}/FISCO-BCOS/bcos-c-sdk/archive/fb6338eea3bfcea2884d7603f440a56a1dd71fb0.tar.gz
-	SHA1 9a8d5f0a7ddc81b7fad87a0f1482ac40e9765c57
+	VERSION 3.0.0-rc3-local
+	URL https://${URL_BASE}/FISCO-BCOS/bcos-c-sdk/archive/9e9e84aec2510b6574d4aab88078dbeb38e2fc82.tar.gz
+	SHA1 94d10c9abcd7aafa12686d55b0f63f1e78e845c2
 )

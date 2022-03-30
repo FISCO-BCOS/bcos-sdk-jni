@@ -23,7 +23,7 @@ set(CMAKE_OSX_DEPLOYMENT_TARGET "11.3" CACHE STRING "Minimum OS X deployment ver
 include(FetchContent)
 if (NOT DEFINED URL_BASE)
     set(URL_BASE "github.com")
-    # set(URL_BASE "github.com.cnpmjs.org")
+    #set(URL_BASE "github.com.cnpmjs.org")
 endif()
 
 # download bcos-cmake-scripts
@@ -49,6 +49,7 @@ HunterGate(
 
 # project name
 project(bcos-sdk-jni VERSION "3.0.0")
+set(VERSION_SUFFIX "-rc2")
 
 # Debug, Release, RelWithDebInfo, MinSizeRel
 set(CMAKE_BUILD_TYPE Release)

@@ -88,6 +88,11 @@ else()
 endif()
 
 set(FISCO_BCOS_JNI_TARGET "bcos-sdk-jni")
+# add suffix for macOS M1
+if(APPLE AND CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "arm64")
+    set(FISCO_BCOS_JNI_TARGET "bcos-sdk-jni-aarch64")
+endif()
+
 add_library(${FISCO_BCOS_JNI_TARGET} SHARED ${SOURCES})
 target_link_libraries(${FISCO_BCOS_JNI_TARGET} PUBLIC wedpr-crypto::crypto wedpr-crypto::extend-crypto bcos-cpp-sdk::bcos-cpp-sdk bcos-c-sdk::bcos-c-sdk-static)
 

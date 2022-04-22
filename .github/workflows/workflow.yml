@@ -53,18 +53,13 @@ jobs:
         run: sudo apt install -y git curl openssl build-essential clang cmake ccache
       - name: configure
         if: runner.os == 'macOS'
-        run: export SDKROOT=$(xcrun --sdk macosx --show-sdk-path) && CC=/usr/bin/clang CXX=/usr/bin/clang++ bash scripts/compile_jni_lib.sh
-      - name: configure
-        if: runner.os == 'Linux'
-        run: CC=/usr/bin/clang CXX=/usr/bin/clang++ bash scripts/compile_jni_lib.sh
+        run: export SDKROOT=$(xcrun --sdk macosx --show-sdk-path) && CC=/usr/bin/clang CXX=/usr/bin/clang++
       - name: compile
-        run: java -version && bash scripts/compile_jni_lib.sh
-      - name: tar lib for mac
-        run: tar -cvzf libbcos-sdk-jni.dylib.tar.gz src/main/resources/META-INF/native/libbcos-sdk-jni.dylib
+        run: export SDKROOT=$(xcrun --sdk macosx --show-sdk-path) && java -version && bash scripts/compile_jni_lib.sh
       - uses: actions/upload-artifact@v2
         with:
           name: libbcos-sdk-jni.dylib.tar.gz
-          path: libbcos-sdk-jni.dylib.tar.gz
+          path: src/main/resources/META-INF/native/libbcos-sdk-jni.dylib
   build_with_gcc:
     name: build_with_gcc
     runs-on: ${{ matrix.os }}
@@ -102,8 +97,7 @@ jobs:
       - name: install Ubuntu dependencies
         run: sudo apt install -y git curl openssl build-essential cmake ccache
       - name: compile
-        run: 
-          java -version && bash scripts/compile_jni_lib.sh
+        run: java -version && bash scripts/compile_jni_lib.sh
   build_with_centos:
     name: build_with_centos
     runs-on: ubuntu-latest
@@ -146,9 +140,50 @@ jobs:
           java -version
           cmake --version
           bash scripts/compile_jni_lib.sh
-      - name: tar lib for centos
-        run: tar -cvzf libbcos-sdk-jni.so.tar.gz src/main/resources/META-INF/native/libbcos-sdk-jni.so
       - uses: actions/upload-artifact@v2
         with:
           name: libbcos-sdk-jni.so.tar.gz
-          path: libbcos-sdk-jni.so.tar.gz
+          path: src/main/resources/META-INF/native/libbcos-sdk-jni.so
+  build_with_windows:
+      name: build_with_windows
+      runs-on: ${{ matrix.os }}
+      strategy:
+        matrix:
+          os: [windows-2019]
+      steps:
+        - uses: actions/checkout@v2
+          with:
+            fetch-depth: 5
+        - uses: actions/cache@v2
+          id: cache
+          with:
+            path: |
+              /home/runner/.hunter
+              /github/home/.hunter
+              /Users/runner/.hunter
+              /home/runner/.hunter/_Base/Download/
+              /github/home/.hunter/_Base/Download/
+              /Users/runner/.hunter/_Base/Download/
+              C:/.hunter/
+              C:/.hunter/_Base/Download/
+              ccache
+            key: hunter-msvc-v3-notest-${{ runner.temp }}-${{ github.base_ref }}-${{ hashFiles('.github/workflows/workflow.yml') }}
+            restore-keys: |
+              hunter-msvc-v3-notest-${{ runner.temp }}-${{ github.base_ref }}-${{ hashFiles('.github/workflows/workflow.yml') }}
+              hunter-msvc-v3-notest-${{ runner.temp }}-${{ github.base_ref }}-
+              hunter-msvc-v3-notest-${{ runner.temp }}-
+        - name: Add MSbuild to PATH
+          uses: microsoft/setup-msbuild@v1.1
+        - name: configure
+          if: runner.os == 'Windows'
+          run: cd src/main/c/ && cmake -G "Visual Studio 16 2019" -A x64  ./ -DHUNTER_CONFIGURATION_TYPES=Release -DHUNTER_STATUS_DEBUG=ON -DTESTS=ON
+        - name: compile
+          run: cd src/main/c/ && MSBuild bcos-sdk-jni.sln /p:Configuration=Release /p:Platform=x64
+        - uses: actions/upload-artifact@v2
+          with:
+            name: bcos-sdk-jni.lib.zip
+            path: D:\a\bcos-sdk-jni\bcos-sdk-jni\src\main\c\Release\bcos-sdk-jni.lib
+        - uses: actions/upload-artifact@v2
+          with:
+            name: bcos-sdk-jni.dll.zip
+            path: D:\a\bcos-sdk-jni\bcos-sdk-jni\src\main\c\Release\bcos-sdk-jni.dll

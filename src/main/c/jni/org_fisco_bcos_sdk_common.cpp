@@ -10,7 +10,6 @@
 
 using namespace bcos;
 using namespace bcos::boostssl;
-using namespace bcos::boostssl::utilities;
 
 void* bcos_sdk_get_native_pointer(JNIEnv* env, jobject self)
 {

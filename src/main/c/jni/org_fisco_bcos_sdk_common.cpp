@@ -315,7 +315,7 @@ struct bcos_sdk_c_config* create_config_from_java_obj(JNIEnv* env, jobject jconf
         }
 
         const char* peer = env->GetStringUTFChars(jpeer, NULL);
-        bcos::boostssl::ws::EndPoint endPoint;
+        bcos::boostssl::NodeIPEndpoint endPoint;
         if (!bcos::boostssl::ws::WsTools::stringToEndPoint(peer ? peer : "", endPoint))
         {
             BOOST_THROW_EXCEPTION(
@@ -327,8 +327,8 @@ struct bcos_sdk_c_config* create_config_from_java_obj(JNIEnv* env, jobject jconf
         }
         else
         {
-            ep[i].host = strdup(endPoint.host.c_str());
-            ep[i].port = endPoint.port;
+            ep[i].host = strdup(endPoint.address().c_str());
+            ep[i].port = endPoint.port();
         }
 
         env->ReleaseStringUTFChars(jpeer, peer);

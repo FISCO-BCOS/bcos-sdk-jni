@@ -119,6 +119,10 @@ static void on_receive_block_notifier(const char* group, int64_t block_number, v
 
     env->CallObjectMethod(jcallback, onReqMethodID, jgroup, jBig);
 
+    env->DeleteLocalRef(jblk);
+    env->DeleteLocalRef(jgroup);
+    env->DeleteLocalRef(jBig);
+
     //  Note: the callback should not be unreference, it is not
     // once used
     // env->DeleteGlobalRef(jcallback);

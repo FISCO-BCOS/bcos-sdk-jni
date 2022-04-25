@@ -92,6 +92,10 @@ static void on_receive_rpc_response(struct bcos_sdk_c_struct_response* resp)
 
     env->CallObjectMethod(jcallback, onRespMethodID, responseObj);
 
+    env->DeleteLocalRef(errorString);
+    env->DeleteLocalRef(byteArrayObj);
+    env->DeleteLocalRef(responseObj);
+
     // release callback global reference
     env->DeleteGlobalRef(jcallback);
 }

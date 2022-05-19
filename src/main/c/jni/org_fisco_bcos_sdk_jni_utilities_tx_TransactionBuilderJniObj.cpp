@@ -76,6 +76,13 @@ Java_org_fisco_bcos_sdk_jni_utilities_tx_TransactionBuilderJniObj_encodeTransact
     }
 
     jstring jencoded_transaction_data = env->NewStringUTF(encoded_transaction_data);
+
+    if (encoded_transaction_data)
+    {
+        free((void*)encoded_transaction_data);
+        encoded_transaction_data = NULL;
+    }
+
     return jencoded_transaction_data;
 }
 
@@ -98,6 +105,13 @@ Java_org_fisco_bcos_sdk_jni_utilities_tx_TransactionBuilderJniObj_calcTransactio
     }
 
     jstring jtransaction_data_hash = env->NewStringUTF(transaction_data_hash);
+
+    if (transaction_data_hash)
+    {
+        free((void*)transaction_data_hash);
+        transaction_data_hash = NULL;
+    }
+
     return jtransaction_data_hash;
 }
 
@@ -125,6 +139,13 @@ Java_org_fisco_bcos_sdk_jni_utilities_tx_TransactionBuilderJniObj_signTransactio
     }
 
     jstring jsigned_data = env->NewStringUTF(signed_data);
+
+    if (signed_data)
+    {
+        free((void*)signed_data);
+        signed_data = NULL;
+    }
+
     return jsigned_data;
 }
 
@@ -148,12 +169,23 @@ Java_org_fisco_bcos_sdk_jni_utilities_tx_TransactionBuilderJniObj_createSignedTr
     const char* signed_tx = bcos_sdk_create_signed_transaction_with_signed_data(
         transaction_data, transaction_data_signed_data, transaction_data_hash, attr);
 
+    // release resoure
+    env->ReleaseStringUTFChars(jtransaction_data_signed_data, transaction_data_signed_data);
+    env->ReleaseStringUTFChars(jtransaction_data_hash, transaction_data_hash);
+
     if (!bcos_sdk_is_last_opr_success())
     {
         THROW_JNI_EXCEPTION(env, bcos_sdk_get_last_error_msg());
     }
 
     jstring jsigned_tx = env->NewStringUTF(signed_tx);
+
+    if (signed_tx)
+    {
+        free((void*)signed_tx);
+        signed_tx = NULL;
+    }
+
     return jsigned_tx;
 }
 
@@ -223,7 +255,18 @@ Java_org_fisco_bcos_sdk_jni_utilities_tx_TransactionBuilderJniObj_createSignedTr
 
     env->DeleteLocalRef(jtx_hash);
     env->DeleteLocalRef(jsigned_tx);
-    // TODO: free tx_hash、 signed_tx
+
+    if (tx_hash)
+    {
+        free((void*)tx_hash);
+        tx_hash = NULL;
+    }
+
+    if (signed_tx)
+    {
+        free((void*)signed_tx);
+        signed_tx = NULL;
+    }
 
     return txpair;
 }

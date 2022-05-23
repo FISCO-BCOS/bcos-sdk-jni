@@ -67,7 +67,7 @@ public class JniConfig {
           + '\''
           + '}';
     }
-  };
+  }
 
   /** cert for sm ssl connection */
   public static class SMCertConfig {
@@ -137,7 +137,8 @@ public class JniConfig {
           + '\''
           + '}';
     }
-  };
+  }
+  ;
 
   public int getThreadPoolSize() {
     return threadPoolSize;

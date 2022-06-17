@@ -95,7 +95,8 @@ endif()
 
 set(FISCO_BCOS_JNI_TARGET "bcos-sdk-jni")
 # add suffix for macOS M1
-if(APPLE AND CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "arm64")
+if(CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "arm64" OR CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "aarch64")
+    message(STATUS "Building arm architecture, CMAKE_HOST_SYSTEM_PROCESSOR => ${CMAKE_HOST_SYSTEM_PROCESSOR}")
     set(FISCO_BCOS_JNI_TARGET "bcos-sdk-jni-aarch64")
 endif()
 

@@ -110,7 +110,7 @@ else()
 endif()
 
 add_library(${FISCO_BCOS_JNI_TARGET} SHARED ${SOURCES})
-target_link_libraries(${FISCO_BCOS_JNI_TARGET} PUBLIC wedpr-crypto::crypto wedpr-crypto::extend-crypto bcos-cpp-sdk::bcos-cpp-sdk bcos-c-sdk::${BCOS_C_SDK_TARGET})
+target_link_libraries(${FISCO_BCOS_JNI_TARGET} PUBLIC wedpr-crypto::crypto wedpr-crypto::extend-crypto bcos-cpp-sdk::bcos-cpp-sdk bcos-c-sdk::${BCOS_C_SDK_STATIC_TARGET})
 
 add_library(${FISCO_BCOS_JNI_STATIC_TARGET} ${SOURCES})
 target_link_libraries(${FISCO_BCOS_JNI_STATIC_TARGET} PUBLIC wedpr-crypto::crypto wedpr-crypto::extend-crypto bcos-cpp-sdk::bcos-cpp-sdk bcos-c-sdk::${BCOS_C_SDK_STATIC_TARGET})

@@ -17,7 +17,7 @@
 #------------------------------------------------------------------------------
 
 cmake_minimum_required(VERSION 3.14)
-set(CMAKE_OSX_DEPLOYMENT_TARGET "11.3" CACHE STRING "Minimum OS X deployment version")
+set(CMAKE_OSX_DEPLOYMENT_TARGET "12" CACHE STRING "Minimum OS X deployment version")
 
 # URL_BASE download domain name
 include(FetchContent)
@@ -93,21 +93,27 @@ else()
    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-as-needed -ldl")
 endif()
 
-set(FISCO_BCOS_JNI_TARGET "bcos-sdk-jni")
-set(FISCO_BCOS_JNI_STATIC_TARGET "bcos-sdk-jni-static")
-
 # add suffix for macOS M1
 if(CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "arm64" OR CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "aarch64")
     message(STATUS "Building arm architecture, CMAKE_HOST_SYSTEM_PROCESSOR => ${CMAKE_HOST_SYSTEM_PROCESSOR}")
     set(FISCO_BCOS_JNI_TARGET "bcos-sdk-jni-aarch64")
     set(FISCO_BCOS_JNI_STATIC_TARGET "bcos-sdk-jni-static-aarch64")
+
+    set(BCOS_C_SDK_TARGET "bcos-c-sdk-aarch64")
+    set(BCOS_C_SDK_STATIC_TARGET "bcos-c-sdk-static-aarch64")
+else()
+    set(FISCO_BCOS_JNI_TARGET "bcos-sdk-jni")
+    set(FISCO_BCOS_JNI_STATIC_TARGET "bcos-sdk-jni-static")
+
+    set(BCOS_C_SDK_TARGET "bcos-c-sdk")
+    set(BCOS_C_SDK_STATIC_TARGET "bcos-c-sdk-static")
 endif()
 
 add_library(${FISCO_BCOS_JNI_TARGET} SHARED ${SOURCES})
-target_link_libraries(${FISCO_BCOS_JNI_TARGET} PUBLIC wedpr-crypto::crypto wedpr-crypto::extend-crypto bcos-cpp-sdk::bcos-cpp-sdk bcos-c-sdk::bcos-c-sdk-static)
+target_link_libraries(${FISCO_BCOS_JNI_TARGET} PUBLIC wedpr-crypto::crypto wedpr-crypto::extend-crypto bcos-cpp-sdk::bcos-cpp-sdk bcos-c-sdk::${BCOS_C_SDK_TARGET})
 
 add_library(${FISCO_BCOS_JNI_STATIC_TARGET} ${SOURCES})
-target_link_libraries(${FISCO_BCOS_JNI_STATIC_TARGET} PUBLIC wedpr-crypto::crypto wedpr-crypto::extend-crypto bcos-cpp-sdk::bcos-cpp-sdk bcos-c-sdk::bcos-c-sdk-static)
+target_link_libraries(${FISCO_BCOS_JNI_STATIC_TARGET} PUBLIC wedpr-crypto::crypto wedpr-crypto::extend-crypto bcos-cpp-sdk::bcos-cpp-sdk bcos-c-sdk::${BCOS_C_SDK_STATIC_TARGET})
 
 # ut and binary exe
 # if (TESTS)

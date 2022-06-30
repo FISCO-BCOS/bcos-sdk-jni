@@ -4,9 +4,9 @@ plugins {
     id 'signing'
     id 'java-library'
     id 'maven-publish'
-    id 'org.ajoberstar.grgit' version '4.0.1'
+    id 'org.ajoberstar.grgit' version '4.1.1'
     id "de.undercouch.download" version "4.1.2"
-    id 'com.github.sherter.google-java-format' version '0.8'
+    id 'com.github.sherter.google-java-format' version '0.9'
 }
 
 sourceCompatibility = 1.8
@@ -30,7 +30,7 @@ dependencies {
 
 archivesBaseName = 'bcos-sdk-jni'
 group = 'org.fisco-bcos'
-version = '3.0.0-rc3'
+version = '3.0.0-rc4-SNAPSHOT'
 
 // Additional attribute definition
 ext {
@@ -49,7 +49,7 @@ jar {
 
     manifest {
         try {
-            def repo = grgit.open()
+            def repo = grgit.open(currentDir: project.rootDir)
             if (repo != null) {
 
                 def date = new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")

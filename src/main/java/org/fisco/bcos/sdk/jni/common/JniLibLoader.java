@@ -75,7 +75,7 @@ public final class JniLibLoader {
 
   public static String getArch() {
     String archName = System.getProperty("os.arch", "");
-    if (archName.contains("aarch64")) {
+    if (archName.contains("aarch64") || archName.contains("arm64")) {
       return "arm";
     } else {
       return "";
@@ -91,6 +91,10 @@ public final class JniLibLoader {
     if (osName.contains(WIN)) {
       return baseName + ".dll";
     } else if (osName.contains(LINUX)) {
+      String arch = getArch();
+      if ("arm".equals(arch)) {
+        return "lib" + baseName + "-aarch64" + ".so";
+      }
       return "lib" + baseName + ".so";
     } else if (osName.contains(MAC)) {
       String arch = getArch();

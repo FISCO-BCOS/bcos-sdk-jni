@@ -16,8 +16,8 @@
 # limitations under the License.
 #------------------------------------------------------------------------------
 
-cmake_minimum_required(VERSION 3.16)
-set(CMAKE_OSX_DEPLOYMENT_TARGET "11.3" CACHE STRING "Minimum OS X deployment version")
+cmake_minimum_required(VERSION 3.14)
+set(CMAKE_OSX_DEPLOYMENT_TARGET "12" CACHE STRING "Minimum OS X deployment version")
 
 # URL_BASE download domain name
 include(FetchContent)
@@ -40,16 +40,22 @@ set(JAVA_SDK_JNI_CMAKE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/cmake" CACHE PATH "The c
 list(APPEND CMAKE_MODULE_PATH ${JAVA_SDK_JNI_CMAKE_DIR})
 
 #init hunter
+include(Options)
+# for boost-ssl enable/disable native
+set(ARCH_NATIVE OFF)
+if ("${ARCHITECTURE}" MATCHES "aarch64")
+    set(ARCH_NATIVE ON)
+endif()
 include(HunterGate)
 HunterGate(
-    URL "https://${URL_BASE}/FISCO-BCOS/hunter/archive/a97876640bdca736c23a48dc0ad0f168fd3d695c.tar.gz"
-    SHA1 "bb6f77268bfa8772ca30d5a4a62dda35840078ad"
+    URL "https://${URL_BASE}/FISCO-BCOS/hunter/archive/162ff7cde3d843e43afdab8fe3214275c35ef168.tar.gz"
+    SHA1 "0ba8099fe89beb0d44986c750fe0d44040725d99"
     FILEPATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/config.cmake"
 )
 
 # project name
 project(bcos-sdk-jni VERSION "3.0.0")
-set(VERSION_SUFFIX "-rc3")
+set(VERSION_SUFFIX "-rc4")
 
 # Debug, Release, RelWithDebInfo, MinSizeRel
 set(CMAKE_BUILD_TYPE Release)
@@ -67,40 +73,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 find_package(JNI REQUIRED)
 include_directories(${JNI_INCLUDE_DIRS})
 
-#JsonCpp
-hunter_add_package(jsoncpp)
-find_package(jsoncpp CONFIG REQUIRED)
-
-# find OpenSSL
-hunter_add_package(OpenSSL)
-find_package(OpenSSL REQUIRED)
-
-# wedpr-crypto
-hunter_add_package(wedpr-crypto)
-find_package(wedpr-crypto CONFIG REQUIRED)
-
-hunter_add_package(Boost COMPONENTS all)
-find_package(Boost CONFIG REQUIRED log chrono system filesystem thread iostreams)
-
-# bcos-utilities
-hunter_add_package(bcos-utilities)
-find_package(bcos-utilities CONFIG REQUIRED)
-
-# find bcos-boostssl
-hunter_add_package(bcos-boostssl)
-find_package(bcos-boostssl CONFIG REQUIRED)
-
-# find bcos-crypto
-hunter_add_package(bcos-crypto)
-find_package(bcos-crypto CONFIG REQUIRED)
-
-# find bcos-cpp-sdk
-hunter_add_package(bcos-cpp-sdk)
-find_package(bcos-cpp-sdk REQUIRED)
-
-# find bcos-c-sdk
-hunter_add_package(bcos-c-sdk)
-find_package(bcos-c-sdk REQUIRED)
+include(InstallDependencies)
 
 # basic settings
 include(Options)
@@ -120,13 +93,27 @@ else()
    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-as-needed -ldl")
 endif()
 
-set(FISCO_BCOS_JNI_TARGET "bcos-sdk-jni")
-add_library(${FISCO_BCOS_JNI_TARGET} SHARED ${SOURCES})
-target_link_libraries(${FISCO_BCOS_JNI_TARGET} PUBLIC wedpr-crypto::crypto wedpr-crypto::extend-crypto bcos-cpp-sdk::bcos-cpp-sdk bcos-c-sdk::bcos-c-sdk-static)
+# add suffix for macOS M1
+if(CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "arm64" OR CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "aarch64")
+    message(STATUS "Building arm architecture, CMAKE_HOST_SYSTEM_PROCESSOR => ${CMAKE_HOST_SYSTEM_PROCESSOR}")
+    set(FISCO_BCOS_JNI_TARGET "bcos-sdk-jni-aarch64")
+    set(FISCO_BCOS_JNI_STATIC_TARGET "bcos-sdk-jni-static-aarch64")
 
-set(FISCO_BCOS_JNI_STATIC_TARGET "bcos-sdk-jni-static")
+    set(BCOS_C_SDK_TARGET "bcos-c-sdk-aarch64")
+    set(BCOS_C_SDK_STATIC_TARGET "bcos-c-sdk-static-aarch64")
+else()
+    set(FISCO_BCOS_JNI_TARGET "bcos-sdk-jni")
+    set(FISCO_BCOS_JNI_STATIC_TARGET "bcos-sdk-jni-static")
+
+    set(BCOS_C_SDK_TARGET "bcos-c-sdk")
+    set(BCOS_C_SDK_STATIC_TARGET "bcos-c-sdk-static")
+endif()
+
+add_library(${FISCO_BCOS_JNI_TARGET} SHARED ${SOURCES})
+target_link_libraries(${FISCO_BCOS_JNI_TARGET} PUBLIC wedpr-crypto::crypto wedpr-crypto::extend-crypto bcos-cpp-sdk::bcos-cpp-sdk bcos-c-sdk::${BCOS_C_SDK_STATIC_TARGET})
+
 add_library(${FISCO_BCOS_JNI_STATIC_TARGET} ${SOURCES})
-target_link_libraries(${FISCO_BCOS_JNI_STATIC_TARGET} PUBLIC wedpr-crypto::crypto wedpr-crypto::extend-crypto bcos-cpp-sdk::bcos-cpp-sdk bcos-c-sdk::bcos-c-sdk-static)
+target_link_libraries(${FISCO_BCOS_JNI_STATIC_TARGET} PUBLIC wedpr-crypto::crypto wedpr-crypto::extend-crypto bcos-cpp-sdk::bcos-cpp-sdk bcos-c-sdk::${BCOS_C_SDK_STATIC_TARGET})
 
 # ut and binary exe
 # if (TESTS)

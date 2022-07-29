@@ -22,7 +22,7 @@ repositories {
 
 dependencies {
     api ("org.slf4j:slf4j-api:1.7.32")
-    api ("com.fasterxml.jackson.core:jackson-databind:2.12.4")
+    api ("com.fasterxml.jackson.core:jackson-databind:2.13.2.2")
 
     testCompile ("org.slf4j:slf4j-log4j12:1.7.32")
     testCompile ('junit:junit:4.12')
@@ -30,7 +30,7 @@ dependencies {
 
 archivesBaseName = 'bcos-sdk-jni'
 group = 'org.fisco-bcos'
-version = '3.0.0-rc4'
+version = '3.0.0-SNAPSHOT'
 
 // Additional attribute definition
 ext {

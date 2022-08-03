@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -142,6 +143,9 @@ public final class JniLibLoader {
       try {
         logger.info("try to load library from jar");
         loadLibraryFromJar(NATIVE_RESOURCE_LIB_NAME);
+        if (Objects.equals(getOs(), WIN)) {
+          loadWinDepsLibraryFromJar();
+        }
       } catch (Exception e1) {
         logger.error("unable to load library from fs, e: ", e1);
         throw new UnsatisfiedLinkError(e1.toString());
@@ -215,8 +219,50 @@ public final class JniLibLoader {
       try {
         tempFile.delete();
         tempDir.delete();
-        logger.debug("remove temp dir and temp file, {}", tempDir, tempFile);
+        logger.debug("remove temp dir and temp file, dir: {}, file: {}", tempDir, tempFile);
+      } catch (Exception ignored) {
+      }
+    }
+  }
+
+  public static void loadWinDepsLibraryFromJar()
+      throws IOException, NoSuchFieldException, IllegalAccessException {
+    File tempDir = new File(WORKDIR, String.valueOf(System.nanoTime()));
+    tempDir.mkdirs();
+
+    String winResource = NATIVE_RESOURCE_HOME + "/win/";
+    File winDir = new File(JniLibLoader.class.getResource(winResource).getFile());
+    // get all lib file in /native/win/
+    for (File lib : winDir.listFiles()) {
+      String libName = lib.getName();
+      File tempFile = new File(tempDir, libName);
+      logger.info("tempDir: {}, tempFile: {}", tempDir, tempFile);
+      try {
+        Files.copy(lib.toPath(), tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+      } catch (IOException e) {
+        try {
+          tempFile.delete();
+        } catch (Exception e0) {
+          logger.debug("delete temp file error, e: ", e0);
+        }
+        logger.error(
+            "copy dynamic lib from jar failed, file: {}, e: ", tempFile.getAbsolutePath(), e);
+        throw e;
+      } catch (NullPointerException e) {
+        throw new FileNotFoundException("Cannot found " + libName + " inside the JAR.");
+      }
+      try {
+        loadLibrary(tempFile.getAbsolutePath(), true);
       } catch (Exception e) {
+        logger.error("loadLibrary error, resource: {}, e: ", tempFile.getAbsolutePath(), e);
+        throw e;
+      } finally {
+        try {
+          tempFile.delete();
+          tempDir.delete();
+          logger.debug("remove temp dir and temp file, {}", tempFile);
+        } catch (Exception ignored) {
+        }
       }
     }
   }

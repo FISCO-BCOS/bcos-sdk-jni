@@ -137,8 +137,7 @@ public class JniConfig {
           + '\''
           + '}';
     }
-  }
-  ;
+  };
 
   public int getThreadPoolSize() {
     return threadPoolSize;

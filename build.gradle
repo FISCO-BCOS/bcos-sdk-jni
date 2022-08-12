@@ -9,6 +9,7 @@ plugins {
     id 'com.github.sherter.google-java-format' version '0.8'
 }
 
+println("Notice: current gradle version is " + gradle.gradleVersion)
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 

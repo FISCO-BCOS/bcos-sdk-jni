@@ -20,7 +20,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.Objects;
@@ -229,8 +228,7 @@ public final class JniLibLoader {
     }
   }
 
-  public static void loadWinDepsLibraryFromJar()
-      throws IOException, NoSuchFieldException {
+  public static void loadWinDepsLibraryFromJar() throws IOException, NoSuchFieldException {
     File tempDir = new File(WORKDIR, String.valueOf(System.nanoTime()));
     tempDir.mkdirs();
 

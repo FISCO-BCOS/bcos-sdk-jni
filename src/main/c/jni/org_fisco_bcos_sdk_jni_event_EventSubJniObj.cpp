@@ -79,6 +79,10 @@ static void on_receive_event_sub_response(struct bcos_sdk_c_struct_response* res
 
     env->CallObjectMethod(jcallback, onRespMethodID, responseObj);
 
+    env->DeleteLocalRef(errorString);
+    env->DeleteLocalRef(byteArrayObj);
+    env->DeleteLocalRef(responseObj);
+
     //  Note: the callback should not be unreference, it is not
     // once used
     // env->DeleteGlobalRef(jcallback);

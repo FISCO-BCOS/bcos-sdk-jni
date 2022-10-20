@@ -22,6 +22,8 @@ import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.Objects;
+import java.util.Scanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,6 +41,8 @@ public final class JniLibLoader {
 
   public static final String NATIVE_RESOURCE_LIB_NAME = "bcos-sdk-jni";
   public static final String NATIVE_RESOURCE_HOME = "/META-INF/native";
+  public static final String NATIVE_WIN_DEPS_DIR = NATIVE_RESOURCE_HOME + "/win/";
+  public static final String WIN_DEPS_FILE_LIST = "file.list";
 
   public static final String OS_NAME = getOs();
   public static final String ARCH_NAME = getArch();
@@ -75,7 +79,7 @@ public final class JniLibLoader {
 
   public static String getArch() {
     String archName = System.getProperty("os.arch", "");
-    if (archName.contains("aarch64")) {
+    if (archName.contains("aarch64") || archName.contains("arm64")) {
       return "arm";
     } else {
       return "";
@@ -91,6 +95,10 @@ public final class JniLibLoader {
     if (osName.contains(WIN)) {
       return baseName + ".dll";
     } else if (osName.contains(LINUX)) {
+      String arch = getArch();
+      if ("arm".equals(arch)) {
+        return "lib" + baseName + "-aarch64" + ".so";
+      }
       return "lib" + baseName + ".so";
     } else if (osName.contains(MAC)) {
       String arch = getArch();
@@ -137,6 +145,9 @@ public final class JniLibLoader {
     if (!loadLibFromFsOk) {
       try {
         logger.info("try to load library from jar");
+        if (Objects.equals(getOs(), WIN)) {
+          loadWinDepsLibraryFromJar();
+        }
         loadLibraryFromJar(NATIVE_RESOURCE_LIB_NAME);
       } catch (Exception e1) {
         logger.error("unable to load library from fs, e: ", e1);
@@ -211,8 +222,47 @@ public final class JniLibLoader {
       try {
         tempFile.delete();
         tempDir.delete();
-        logger.debug("remove temp dir and temp file, {}", tempDir, tempFile);
-      } catch (Exception e) {
+        logger.debug("remove temp dir and temp file, dir: {}, file: {}", tempDir, tempFile);
+      } catch (Exception ignored) {
+      }
+    }
+  }
+
+  public static void loadWinDepsLibraryFromJar() throws IOException, NoSuchFieldException {
+    File tempDir = new File(WORKDIR, String.valueOf(System.nanoTime()));
+    tempDir.mkdirs();
+
+    try (InputStream is =
+        JniLibLoader.class.getResourceAsStream(NATIVE_WIN_DEPS_DIR + WIN_DEPS_FILE_LIST)) {
+      if (is == null) {
+        throw new FileNotFoundException("Cannot found " + WIN_DEPS_FILE_LIST + " inside the JAR.");
+      }
+      try (Scanner scanner = new Scanner(is)) {
+        while (scanner.hasNext()) {
+          String lib = scanner.next();
+          File targetFile = new File(tempDir, lib);
+          logger.info("loadWinDepsLibraryFromJar tempDir: {}, targetFile: {}", tempDir, targetFile);
+          try (InputStream fis =
+              JniLibLoader.class.getResourceAsStream(NATIVE_WIN_DEPS_DIR + lib)) {
+            if (fis == null) {
+              throw new FileNotFoundException("Cannot found " + lib + " inside the JAR.");
+            }
+            Files.copy(fis, targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            loadLibrary(targetFile.getAbsolutePath(), true);
+          } catch (IOException e) {
+            targetFile.delete();
+          } catch (Exception e) {
+            logger.error("loadLibrary error, resource: {}, e: ", targetFile.getAbsolutePath(), e);
+            throw e;
+          } finally {
+            try {
+              targetFile.delete();
+              tempDir.delete();
+              logger.debug("remove temp dir and temp file, {}", targetFile);
+            } catch (Exception ignored) {
+            }
+          }
+        }
       }
     }
   }

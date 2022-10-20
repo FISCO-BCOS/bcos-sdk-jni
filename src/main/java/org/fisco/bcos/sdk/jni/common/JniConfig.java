@@ -67,7 +67,7 @@ public class JniConfig {
           + '\''
           + '}';
     }
-  };
+  }
 
   /** cert for sm ssl connection */
   public static class SMCertConfig {

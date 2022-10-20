@@ -43,3 +43,8 @@ src/test/**
 bin/
 
 bcos-cmake-scripts
+
+*.dll
+*.lib
+*.so
+*.dylib

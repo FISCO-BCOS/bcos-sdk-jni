@@ -4,11 +4,12 @@ plugins {
     id 'signing'
     id 'java-library'
     id 'maven-publish'
-    id 'org.ajoberstar.grgit' version '4.0.1'
+    id 'org.ajoberstar.grgit' version '4.1.1'
     id "de.undercouch.download" version "4.1.2"
     id 'com.github.sherter.google-java-format' version '0.8'
 }
 
+println("Notice: current gradle version is " + gradle.gradleVersion)
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
@@ -21,16 +22,16 @@ repositories {
 }
 
 dependencies {
-    api ("org.slf4j:slf4j-api:1.7.32")
-    api ("com.fasterxml.jackson.core:jackson-databind:2.12.4")
+    api ('org.slf4j:slf4j-api:1.7.36')
+    api ('com.fasterxml.jackson.core:jackson-databind:2.13.3')
 
-    testCompile ("org.slf4j:slf4j-log4j12:1.7.32")
-    testCompile ('junit:junit:4.12')
+    testCompile ('org.slf4j:slf4j-log4j12:1.7.36')
+    testCompile ('junit:junit:4.13.2')
 }
 
 archivesBaseName = 'bcos-sdk-jni'
 group = 'org.fisco-bcos'
-version = '3.0.0-rc3'
+version = '3.0.0'
 
 // Additional attribute definition
 ext {
@@ -49,7 +50,7 @@ jar {
 
     manifest {
         try {
-            def repo = grgit.open()
+            def repo = grgit.open(currentDir: project.rootDir)
             if (repo != null) {
 
                 def date = new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")

@@ -26,4 +26,4 @@ public class TxPair {
   public void setSignedTx(String signedTx) {
     this.signedTx = signedTx;
   }
-};
+}

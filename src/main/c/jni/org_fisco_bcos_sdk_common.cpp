@@ -309,29 +309,31 @@ struct bcos_sdk_c_config* create_config_from_java_obj(JNIEnv* env, jobject jconf
         jstring jpeer = (jstring)env->CallObjectMethod(jpeersOjbect, listGetMethodID, i);
         if (!jpeer)
         {
-            BOOST_THROW_EXCEPTION(
-                InvalidParameter() << errinfo_comment(
-                    "this connected peer is null value, it should be in ip:port string format"));
+            BOOST_THROW_EXCEPTION(InvalidParameter() << errinfo_comment(
+                                      "this connected peer is null value, it should be in "
+                                      "host<ipv4/ipv6/domain name>:port string format"));
         }
 
         const char* peer = env->GetStringUTFChars(jpeer, NULL);
         bcos::boostssl::NodeIPEndpoint endPoint;
-        if (!bcos::boostssl::ws::WsTools::stringToEndPoint(peer ? peer : "", endPoint))
-        {
-            BOOST_THROW_EXCEPTION(
-                InvalidParameter() << errinfo_comment(
-                    ("the connected peer should be in ip:port string format, invalid value: " +
-                        std::string(peer))
-                        .c_str()));
-            continue;
-        }
-        else
-        {
-            ep[i].host = strdup(endPoint.address().c_str());
-            ep[i].port = endPoint.port();
-        }
 
-        env->ReleaseStringUTFChars(jpeer, peer);
+        bcos::boostssl::ws::WsTools::stringToEndPoint(peer ? peer : "", endPoint);
+        // if (!result)
+        // {
+        //     BOOST_THROW_EXCEPTION(InvalidParameter() << errinfo_comment(
+        //                               ("the connected peer should be in host<ipv4/ipv6/domain "
+        //                                "name>:port:port string format, invalid value: " +
+        //                                   std::string(peer))
+        //                                   .c_str()));
+        //     continue;
+        // }
+        // else
+        // {
+        ep[i].host = strdup(endPoint.address().c_str());
+        ep[i].port = endPoint.port();
+        // }
+
+        // env->ReleaseStringUTFChars(jpeer, peer);
     }
 
     jfieldID jdisableSsl = env->GetFieldID(configClass, "disableSsl", "Z");

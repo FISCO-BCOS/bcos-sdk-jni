@@ -47,6 +47,26 @@ Java_org_fisco_bcos_sdk_jni_utilities_tx_TransactionBuilderJniObj_createTransact
 }
 
 /*
+ * Class:     org_fisco_bcos_sdk_jni_utilities_receipt_ReceiptBuilderJniObj
+ * Method:    createReceiptDataWithJson
+ * Signature: (Ljava/lang/String;)J
+ */
+JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_utilities_tx_TransactionBuilderJniObj_createTransactionDataWithJson
+  (JNIEnv *env, jclass, jstring jjson)
+{
+    const char* json = env->GetStringUTFChars(jjson, NULL);
+    void* transaction_data = bcos_sdk_create_transaction_data_with_json(json);
+
+    env->ReleaseStringUTFChars(jjson, json);
+    if (!bcos_sdk_is_last_opr_success())
+    {
+        THROW_JNI_EXCEPTION(env, bcos_sdk_get_last_error_msg());
+    }
+
+    return reinterpret_cast<jlong>(transaction_data);
+}
+
+/*
  * Class:     org_fisco_bcos_sdk_jni_utilities_tx_TransactionBuilderJniObj
  * Method:    destroyTransactionData
  * Signature: (J)V
@@ -84,6 +104,32 @@ Java_org_fisco_bcos_sdk_jni_utilities_tx_TransactionBuilderJniObj_encodeTransact
     }
 
     return jencoded_transaction_data;
+}
+
+/*
+ * Class:     org_fisco_bcos_sdk_jni_utilities_tx_TransactionBuilderJniObj
+ * Method:    decodeTransactionDataToJsonObj
+ * Signature: (J)Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_org_fisco_bcos_sdk_jni_utilities_tx_TransactionBuilderJniObj_decodeTransactionDataToJsonObj
+  (JNIEnv* env, jclass, jstring jtransaction_bytes)
+{
+    const char* transaction_data = env->GetStringUTFChars(jtransaction_bytes, NULL);
+    const char* transaction_data_json = bcos_sdk_decode_transaction_data(transaction_data);
+
+    env->ReleaseStringUTFChars(jtransaction_bytes, transaction_data);
+    if (!bcos_sdk_is_last_opr_success())
+    {
+        THROW_JNI_EXCEPTION(env, bcos_sdk_get_last_error_msg());
+    }
+
+    jstring jtransaction_data_json = env->NewStringUTF(transaction_data_json);
+    if (transaction_data_json)
+    {
+        free((void*)transaction_data_json);
+        transaction_data_json = NULL;
+    }
+    return jtransaction_data_json;
 }
 
 /*

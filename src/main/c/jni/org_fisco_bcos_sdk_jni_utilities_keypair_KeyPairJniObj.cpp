@@ -36,7 +36,7 @@ Java_org_fisco_bcos_sdk_jni_utilities_keypair_KeyPairJniObj_createJniKeyPair__I_
     int crypto_type = (int)jcrypto_type;
     jbyte* data = (jbyte*)env->GetByteArrayElements(jdata, 0);
     jsize len = env->GetArrayLength(jdata);
-    void* keypair = bcos_sdk_create_keypair_by_prikey(crypto_type, (void*)data, len);
+    void* keypair = bcos_sdk_create_keypair_by_private_key(crypto_type, (void*)data, len);
 
     if (!bcos_sdk_is_last_opr_success())
     {

@@ -30,7 +30,7 @@ function convert_java_to_jni() {
 # convert_java_to_jni ${JAVA_SOURCE_PATH}
 
 # classes="rpc.RpcJniObj amop.AmopJniObj event.EventSubJniObj BcosSDKJniObj"
-classes="utilities.keypair.KeyPairJniObj utilities.tx.TransactionBuilderJniObj"
+classes="utilities.keypair.KeyPairJniObj utilities.tx.TransactionBuilderJniObj utilities.receipt.ReceiptBuilderJniObj"
 
 for class in ${classes}
 do

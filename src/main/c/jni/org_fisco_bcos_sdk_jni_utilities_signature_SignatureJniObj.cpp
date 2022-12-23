@@ -27,7 +27,7 @@ JNIEXPORT jstring JNICALL Java_org_fisco_bcos_sdk_jni_utilities_signature_Signat
         THROW_JNI_EXCEPTION(env, bcos_sdk_get_last_error_msg());
      }
 
-     char *signed_data = nullptr;
+     char signed_data[577];
      std::strcat(signed_data, (char *)sign_result.r);
      std::strcat(signed_data, (char *)sign_result.s);
      std::strcat(signed_data, (char *)sign_result.v);

@@ -17,11 +17,35 @@ JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_utilities_keypair_KeyPairJni
 
 /*
  * Class:     org_fisco_bcos_sdk_jni_utilities_keypair_KeyPairJniObj
+ * Method:    createHsmKeyPair
+ * Signature: (Ljava/lang/String;)J
+ */
+JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_utilities_keypair_KeyPairJniObj_createHsmKeyPair__Ljava_lang_String_2
+  (JNIEnv *, jclass, jstring);
+
+/*
+ * Class:     org_fisco_bcos_sdk_jni_utilities_keypair_KeyPairJniObj
  * Method:    createJniKeyPair
  * Signature: (I[B)J
  */
 JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_utilities_keypair_KeyPairJniObj_createJniKeyPair__I_3B
   (JNIEnv *, jclass, jint, jbyteArray);
+
+/*
+ * Class:     org_fisco_bcos_sdk_jni_utilities_keypair_KeyPairJniObj
+ * Method:    createHsmKeyPair
+ * Signature: ([BLjava/lang/String;)J
+ */
+JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_utilities_keypair_KeyPairJniObj_createHsmKeyPair___3BLjava_lang_String_2
+  (JNIEnv *, jclass, jbyteArray, jstring);
+
+/*
+ * Class:     org_fisco_bcos_sdk_jni_utilities_keypair_KeyPairJniObj
+ * Method:    useHsmKeyPair
+ * Signature: (ILjava/lang/String;Ljava/lang/String;)J
+ */
+JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_utilities_keypair_KeyPairJniObj_useHsmKeyPair
+  (JNIEnv *, jclass, jint, jstring, jstring);
 
 /*
  * Class:     org_fisco_bcos_sdk_jni_utilities_keypair_KeyPairJniObj

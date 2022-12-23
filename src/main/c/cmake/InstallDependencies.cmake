@@ -17,6 +17,9 @@ find_package(Boost CONFIG REQUIRED log chrono system filesystem thread iostreams
 hunter_add_package(bcos-utilities)
 find_package(bcos-utilities CONFIG REQUIRED)
 
+# hsm-crypto
+include(InstallSDF)
+
 # find bcos-boostssl
 hunter_add_package(bcos-boostssl)
 find_package(bcos-boostssl CONFIG REQUIRED)

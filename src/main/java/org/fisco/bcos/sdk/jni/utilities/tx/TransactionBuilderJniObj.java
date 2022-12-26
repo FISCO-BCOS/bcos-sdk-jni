@@ -62,6 +62,23 @@ public class TransactionBuilderJniObj {
       throws JniException;
 
   /**
+   * @param transactionData
+   * @param transactionDataHashSignedData
+   * @param transactionDataHash
+   * @param attribute
+   * @param extraData
+   * @return
+   */
+  public static native String createSignedTransaction(
+          long transactionData,
+          String transactionDataHashSignedData,
+          String transactionDataHash,
+          int attribute,
+          String extraData
+          )
+          throws JniException;
+
+  /**
    * @param keyPair
    * @param groupID
    * @param chainID
@@ -82,4 +99,28 @@ public class TransactionBuilderJniObj {
       long blockLimit,
       int attribute)
       throws JniException;
+
+  /**
+   * @param keyPair
+   * @param groupID
+   * @param chainID
+   * @param to
+   * @param data
+   * @param blockLimit
+   * @param attribute
+   * @param extraData
+   * @return
+   * @throws JniException
+   */
+  public static native TxPair createSignedTransaction(
+          long keyPair,
+          String groupID,
+          String chainID,
+          String to,
+          String data,
+          String abi,
+          long blockLimit,
+          int attribute,
+          String extraData)
+          throws JniException;
 }

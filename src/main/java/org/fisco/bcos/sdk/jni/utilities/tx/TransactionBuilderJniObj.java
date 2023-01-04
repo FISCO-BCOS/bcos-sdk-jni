@@ -70,13 +70,12 @@ public class TransactionBuilderJniObj {
    * @return
    */
   public static native String createSignedTransaction(
-          long transactionData,
-          String transactionDataHashSignedData,
-          String transactionDataHash,
-          int attribute,
-          String extraData
-          )
-          throws JniException;
+      long transactionData,
+      String transactionDataHashSignedData,
+      String transactionDataHash,
+      int attribute,
+      String extraData)
+      throws JniException;
 
   /**
    * @param keyPair
@@ -113,14 +112,14 @@ public class TransactionBuilderJniObj {
    * @throws JniException
    */
   public static native TxPair createSignedTransaction(
-          long keyPair,
-          String groupID,
-          String chainID,
-          String to,
-          String data,
-          String abi,
-          long blockLimit,
-          int attribute,
-          String extraData)
-          throws JniException;
+      long keyPair,
+      String groupID,
+      String chainID,
+      String to,
+      String data,
+      String abi,
+      long blockLimit,
+      int attribute,
+      String extraData)
+      throws JniException;
 }

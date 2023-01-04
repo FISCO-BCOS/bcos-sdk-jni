@@ -210,7 +210,7 @@ Java_org_fisco_bcos_sdk_jni_utilities_tx_TransactionBuilderJniObj_createSignedTr
         env->GetStringUTFChars(jtransaction_data_signed_data, NULL);
     const char* transaction_data_hash = env->GetStringUTFChars(jtransaction_data_hash, NULL);
     int attr = jattr;
-    const char* extra_data = env->GetStringUTFChars(jtransaction_data_signed_data, NULL);
+    const char* extra_data = env->GetStringUTFChars(jextra_data, NULL);
 
     const char* signed_tx = bcos_sdk_create_signed_transaction_with_signed_data_ver_extra_data(
         transaction_data, transaction_data_signed_data, transaction_data_hash, attr, extra_data);

@@ -79,15 +79,31 @@ public class TransactionBuilderJniObj {
       throws JniException;
 
   /**
-   * @param keyPair KeyPair pointer
-   * @param groupID group id
-   * @param chainID chain id
-   * @param to contract address, which calling to
-   * @param data tx input data
-   * @param blockLimit block limit
-   * @param attribute TransactionAttribute
-   * @return (txHash,signed tx hex string)
-   * @throws JniException throw when cpp sdk exception
+   * @param transactionData
+   * @param transactionDataHashSignedData
+   * @param transactionDataHash
+   * @param attribute
+   * @param extraData
+   * @return
+   */
+  public static native String createSignedTransaction(
+      long transactionData,
+      String transactionDataHashSignedData,
+      String transactionDataHash,
+      int attribute,
+      String extraData)
+      throws JniException;
+
+  /**
+   * @param keyPair
+   * @param groupID
+   * @param chainID
+   * @param to
+   * @param data
+   * @param blockLimit
+   * @param attribute
+   * @return
+   * @throws JniException
    */
   public static native TxPair createSignedTransaction(
       long keyPair,
@@ -98,5 +114,29 @@ public class TransactionBuilderJniObj {
       String abi,
       long blockLimit,
       int attribute)
+      throws JniException;
+
+  /**
+   * @param keyPair
+   * @param groupID
+   * @param chainID
+   * @param to
+   * @param data
+   * @param blockLimit
+   * @param attribute
+   * @param extraData
+   * @return
+   * @throws JniException
+   */
+  public static native TxPair createSignedTransaction(
+      long keyPair,
+      String groupID,
+      String chainID,
+      String to,
+      String data,
+      String abi,
+      long blockLimit,
+      int attribute,
+      String extraData)
       throws JniException;
 }

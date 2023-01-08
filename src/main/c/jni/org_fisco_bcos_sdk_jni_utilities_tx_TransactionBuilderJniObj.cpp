@@ -51,8 +51,9 @@ Java_org_fisco_bcos_sdk_jni_utilities_tx_TransactionBuilderJniObj_createTransact
  * Method:    createReceiptDataWithJson
  * Signature: (Ljava/lang/String;)J
  */
-JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_utilities_tx_TransactionBuilderJniObj_createTransactionDataWithJson
-  (JNIEnv *env, jclass, jstring jjson)
+JNIEXPORT jlong JNICALL
+Java_org_fisco_bcos_sdk_jni_utilities_tx_TransactionBuilderJniObj_createTransactionDataWithJson(
+    JNIEnv* env, jclass, jstring jjson)
 {
     const char* json = env->GetStringUTFChars(jjson, NULL);
     void* transaction_data = bcos_sdk_create_transaction_data_with_json(json);
@@ -90,7 +91,7 @@ Java_org_fisco_bcos_sdk_jni_utilities_tx_TransactionBuilderJniObj_encodeTransact
 {
     std::ignore = env;
     std::ignore = jtransaction_data;
-    /*
+
     void* transaction_data = reinterpret_cast<void*>(jtransaction_data);
     const char* encoded_transaction_data = bcos_sdk_encode_transaction_data(transaction_data);
     if (!bcos_sdk_is_last_opr_success())
@@ -107,8 +108,6 @@ Java_org_fisco_bcos_sdk_jni_utilities_tx_TransactionBuilderJniObj_encodeTransact
     }
 
     return jencoded_transaction_data;
-    */
-    return jstring();
 }
 
 /*
@@ -116,8 +115,9 @@ Java_org_fisco_bcos_sdk_jni_utilities_tx_TransactionBuilderJniObj_encodeTransact
  * Method:    decodeTransactionDataToJsonObj
  * Signature: (J)Ljava/lang/String;
  */
-JNIEXPORT jstring JNICALL Java_org_fisco_bcos_sdk_jni_utilities_tx_TransactionBuilderJniObj_decodeTransactionDataToJsonObj
-  (JNIEnv* env, jclass, jstring jtransaction_bytes)
+JNIEXPORT jstring JNICALL
+Java_org_fisco_bcos_sdk_jni_utilities_tx_TransactionBuilderJniObj_decodeTransactionDataToJsonObj(
+    JNIEnv* env, jclass, jstring jtransaction_bytes)
 {
     const char* transaction_data = env->GetStringUTFChars(jtransaction_bytes, NULL);
     const char* transaction_data_json = bcos_sdk_decode_transaction_data(transaction_data);

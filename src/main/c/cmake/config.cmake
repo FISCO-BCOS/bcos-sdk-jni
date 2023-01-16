@@ -42,6 +42,6 @@ hunter_config(bcos-cpp-sdk
 
 hunter_config(bcos-c-sdk
     VERSION 3.2.0-local
-    URL https://${URL_BASE}/FISCO-BCOS/bcos-c-sdk/archive/6fb41a0c97fe8f5aa99fa574e7eee570a6886326.tar.gz
-    SHA1 5a517617994ce01c683f2731bb98e7cb775f00ea
+    URL https://${URL_BASE}/FISCO-BCOS/bcos-c-sdk/archive/912eb4d880a93ae7f2d300c955f5076d906642c9.tar.gz
+    SHA1 40fa259b204b55d6f3b97872d172680002080958
 )

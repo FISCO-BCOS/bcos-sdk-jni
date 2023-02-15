@@ -23,11 +23,11 @@ if (("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU") OR ("${CMAKE_CXX_COMPILER_ID}" MA
         set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
         set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK "${CCACHE_PROGRAM}")
     endif()
+    set(CMAKE_CXX_STANDARD 20)
     # set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "/usr/bin/time")
     # set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK "/usr/bin/time")
-    # Use ISO C++17 standard language.
-    set(CMAKE_CXX_FLAGS "-std=c++17 -pthread -fPIC -fvisibility=hidden -fvisibility-inlines-hidden -fexceptions")
-    set(CMAKE_CXX_VISIBILITY_PRESET hidden)
+    set(CMAKE_CXX_FLAGS "-pthread -fPIC -fexceptions")
+    # set(CMAKE_CXX_VISIBILITY_PRESET hidden)
     # Enables all the warnings about constructions that some users consider questionable,
     # and that are easy to avoid.  Also enable some extra warning flags that are not
     # enabled by -Wall.   Finally, treat at warnings-as-errors, which forces developers
@@ -72,7 +72,7 @@ if (("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU") OR ("${CMAKE_CXX_COMPILER_ID}" MA
     endif ()
 
     # Configuration-specific compiler settings.
-    set(CMAKE_CXX_FLAGS_DEBUG          "-Og -g  -DFISCO_DEBUG")
+    set(CMAKE_CXX_FLAGS_DEBUG          "-Og -g")
     set(CMAKE_CXX_FLAGS_MINSIZEREL     "-Os -DNDEBUG")
     set(CMAKE_CXX_FLAGS_RELEASE        "-O3 -DNDEBUG")
     set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g")
@@ -108,7 +108,7 @@ if (("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU") OR ("${CMAKE_CXX_COMPILER_ID}" MA
     # Additional Clang-specific compiler settings.
     elseif ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
         if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.0)
-            set(CMAKE_CXX_FLAGS_DEBUG          "-O -g -DFISCO_DEBUG")
+            set(CMAKE_CXX_FLAGS_DEBUG          "-O -g")
         endif()
         # set(CMAKE_CXX_FLAGS "-stdlib=libc++ ${CMAKE_CXX_FLAGS}")
         add_compile_options(-fstack-protector)
@@ -135,6 +135,30 @@ if (("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU") OR ("${CMAKE_CXX_COMPILER_ID}" MA
             set(CMAKE_C_FLAGS "-g -fprofile-arcs -ftest-coverage ${CMAKE_C_FLAGS}")
         endif()
     endif ()
+elseif("${CMAKE_CXX_COMPILER_ID}" MATCHES "MSVC")
+
+    # Only support visual studio 2017 and visual studio 2019
+    set(MSVC_MIN_VERSION "1914") # VS2017 15.7, for full-ish C++17 support
+
+    message(STATUS "Compile On Windows, MSVC_TOOLSET_VERSION: ${MSVC_TOOLSET_VERSION}")
+
+    if (MSVC_TOOLSET_VERSION EQUAL 141)
+        message(STATUS "Compile On Visual Studio 2017")
+    elseif(MSVC_TOOLSET_VERSION EQUAL 142)
+        message(STATUS "Compile On Visual Studio 2019")
+    else()
+        message(FATAL_ERROR "Unsupported Visual Studio, supported list: [2017, 2019]. Current MSVC_TOOLSET_VERSION: ${MSVC_TOOLSET_VERSION}")
+    endif()
+
+    add_definitions(-DUSE_STD_RANGES)
+    add_compile_options(/std:c++latest)
+    add_compile_options(-bigobj)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc")
+    # set(CMAKE_CXX_FLAGS_DEBUG "/MTd /DEBUG")
+    # set(CMAKE_CXX_FLAGS_MINSIZEREL "/MT /Os")
+    # set(CMAKE_CXX_FLAGS_RELEASE "/MT")
+    # set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "/MT /DEBUG")
+    link_libraries(ws2_32 Crypt32 userenv)
 else ()
     message(WARNING "Your compiler is not tested, if you run into any issues, we'd welcome any patches.")
 endif ()

@@ -12,7 +12,7 @@ extern "C" {
  * Method:    sign
  * Signature: (JLjava/lang/String;Ljava/lang/String;)Ljava/lang/String;
  */
-JNIEXPORT jstring JNICALL Java_org_fisco_bcos_sdk_jni_utilities_signature_SignatureJniObj_sign
+JNIEXPORT jbyteArray JNICALL Java_org_fisco_bcos_sdk_jni_utilities_signature_SignatureJniObj_sign
   (JNIEnv *, jclass, jlong, jstring, jstring);
 
 /*

@@ -10,7 +10,7 @@
  * Method:    sign
  * Signature: (JLjava/lang/String;Ljava/lang/String;)Ljava/lang/String;
  */
-JNIEXPORT jstring JNICALL Java_org_fisco_bcos_sdk_jni_utilities_signature_SignatureJniObj_sign
+JNIEXPORT jbyteArray JNICALL Java_org_fisco_bcos_sdk_jni_utilities_signature_SignatureJniObj_sign
   (JNIEnv* env, jclass, jlong jkeypair, jstring jtx_data_hash, jstring jhsm_lib_path)
 {
      const char* hsm_lib_path = env->GetStringUTFChars(jhsm_lib_path, NULL);
@@ -27,13 +27,15 @@ JNIEXPORT jstring JNICALL Java_org_fisco_bcos_sdk_jni_utilities_signature_Signat
         THROW_JNI_EXCEPTION(env, bcos_sdk_get_last_error_msg());
      }
 
-     char signed_data[577];
-     std::strcat(signed_data, (char *)sign_result.r);
-     std::strcat(signed_data, (char *)sign_result.s);
-     std::strcat(signed_data, (char *)sign_result.v);
+    jbyte *signed_data_r = (jbyte*)sign_result.r;
+    jbyte *signed_data_s = (jbyte*)sign_result.s;
+    jbyte *signed_data_v = (jbyte*)sign_result.v;
+    jbyteArray jsigned_data = env->NewByteArray(576);
+    env->SetByteArrayRegion(jsigned_data, 0, 32, signed_data_r);
+    env->SetByteArrayRegion(jsigned_data, 32, 32, signed_data_s);
+    env->SetByteArrayRegion(jsigned_data, 64, 512, signed_data_v);
 
-     jstring jsigned_data = env->NewStringUTF(signed_data);
-     return jsigned_data;
+    return jsigned_data;
 }
 
 /*

@@ -28,8 +28,8 @@ hunter_config(bcos-crypto VERSION 1.0.0-rc3-local
 )
 
 hunter_config(wedpr-crypto VERSION 1.0.0
-    URL https://${URL_BASE}/WeBankBlockchain/WeDPR-Lab-Crypto/archive/caeea48d7fa6c879fef52063cf107873744629b2.tar.gz
-    SHA1 03e76f0759a0da0f55cad5d49af510657bb6f343
+    URL https://${URL_BASE}/WeBankBlockchain/WeDPR-Lab-Crypto/archive/3ca836f904d89d2bca073aafb8a1e8b2aff2a29f.tar.gz
+    SHA1 f045222f23e83f9cbaf313c6c2238da1fb32ec37
 )
 
 hunter_config(range-v3 VERSION 1.0.0
@@ -39,15 +39,15 @@ hunter_config(range-v3 VERSION 1.0.0
 
 hunter_config(bcos-boostssl
     VERSION 1.1.0-local
-    URL https://${URL_BASE}/FISCO-BCOS/bcos-boostssl/archive/02dd33f5a66be129fc63d9b0a5e0a8fd458ad5be.tar.gz
-    SHA1 cd9b203e7a7ff7bd881b5de37569188dca9deec5
+    URL https://${URL_BASE}/FISCO-BCOS/bcos-boostssl/archive/1df2d0eae2fdf5eaa1334a3bbb68fc926bc935fb.tar.gz
+    SHA1 954d16022ceb54a07d6096b728f7c4504218af29
     CMAKE_ARGS HUNTER_PACKAGE_LOG_BUILD=ON HUNTER_PACKAGE_LOG_INSTALL=ON ARCH_NATIVE=${ARCH_NATIVE} URL_BASE=${URL_BASE}
 )
 
 hunter_config(bcos-cpp-sdk
     VERSION 3.3.0-local
-    URL https://${URL_BASE}/FISCO-BCOS/bcos-cpp-sdk/archive/3fe17fed2d62400fe1496eddf3bed8c2727fe266.tar.gz
-    SHA1 2221c28091313f3fbfa8418ec56a737e482f2c0f
+    URL https://${URL_BASE}/FISCO-BCOS/bcos-cpp-sdk/archive/f67f86bbdcd178d44375d0ba578e0bc0b14c3772.tar.gz
+    SHA1 9a729dbceed1cb7902c0626f531b0a06e11ea8f3
 )
 
 hunter_config(bcos-c-sdk

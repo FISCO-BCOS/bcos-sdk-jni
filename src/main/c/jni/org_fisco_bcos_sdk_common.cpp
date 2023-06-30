@@ -317,22 +317,22 @@ struct bcos_sdk_c_config* create_config_from_java_obj(JNIEnv* env, jobject jconf
         const char* peer = env->GetStringUTFChars(jpeer, NULL);
         bcos::boostssl::NodeIPEndpoint endPoint;
         // fix bug: invalid peer throw exception but not catch exception
-        bcos::boostssl::ws::WsTools::stringToEndPoint(peer ? peer : "", endPoint);
-//        {
-//            BOOST_THROW_EXCEPTION(
-//                InvalidParameter() << errinfo_comment(
-//                    ("the connected peer should be in ip:port string format, invalid value: " +
-//                        std::string(peer))
-//                        .c_str()));
-//            continue;
-//        }
-//        else
-//        {
-        ep[i].host = strdup(endPoint.address().c_str());
-        ep[i].port = endPoint.port();
-//        }
+        bool result = bcos::boostssl::ws::WsTools::stringToEndPoint(peer ? peer : "", endPoint);
+        if (!result)
+        {
+            BOOST_THROW_EXCEPTION(
+                InvalidParameter() << errinfo_comment(
+                    ("the connected peer should be in ip:port string format, invalid value: " +
+                        std::string(peer))
+                        .c_str()));
+        }
+        else
+        {
+            ep[i].host = strdup(endPoint.address().c_str());
+            ep[i].port = endPoint.port();
+        }
 
-//        env->ReleaseStringUTFChars(jpeer, peer);
+        env->ReleaseStringUTFChars(jpeer, peer);
     }
 
     jfieldID jdisableSsl = env->GetFieldID(configClass, "disableSsl", "Z");

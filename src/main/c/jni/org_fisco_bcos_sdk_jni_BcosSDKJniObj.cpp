@@ -14,9 +14,27 @@
 JNIEXPORT jlong JNICALL Java_org_fisco_bcos_sdk_jni_BcosSDKJniObj_create(
     JNIEnv* env, jclass self, jobject jconfig)
 {
-    (void)self;
-    // config
-    struct bcos_sdk_c_config* config = create_config_from_java_obj(env, jconfig);
+    struct bcos_sdk_c_config* config = NULL;
+    try
+    {
+        (void)self;
+        // create config
+        config = create_config_from_java_obj(env, jconfig);
+    }
+    catch (const bcos::InvalidParameter& e)
+    {
+        std::string exceptionMessage = "Unknown error";
+        if (const char* msg = boost::diagnostic_information_what(e))
+        {
+            exceptionMessage = msg;
+        }
+
+        // throw exception in java
+        THROW_JNI_EXCEPTION(env, exceptionMessage.c_str());
+
+        return 0;
+    }
+
     // create sdk obj
     void* sdk = bcos_sdk_create(config);
     // destroy config
